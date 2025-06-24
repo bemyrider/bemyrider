@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
       email: user.email,
       business_type: 'individual',
       business_profile: {
-        mcc: '8299', // Scuole e servizi educativi
-        url: `https://bemyrider.com/rider/${user.id}`,
+        mcc: '8999', // Servizi professionali altri servizi per le aziende
+        url: `https://bemyrider.it/rider/${user.id}`,
       },
       company: {
         // L'oggetto company è richiesto anche per gli individual in IT

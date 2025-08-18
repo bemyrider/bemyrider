@@ -1,6 +1,15 @@
-# bemyrider - MVP
+# bemyrider 🚴‍♂️
 
-bemyrider è una piattaforma SaaS che mette in contatto esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria.
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-Connect-blue.svg)](https://stripe.com/)
+
+**bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria. 
+
+🏪 **Per Esercenti**: Trova e prenota rider qualificati per le tue consegne  
+🚴‍♂️ **Per Rider**: Monetizza il tuo tempo con tariffe personalizzate
 
 ## 🚀 Caratteristiche Principali
 

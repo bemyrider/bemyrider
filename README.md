@@ -282,7 +282,19 @@ Il progetto può essere deployato su qualsiasi provider che supporti Next.js.
 
 ## 📄 Licenza
 
-Questo progetto è sotto licenza MIT. Vedi il file `LICENSE` per i dettagli.
+Questo progetto è sotto **licenza proprietaria personalizzata**. 
+
+### Uso Permesso
+- ✅ Studio e valutazione personale
+- ✅ Sviluppo non commerciale  
+- ✅ Scopi educativi
+
+### Uso Commerciale
+- ❌ Richiede autorizzazione scritta
+- 💼 Licenze commerciali disponibili su richiesta
+- 📧 Contatto: info@bemyrider.it
+
+Vedi il file [`LICENSE`](LICENSE) per tutti i dettagli.
 
 ## 📞 Supporto
 

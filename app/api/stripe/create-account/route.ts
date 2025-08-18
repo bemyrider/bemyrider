@@ -1,79 +1,60 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-
 import { stripe } from '@/lib/stripe'
+import type { NextRequest } from 'next/server'
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   const cookieStore = cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-      },
-      headers: req.headers,
-    }
+    { cookies: cookieStore }
   )
 
   try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      })
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const account = await stripe.accounts.create({
+    const stripeAccount = await stripe.accounts.create({
       type: 'express',
       country: 'IT',
       email: user.email,
       business_type: 'individual',
-      business_profile: {
-        mcc: '8999', // Servizi professionali altri servizi per le aziende
-        url: `https://bemyrider.it/rider/${user.id}`,
-      },
-      company: {
-        // L'oggetto company è richiesto anche per gli individual in IT
-        // per raccogliere Codice Fiscale e Partita IVA. Lasciarlo vuoto
-        // forza Stripe a richiederli durante l'onboarding.
-      },
-      individual: {
-        // Idem per l'oggetto individual.
-      },
+      capabilities: {
+        card_payments: { requested: true },
+        transfers: { requested: true }
+      }
     })
 
-    // Associa l'ID dell'account Stripe all'utente nel tuo DB
     const { error: updateError } = await supabase
       .from('riders_details')
-      .update({ stripe_account_id: account.id })
-      .eq('id', user.id)
+      .update({
+        stripe_account_id: stripeAccount.id,
+        updated_at: new Date().toISOString()
+      })
+      .eq('profile_id', user.id)
 
     if (updateError) {
-      console.error("Errore nell'aggiornare l'utente con l'ID Stripe:", updateError)
-      throw updateError
+      return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
     }
 
+    const origin = request.headers.get('origin') || 'http://localhost:3000'
     const accountLink = await stripe.accountLinks.create({
-      account: account.id,
-      refresh_url: req.nextUrl.origin + '/dashboard/rider',
-      return_url: req.nextUrl.origin + '/dashboard/rider',
-      type: 'account_onboarding',
+      account: stripeAccount.id,
+      refresh_url: `${origin}/dashboard/rider`,
+      return_url: `${origin}/dashboard/rider?onboarding_complete=true`,
+      type: 'account_onboarding'
     })
 
     return NextResponse.json({ url: accountLink.url })
   } catch (error) {
-    console.error('Errore nella creazione dell\'account Stripe:', error)
-    return new NextResponse(
-      JSON.stringify({ error: 'Failed to create Stripe account' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    console.error('Error:', error)
+    return NextResponse.json(
+      { error: 'Failed to create Stripe account' },
+      { status: 500 }
     )
   }
 } 

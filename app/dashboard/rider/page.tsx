@@ -26,54 +26,85 @@ export default function RiderDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
+  const [checkingOnboarding, setCheckingOnboarding] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  // Funzione per verificare e aggiornare lo stato di onboarding
+  const checkOnboardingStatus = async () => {
+    if (!profile?.riders_details?.stripe_account_id) return false
+    
+    setCheckingOnboarding(true)
+    try {
+      const response = await fetch('/api/stripe/onboarding', {
+        method: 'GET',
+        credentials: 'include',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('🔄 Onboarding status check result:', data)
+        
+        // Se lo stato è cambiato, aggiorna il profilo
+        if (data.stripe_onboarding_complete !== profile.riders_details?.stripe_onboarding_complete) {
+          console.log('✅ Onboarding status changed, updating profile...')
+          await fetchProfile() // Ricarica il profilo
+          return data.stripe_onboarding_complete
+        }
+        
+        return data.stripe_onboarding_complete
+      }
+    } catch (error) {
+      console.error('Error checking onboarding status:', error)
+    } finally {
+      setCheckingOnboarding(false)
+    }
+    
+    return profile.riders_details?.stripe_onboarding_complete || false
+  }
+
+  // ✅ NUOVO useEffect SEMPLIFICATO per gestire onboarding_complete
   useEffect(() => {
     const onboardingComplete = searchParams.get('onboarding_complete')
 
-    if (onboardingComplete) {
-      // Siamo appena tornati da Stripe. Un ricaricamento completo della pagina dopo
-      // un breve ritardo è il modo più robusto per garantire di ottenere lo stato 
-      // del profilo aggiornato, dando tempo al webhook di arrivare.
-      const timer = setTimeout(() => {
-        // Ricarica la pagina all'URL pulito.
-        window.location.href = '/dashboard/rider'
-      }, 3000) // Aspetta 3 secondi
-
-      return () => clearTimeout(timer)
+    if (onboardingComplete === 'true') {
+      // 1. Log di successo
+      console.log('✅ Onboarding Stripe completato con successo!')
+      
+      // 2. Rimuovi il parametro dall'URL (pulisce l'URL)
+      window.history.replaceState({}, '', '/dashboard/rider')
+      
+      // 3. Ricarica il profilo per mostrare lo stato aggiornato
+      fetchProfile()
     } else {
-      // Se non stiamo tornando dall'onboarding, carica il profilo normalmente.
+      // Se non stiamo tornando dall'onboarding, carica il profilo normalmente
       fetchProfile()
     }
   }, [searchParams])
 
   const fetchProfile = async () => {
     try {
-      // Check if Supabase is properly configured
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
-        // Mock profile for demo
+      // Get current user from Supabase
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        // Se non c'è un utente autenticato, mostra il profilo demo
         setProfile({
           id: 'demo-rider',
-          full_name: 'Marco Rossi',
+          full_name: 'Marco Rossi (Demo)',
           avatar_url: null,
           riders_details: {
             bio: 'Rider esperto con 5 anni di esperienza',
-            hourly_rate: 12,
-            stripe_account_id: null,
-            stripe_onboarding_complete: false
+            hourly_rate: 25,
+            stripe_account_id: 'demo-account',
+            stripe_onboarding_complete: true
           }
         })
         setLoading(false)
         return
       }
 
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/auth/login')
-        return
-      }
-
+      // Se l'utente è autenticato, carica il suo profilo reale
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
@@ -91,13 +122,55 @@ export default function RiderDashboard() {
         .single()
 
       if (profileError) {
+        // Se il profilo non esiste, creiamolo
+        if (profileError.code === 'PGRST116') {
+          const { error: createProfileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              full_name: user.user_metadata.full_name || 'New Rider',
+              role: 'rider',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+
+          if (createProfileError) {
+            console.error('Error creating profile:', createProfileError)
+            setError('Errore nella creazione del profilo')
+            return
+          }
+
+          // Create rider details
+          const { error: createRiderDetailsError } = await supabase
+            .from('riders_details')
+            .insert({
+              profile_id: user.id,
+              hourly_rate: 15, // Default hourly rate
+              bio: 'New Rider',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+
+          if (createRiderDetailsError) {
+            console.error('Error creating rider details:', createRiderDetailsError)
+            setError('Errore nella creazione dei dettagli del rider')
+            return
+          }
+
+          // Ricarica la pagina per mostrare il nuovo profilo
+          window.location.reload()
+          return
+        }
+
+        console.error('Error fetching profile:', profileError)
         setError('Errore nel caricamento del profilo')
         return
       }
 
       if (profileData) {
-        // Supabase returns related tables as an array. We expect only one.
-        const riderDetails = Array.isArray(profileData.riders_details) ? profileData.riders_details[0] : profileData.riders_details;
+        const riderDetails = Array.isArray(profileData.riders_details) 
+          ? profileData.riders_details[0] 
+          : profileData.riders_details
 
         setProfile({
           id: profileData.id,
@@ -118,27 +191,41 @@ export default function RiderDashboard() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/stripe/create-account', {
+      const response = await fetch('/api/stripe/onboarding', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Importante: include i cookie nella richiesta
       })
-      const { url, error } = await response.json()
-
-      if (error) {
-        throw new Error(error)
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to start onboarding')
       }
 
-      if (url) {
-        router.push(url)
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('No URL returned from Stripe')
       }
     } catch (err: any) {
       console.error('Error starting Stripe onboarding:', err)
-      setError(err.message || 'An unknown error occurred.')
+      setError(err.message || 'Si è verificato un errore durante l\'attivazione dei pagamenti')
     } finally {
       setLoading(false)
     }
   }
 
   const handleManagePayments = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      setError("Devi effettuare il login per utilizzare questa funzionalità")
+      return
+    }
+
     if (!profile?.riders_details?.stripe_account_id) {
       setError("ID dell'account Stripe non trovato.")
       return
@@ -160,7 +247,7 @@ export default function RiderDashboard() {
       }
 
       if (url) {
-        window.open(url, '_blank') // Apre il link in una nuova scheda
+        window.open(url, '_blank')
       }
     } catch (err: any) {
       console.error('Error creating Stripe login link:', err)
@@ -171,13 +258,16 @@ export default function RiderDashboard() {
   }
 
   const handleLogout = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    
     try {
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co') {
+      if (user) {
         await supabase.auth.signOut()
       }
       router.push('/')
     } catch (error) {
       console.error('Error logging out:', error)
+      setError('Errore durante il logout')
     }
   }
 
@@ -195,17 +285,8 @@ export default function RiderDashboard() {
 
   const riderDetails = profile.riders_details;
 
-  // Mostra un messaggio di attesa mentre verifichiamo lo stato dopo il redirect
-  if (searchParams.get('onboarding_complete')) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <p className="text-lg font-semibold">Verifica dello stato di onboarding in corso...</p>
-          <p className="text-gray-600">Attendi un momento, stiamo aggiornando il tuo profilo.</p>
-        </div>
-      </div>
-    )
-  }
+  // ✅ RIMOSSO: Non mostrare più la schermata di attesa per onboarding_complete
+  // Ora gestiamo tutto nel useEffect semplificato
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -294,6 +375,18 @@ export default function RiderDashboard() {
                   >
                     {loading ? 'Caricamento...' : 'Attiva Pagamenti'}
                   </Button>
+                  {riderDetails?.stripe_account_id && (
+                    <div className="mt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={checkOnboardingStatus}
+                        disabled={checkingOnboarding}
+                      >
+                        {checkingOnboarding ? 'Verificando...' : 'Verifica Stato'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -369,4 +462,4 @@ export default function RiderDashboard() {
       </div>
     </div>
   )
-} 
+}

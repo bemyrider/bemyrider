@@ -1,7 +1,7 @@
 # bemyrider 🚴‍♂️
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-Connect-blue.svg)](https://stripe.com/)

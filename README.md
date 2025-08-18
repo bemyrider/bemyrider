@@ -46,7 +46,7 @@
 
 ### 1. Clona il repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/bemyrider/bemyrider.git
 cd bemyrider
 ```
 
@@ -224,21 +224,28 @@ L'applicazione sarà disponibile su `http://localhost:3000`
 ```
 bemyrider/
 ├── app/                    # Next.js App Router
-│   ├── api/               # API Routes
-│   │   └── stripe/        # Stripe API endpoints
+│   ├── api/stripe/        # Stripe API endpoints
 │   ├── auth/              # Pagine di autenticazione
 │   ├── dashboard/         # Dashboard utenti
-│   ├── riders/            # Pagine pubbliche rider
-│   ├── globals.css        # Stili globali
-│   ├── layout.tsx         # Layout principale
-│   └── page.tsx           # Landing page
+│   └── riders/            # Pagine pubbliche rider
 ├── components/            # Componenti React
-│   └── ui/               # Componenti shadcn/ui
+│   ├── ui/               # Componenti shadcn/ui base
+│   └── riders/           # Componenti specifici rider
+├── docs/                  # 📚 Documentazione completa
+│   ├── API.md            # Documentazione API endpoints
+│   ├── SETUP.md          # Guida setup dettagliata
+│   ├── DEPLOYMENT.md     # Guida deployment produzione
+│   └── EDGE-FUNCTIONS.md # Documentazione Edge Functions
 ├── lib/                  # Utility e configurazioni
 │   ├── supabase.ts       # Client Supabase
 │   ├── stripe.ts         # Configurazione Stripe
 │   └── utils.ts          # Utility functions
+├── supabase/             # Supabase configuration
+│   └── functions/        # Edge Functions
+│       └── stripe-webhook/ # Webhook Stripe handler
 ├── public/               # Asset statici
+├── CHANGELOG.md          # Storia delle modifiche
+├── LICENSE               # Licenza proprietaria
 └── package.json          # Dipendenze e script
 ```
 
@@ -262,12 +269,24 @@ bemyrider/
 - **Pagamento**: Gestito tramite Stripe Connect
 - **Tariffa**: Definito dal rider (€/ora)
 
+## 📚 Documentazione
+
+Per informazioni dettagliate, consulta la documentazione completa:
+
+- **[📖 Setup Completo](docs/SETUP.md)** - Guida passo-passo per configurazione
+- **[🔧 API Documentation](docs/API.md)** - Documentazione completa API endpoints  
+- **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Deploy in produzione
+- **[⚡ Edge Functions](docs/EDGE-FUNCTIONS.md)** - Supabase Edge Functions
+- **[📋 Changelog](CHANGELOG.md)** - Storia delle modifiche
+
 ## 🚀 Deployment
 
 ### Vercel (Raccomandato)
 1. Connetta il repository a Vercel
 2. Configura le variabili d'ambiente
 3. Deploy automatico
+
+**Per istruzioni dettagliate:** [📖 Guida Deployment](docs/DEPLOYMENT.md)
 
 ### Altri Provider
 Il progetto può essere deployato su qualsiasi provider che supporti Next.js.

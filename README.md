@@ -183,14 +183,35 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE PROCEDURE handle_new_user();
 ```
 
-### 5. Setup Stripe
+### 5. Setup Supabase Edge Functions
+
+```bash
+# Installa Supabase CLI
+npm install -g @supabase/cli
+
+# Login e link progetto
+supabase login
+supabase link --project-ref your-project-ref
+
+# Deploy Edge Function
+supabase functions deploy stripe-webhook
+
+# Configura environment variables
+supabase secrets set STRIPE_SECRET_KEY=sk_test_...
+supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
+supabase secrets set SUPABASE_URL=https://your-project.supabase.co
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=eyJ...
+```
+
+### 6. Setup Stripe
 
 1. Crea un account Stripe
 2. Abilita Stripe Connect nel dashboard
 3. Configura le chiavi API nel file `.env.local`
-4. Configura i webhook per gli eventi di pagamento
+4. Configura webhook: `https://your-project.supabase.co/functions/v1/stripe-webhook`
+5. Eventi webhook: `account.updated`
 
-### 6. Avvia il server di sviluppo
+### 7. Avvia il server di sviluppo
 
 ```bash
 npm run dev

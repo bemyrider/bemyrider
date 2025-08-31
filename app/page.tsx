@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-10 w-auto" />
@@ -17,18 +17,15 @@ export default function HomePage() {
             <Link href="/riders">
               <Button variant="ghost">Trova Rider</Button>
             </Link>
-            <Link href="/auth/login">
-              <Button variant="outline">Accedi</Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button>Registrati</Button>
+            <Link href="/dashboard">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Accedi</Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
+      <section className="container mx-auto px-4 pt-32 pb-20 text-center">
         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
           Connetti <span className="text-blue-600">Rider</span> e <span className="text-green-600">Esercenti</span>
         </h1>
@@ -37,13 +34,13 @@ export default function HomePage() {
           per prenotazioni di consegne a tariffa oraria. Semplice, trasparente e conveniente.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/register?role=rider">
+          <Link href="/auth/register">
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
               <Bike className="mr-2 h-5 w-5" />
               Diventa Rider
             </Button>
           </Link>
-          <Link href="/auth/register?role=merchant">
+          <Link href="/auth/register">
             <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
               <Store className="mr-2 h-5 w-5" />
               Registra la tua Attività
@@ -172,13 +169,13 @@ export default function HomePage() {
           Unisciti a bemyrider e scopri un nuovo modo di gestire le consegne
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/register?role=rider">
+          <Link href="/auth/register">
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
               <Bike className="mr-2 h-5 w-5" />
               Inizia come Rider
             </Button>
           </Link>
-          <Link href="/auth/register?role=merchant">
+          <Link href="/auth/register">
             <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
               <Store className="mr-2 h-5 w-5" />
               Registra Attività

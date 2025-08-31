@@ -22,11 +22,11 @@ export function AvailabilityBadge({ status }: AvailabilityBadgeProps) {
   const getVariant = (status: AvailabilityStatus) => {
     switch (status) {
       case AvailabilityStatus.AVAILABLE:
-        return 'available' as const;
+        return 'default' as const;
       case AvailabilityStatus.BUSY:
-        return 'busy' as const;
+        return 'secondary' as const;
       case AvailabilityStatus.OFFLINE:
-        return 'offline' as const;
+        return 'destructive' as const;
       default:
         return 'outline' as const;
     }

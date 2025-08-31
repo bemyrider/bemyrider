@@ -11,33 +11,11 @@ const supabaseAdmin = createClient(
 )
 
 // Stripe richiede il raw body per la verifica della firma
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
-async function buffer(readable: ReadableStream<Uint8Array>) {
-  const reader = readable.getReader();
-  const chunks: Uint8Array[] = [];
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
-    if (value) {
-      chunks.push(value);
-    }
-  }
-
-  // Concatena tutti i chunk in un unico Buffer
-  return Buffer.concat(chunks);
-}
+// In App Router questo è gestito automaticamente con req.text()
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
-  const rawBody = await buffer(req.body as any)
+  const rawBody = await req.text()
 
   let event
   try {

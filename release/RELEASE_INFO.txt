@@ -1,0 +1,29 @@
+BEMYRIDER RELEASE v1.1.0
+========================
+
+Data Release: 2025-08-31 02:32:53
+Commit Hash: 5edc3430df9de15ebb964df24f93d671795df0c0
+Branch: main
+
+File inclusi nella release:
+- README.md (documentazione principale)
+- CHANGELOG.md (storia modifiche)
+- RELEASE_NOTES.md (note di release)
+- LICENSE (licenza)
+- package.json (info package)
+
+Statistiche progetto:
+- Righe di codice TypeScript:   6575 totale
+- Componenti React: 6
+- Pagine Next.js: 9
+- API Routes: 5
+
+Dipendenze principali:
+    "next": "^14.2.30",
+    "react": "^18",
+    "stripe": "^14.10.0",
+
+Status: Release preparata e testata con successo
+Build: ✅ PASSED
+Linting: ✅ PASSED  
+TypeScript: ✅ PASSED

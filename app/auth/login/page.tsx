@@ -40,9 +40,40 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // La logica basata sui ruoli è stata rimossa.
-        // Reindirizza sempre alla dashboard del rider.
-        router.push('/dashboard/rider')
+        // Ottieni il profilo utente per determinare il ruolo
+        console.log('🔍 User logged in, fetching profile to determine role...')
+        
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single()
+
+        if (profileError) {
+          console.error('❌ Error fetching profile:', profileError)
+          setError('Errore nel caricamento del profilo')
+          setLoading(false)
+          return
+        }
+
+        if (profileData) {
+          console.log('👤 User profile found:', profileData.role)
+          
+          // Redirect basato sul ruolo
+          if (profileData.role === 'merchant') {
+            console.log('🏪 Redirecting to merchant dashboard')
+            router.push('/dashboard/merchant')
+          } else if (profileData.role === 'rider') {
+            console.log('🚴‍♂️ Redirecting to rider dashboard')
+            router.push('/dashboard/rider')
+          } else {
+            console.log('❓ Unknown role, redirecting to registration')
+            router.push('/auth/register')
+          }
+        } else {
+          console.log('❌ No profile found, redirecting to registration')
+          router.push('/auth/register')
+        }
       }
     } catch (error) {
       setError('An unexpected error occurred during login.')

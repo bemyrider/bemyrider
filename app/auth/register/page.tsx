@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [role, setRole] = useState<'rider' | 'merchant'>('rider')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -32,15 +33,21 @@ export default function RegisterPage() {
     }
 
     try {
+      console.log('🚀 Starting registration with role:', role)
+      
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
+            role: role,
           },
         },
       })
+
+      console.log('📋 Registration data:', data)
+      console.log('🔍 User metadata after registration:', data.user?.user_metadata)
 
       if (signUpError) {
         throw signUpError
@@ -50,8 +57,17 @@ export default function RegisterPage() {
         title: "Registration successful!",
         description: "You can now log in.",
       })
-      router.push('/dashboard/rider')
+      
+      // Redirect based on role
+      if (role === 'merchant') {
+        console.log('🏦 Redirecting to merchant dashboard')
+        router.push('/dashboard/merchant')
+      } else {
+        console.log('🚴‍♂️ Redirecting to rider dashboard')
+        router.push('/dashboard/rider')
+      }
     } catch (error: any) {
+      console.error('❌ Registration error:', error)
       setError(error.message || 'An unexpected error occurred.')
     } finally {
       setLoading(false)
@@ -100,6 +116,39 @@ export default function RegisterPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="you@example.com"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Scegli il tuo ruolo
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div 
+                    className={`cursor-pointer border-2 rounded-lg p-4 text-center transition-all ${
+                      role === 'rider' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    onClick={() => setRole('rider')}
+                  >
+                    <Bike className="w-8 h-8 mx-auto mb-2" />
+                    <div className="font-medium">Rider</div>
+                    <div className="text-xs text-gray-600">Effettuo consegne</div>
+                  </div>
+                  
+                  <div 
+                    className={`cursor-pointer border-2 rounded-lg p-4 text-center transition-all ${
+                      role === 'merchant' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    onClick={() => setRole('merchant')}
+                  >
+                    <Store className="w-8 h-8 mx-auto mb-2" />
+                    <div className="font-medium">Esercente</div>
+                    <div className="text-xs text-gray-600">Richiedo consegne</div>
+                  </div>
+                </div>
               </div>
 
               <div>

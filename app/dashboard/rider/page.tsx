@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -21,12 +21,13 @@ type RiderProfile = {
   } | null
 }
 
-export default function RiderDashboard() {
+function RiderDashboardContent() {
   const [profile, setProfile] = useState<RiderProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
   const [checkingOnboarding, setCheckingOnboarding] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -85,32 +86,24 @@ export default function RiderDashboard() {
   const fetchProfile = async () => {
     try {
       // Get current user from Supabase
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-      if (!user) {
-        // Se non c'è un utente autenticato, mostra il profilo demo
-        setProfile({
-          id: 'demo-rider',
-          full_name: 'Marco Rossi (Demo)',
-          avatar_url: null,
-          riders_details: {
-            bio: 'Rider esperto con 5 anni di esperienza',
-            hourly_rate: 25,
-            stripe_account_id: 'demo-account',
-            stripe_onboarding_complete: true
-          }
-        })
-        setLoading(false)
+      if (authError || !user) {
+        console.error('🚫 No authenticated user, redirecting to login')
+        router.push('/auth/login')
         return
       }
 
-      // Se l'utente è autenticato, carica il suo profilo reale
+      console.log('🔍 Fetching profile for user:', user.id, 'Email:', user.email)
+      console.log('👤 User metadata:', user.user_metadata)
+
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
           id,
           full_name,
           avatar_url,
+          role,
           riders_details (
             bio,
             hourly_rate,
@@ -122,52 +115,81 @@ export default function RiderDashboard() {
         .single()
 
       if (profileError) {
-        // Se il profilo non esiste, creiamolo
+        // Se il profilo non esiste, creiamolo solo se l'utente dovrebbe essere un rider
         if (profileError.code === 'PGRST116') {
-          const { error: createProfileError } = await supabase
-            .from('profiles')
-            .insert({
-              id: user.id,
-              full_name: user.user_metadata.full_name || 'New Rider',
-              role: 'rider',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
+          console.log('📝 No profile found, checking user metadata...')
+          
+          // Verifica se l'utente dovrebbe essere un rider
+          if (user.user_metadata?.role === 'rider' || !user.user_metadata?.role) {
+            console.log('📝 Creating rider profile for user:', user.id)
+            
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                full_name: user.user_metadata.full_name || 'New Rider',
+                role: 'rider',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
 
-          if (createProfileError) {
-            console.error('Error creating profile:', createProfileError)
-            setError('Errore nella creazione del profilo')
+            if (createProfileError) {
+              console.error('❌ Error creating rider profile:', createProfileError)
+              setError('Errore nella creazione del profilo rider')
+              return
+            }
+
+            // Create rider details
+            const { error: createRiderDetailsError } = await supabase
+              .from('riders_details')
+              .insert({
+                profile_id: user.id,
+                hourly_rate: 15, // Default hourly rate
+                bio: 'New Rider',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+
+            if (createRiderDetailsError) {
+              console.error('❌ Error creating rider details:', createRiderDetailsError)
+              setError('Errore nella creazione dei dettagli del rider')
+              return
+            }
+
+            console.log('✅ Rider profile created successfully')
+            window.location.reload()
+            return
+          } else {
+            console.log('🚫 User metadata does not indicate rider role, redirecting to login')
+            router.push('/auth/login')
             return
           }
-
-          // Create rider details
-          const { error: createRiderDetailsError } = await supabase
-            .from('riders_details')
-            .insert({
-              profile_id: user.id,
-              hourly_rate: 15, // Default hourly rate
-              bio: 'New Rider',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
-
-          if (createRiderDetailsError) {
-            console.error('Error creating rider details:', createRiderDetailsError)
-            setError('Errore nella creazione dei dettagli del rider')
-            return
-          }
-
-          // Ricarica la pagina per mostrare il nuovo profilo
-          window.location.reload()
-          return
         }
 
-        console.error('Error fetching profile:', profileError)
+        console.error('❌ Error fetching profile:', profileError)
         setError('Errore nel caricamento del profilo')
         return
       }
 
       if (profileData) {
+        console.log('📋 Profile found:', profileData)
+
+        // CONTROLLO RIGIDO DEL RUOLO
+        if (profileData.role !== 'rider') {
+          console.log('🚫 ACCESSO NEGATO: User role is:', profileData.role, '- redirecting to appropriate dashboard')
+          
+          if (profileData.role === 'merchant') {
+            console.log('➡️ Redirecting to merchant dashboard')
+            router.push('/dashboard/merchant')
+          } else {
+            console.log('➡️ Unknown role, redirecting to login')
+            router.push('/auth/login')
+          }
+          return
+        }
+
+        console.log('✅ ACCESSO AUTORIZZATO: Rider profile loaded successfully')
+
         const riderDetails = Array.isArray(profileData.riders_details) 
           ? profileData.riders_details[0] 
           : profileData.riders_details
@@ -258,21 +280,28 @@ export default function RiderDashboard() {
   }
 
   const handleLogout = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    
     try {
-      if (user) {
-        await supabase.auth.signOut()
-      }
+      setLoggingOut(true)
+      console.log('🚪 Logging out rider...')
+      await supabase.auth.signOut()
+      console.log('✅ Logout successful, redirecting to home')
       router.push('/')
     } catch (error) {
-      console.error('Error logging out:', error)
+      console.error('❌ Error during logout:', error)
       setError('Errore durante il logout')
+      setLoggingOut(false)
     }
   }
 
   if (loading && !profile) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Caricamento dashboard...</p>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
@@ -299,8 +328,8 @@ export default function RiderDashboard() {
               <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={handleLogout}>
-                Logout
+              <Button variant="outline" onClick={handleLogout} disabled={loggingOut}>
+                {loggingOut ? 'Logout...' : 'Logout'}
               </Button>
             </div>
           </div>
@@ -461,5 +490,20 @@ export default function RiderDashboard() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function RiderDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Caricamento dashboard...</p>
+        </div>
+      </div>
+    }>
+      <RiderDashboardContent />
+    </Suspense>
   )
 }

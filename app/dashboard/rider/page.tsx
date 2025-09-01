@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Bike, Euro, Clock, CheckCircle, AlertCircle, Settings, Calendar, CreditCard, User, AlertTriangle, CircleDollarSign, Zap, BookOpenCheck
+  Bike, Euro, Clock, CheckCircle, AlertCircle, Settings, Calendar, CreditCard, User, AlertTriangle, CircleDollarSign, Zap, BookOpenCheck, Trash2
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import DeleteAccountModal from '@/components/DeleteAccountModal'
+import TopNavBar from '@/components/TopNavBar'
 
 type RiderProfile = {
   id: string
@@ -28,6 +30,7 @@ function RiderDashboardContent() {
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
   const [checkingOnboarding, setCheckingOnboarding] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -319,22 +322,13 @@ function RiderDashboardContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-8 w-auto" />
-              <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={handleLogout} disabled={loggingOut}>
-                {loggingOut ? 'Logout...' : 'Logout'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Top Navigation */}
+      <TopNavBar 
+        userRole="rider"
+        userName={profile?.full_name || 'Rider'}
+        onLogout={handleLogout}
+        onDeleteAccount={() => setShowDeleteModal(true)}
+      />
 
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
@@ -489,6 +483,13 @@ function RiderDashboardContent() {
           </Card>
         </div>
       </div>
+
+      {/* Delete Account Modal */}
+      <DeleteAccountModal 
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        userRole="rider"
+      />
     </div>
   )
 }

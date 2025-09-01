@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bike, Store, Clock, Shield, Euro, Users } from 'lucide-react'
+import { UserNav } from '@/components/UserNav'
 
 export default function HomePage() {
   return (
@@ -13,14 +14,7 @@ export default function HomePage() {
             <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-10 w-auto" />
             <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/riders">
-              <Button variant="ghost">Trova Rider</Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Accedi</Button>
-            </Link>
-          </div>
+          <UserNav />
         </div>
       </nav>
 

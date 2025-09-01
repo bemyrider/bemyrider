@@ -29,11 +29,11 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
       
       // Validate rate
       if (isNaN(rate) || rate <= 0) {
-        throw new Error('Inserisci una tariffa valida maggiore di 0')
+        throw new Error('⚠️ Inserisci una tariffa valida maggiore di €0,01')
       }
 
       if (rate > 12.50) {
-        throw new Error('La tariffa non può superare €12,50/ora per rimanere sotto la soglia di ritenuta d\'acconto (€25,82)')
+        throw new Error('⚠️ La tariffa non può superare €12,50/ora per rispettare i limiti fiscali (soglia €25,82)')
       }
 
       console.log('🔄 Updating rider rate...', { riderId, rate })
@@ -53,7 +53,7 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
       }
 
       console.log('✅ Rate updated successfully')
-      setMessage({ type: 'success', text: `Tariffa aggiornata a €${rate}/ora` })
+      setMessage({ type: 'success', text: `✅ Tariffa aggiornata con successo a €${rate.toFixed(2)}/ora` })
       
       // Close modal after success
       setTimeout(() => {
@@ -105,7 +105,23 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
                   min="0.01"
                   max="12.50"
                   value={hourlyRate}
-                  onChange={(e) => setHourlyRate(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setHourlyRate(value)
+                    
+                    // Clear previous validation message
+                    if (message?.type === 'error') {
+                      setMessage(null)
+                    }
+                    
+                    // Real-time validation with Italian message
+                    if (value && parseFloat(value) > 12.50) {
+                      setMessage({ 
+                        type: 'error', 
+                        text: 'La tariffa non può superare €12,50/ora per rispettare i limiti fiscali' 
+                      })
+                    }
+                  }}
                   placeholder="Es. 12.00"
                   className="pl-10"
                   required

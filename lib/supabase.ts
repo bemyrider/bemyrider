@@ -64,29 +64,7 @@ export interface Database {
           updated_at?: string
         }
       }
-      availability: {
-        Row: {
-          id: string
-          rider_id: string
-          start_time: string
-          end_time: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          rider_id: string
-          start_time: string
-          end_time: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          rider_id?: string
-          start_time?: string
-          end_time?: string
-          created_at?: string
-        }
-      }
+      // availability table removed - replaced by disponibilita_riders
       bookings: {
         Row: {
           id: string

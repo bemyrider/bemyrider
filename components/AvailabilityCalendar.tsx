@@ -14,19 +14,19 @@ interface TimeSlot {
 }
 
 interface DayAvailability {
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+  day: 'Lun' | 'Mar' | 'Mer' | 'Gio' | 'Ven' | 'Sab' | 'Dom'
   isAvailable: boolean
   timeSlots: TimeSlot[]
 }
 
 const DAYS = [
-  { key: 'monday' as const, label: 'Lunedì', short: 'Lun' },
-  { key: 'tuesday' as const, label: 'Martedì', short: 'Mar' },
-  { key: 'wednesday' as const, label: 'Mercoledì', short: 'Mer' },
-  { key: 'thursday' as const, label: 'Giovedì', short: 'Gio' },
-  { key: 'friday' as const, label: 'Venerdì', short: 'Ven' },
-  { key: 'saturday' as const, label: 'Sabato', short: 'Sab' },
-  { key: 'sunday' as const, label: 'Domenica', short: 'Dom' }
+  { key: 'Lun' as const, label: 'Lunedì', short: 'Lun' },
+  { key: 'Mar' as const, label: 'Martedì', short: 'Mar' },
+  { key: 'Mer' as const, label: 'Mercoledì', short: 'Mer' },
+  { key: 'Gio' as const, label: 'Giovedì', short: 'Gio' },
+  { key: 'Ven' as const, label: 'Venerdì', short: 'Ven' },
+  { key: 'Sab' as const, label: 'Sabato', short: 'Sab' },
+  { key: 'Dom' as const, label: 'Domenica', short: 'Dom' }
 ]
 
 interface AvailabilityCalendarProps {

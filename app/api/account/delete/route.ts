@@ -1,11 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { db, profiles, esercenti, riders, ridersDetails, prenotazioni, recensioni, disponibilitaRiders, riderTaxDetails, esercenteTaxDetails } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 
 export async function DELETE(request: NextRequest) {
   try {
     console.log('🗑️ Starting account deletion process...')
+    
+    // Create Supabase server client for API routes with cookie access
+    const cookieStore = cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+        },
+      }
+    )
     
     // Get user from session
     const { data: { user }, error: authError } = await supabase.auth.getUser()

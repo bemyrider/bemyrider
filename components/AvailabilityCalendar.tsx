@@ -66,9 +66,9 @@ export default function AvailabilityCalendar({ riderId, onClose }: AvailabilityC
       // Transform database data to component state
       const availabilityMap = new Map()
       data?.forEach(item => {
-        availabilityMap.set(item.giorno_settimana, {
-          start_time: item.ora_inizio,
-          end_time: item.ora_fine
+        availabilityMap.set(item.day_of_week, {
+          start_time: item.start_time,
+          end_time: item.end_time
         })
       })
 
@@ -153,11 +153,9 @@ export default function AvailabilityCalendar({ riderId, onClose }: AvailabilityC
           for (const slot of day.timeSlots) {
             availabilityData.push({
               rider_id: riderId,
-              giorno_settimana: day.day,
-              ora_inizio: slot.start_time,
-              ora_fine: slot.end_time,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              day_of_week: day.day,
+              start_time: slot.start_time,
+              end_time: slot.end_time
             })
           }
         }

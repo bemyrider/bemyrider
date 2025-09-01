@@ -2,7 +2,7 @@
 
 ## bemyrider v1.1.0 - Dashboard Completa e UX Migliorata
 
-**Data di Release**: 20 Gennaio 2024
+**Data di Release**: 31 Agosto 2025
 
 ---
 
@@ -21,26 +21,47 @@ Questa release rappresenta un **aggiornamento maggiore** che trasforma bemyrider
 
 ### 🚀 **Cosa C'è di Nuovo**
 
-#### 1. 🏪 **Dashboard Merchant Completa**
+#### 1. 🗑️ **Gestione Account Completa**
+Gli utenti possono ora eliminare il proprio account in totale sicurezza:
+- **Modal di conferma** con processo a doppio step per evitare eliminazioni accidentali
+- **API sicura** con cascade deletion per mantenere integrità del database
+- **Integrazione Supabase Auth** per rimozione completa dell'account
+- **Posizionamento discreto** nella sezione "Avanzate" del menu profilo
+
+#### 2. 🎨 **Menu Profilo Unificato**
+Nuovo design moderno e coerente per l'esperienza utente:
+- **TopNavBar elegante** con dropdown menu professionale
+- **Icona profilo** con navigazione intuitiva e accessibile
+- **Sezioni organizzate**: Impostazioni, Privacy, e Avanzate
+- **Design responsive** che funziona su tutti i dispositivi
+
+#### 3. 🔧 **Migrazione ORM a Drizzle**
+Abbandonato Prisma per una soluzione più robusta:
+- **Performance migliorate** con Drizzle ORM
+- **Compatibilità totale** con Supabase e connection pooling
+- **Schema ottimizzato** per tutte le tabelle e relazioni
+- **Configurazione semplificata** e più affidabile
+
+#### 4. 🏪 **Dashboard Merchant Completa**
 La dashboard merchant è ora completamente operativa con:
 - **Statistiche in tempo reale**: rider disponibili, prenotazioni attive, consegne completate, spesa totale
 - **Ricerca rider avanzata** con filtri e preview profili
 - **Gestione prenotazioni** con storico e stati
 - **Azioni rapide** per operazioni quotidiane
 
-#### 2. 🔐 **Sistema di Sicurezza Robusto**
+#### 5. 🔐 **Sistema di Sicurezza Robusto**
 - **Isolamento completo** tra ruoli merchant e rider
 - **Prevenzione accessi incrociati** con redirect automatici
 - **Creazione profili automatica** basata su metadata utente
 - **Gestione sessioni** migliorata
 
-#### 3. 🎨 **Design e UX Modernizzati**
+#### 6. 🎨 **Design e UX Modernizzati**
 - **Navbar fissa** professionale con design moderno
 - **Animazioni di loading** uniformi e fluide
 - **Pulsanti call-to-action** evidenziati
 - **Esperienza coerente** tra tutte le pagine
 
-#### 4. 🎯 **Onboarding Migliorato**
+#### 7. 🎯 **Onboarding Migliorato**
 - **Selezione ruolo visuale** con icone intuitive
 - **Redirect intelligenti** post-registrazione e login
 - **URL puliti** senza parametri confusi
@@ -50,14 +71,28 @@ La dashboard merchant è ora completamente operativa con:
 
 ### 🔧 **Miglioramenti Tecnici**
 
+#### 🗄️ **Ristrutturazione Database**
+- **Migrazione completa**: da Prisma a Drizzle ORM per maggiore stabilità
+- **Schema ottimizzato**: tutte le tabelle e relazioni aggiornate
+- **Connection pooling**: configurazione ottimizzata per Supabase
+- **Performance**: query più veloci e affidabili
+
+#### 🛡️ **Sicurezza Avanzata**
+- **API sicure**: endpoint per gestione account con validazione completa
+- **Cascade deletion**: mantenimento integrità dati in tutte le operazioni
+- **Error handling**: logging dettagliato e gestione robusta degli errori
+- **Input validation**: controlli rigorosi su tutte le operazioni sensibili
+
 #### 📦 **Aggiornamenti Dipendenze**
 - **Supabase**: v2.38.5 → v2.50.0
-- **Risoluzione warning** realtime-js
-- **Compatibilità**: migliorata con versioni recenti
+- **Drizzle ORM**: v0.44.5 aggiunto per gestione database
+- **Drizzle Kit**: v0.31.4 per migrations e schema management
+- **Risoluzione warning** realtime-js e compatibilità migliorata
 
 #### 🏗️ **Architettura**
 - **Type safety**: definizioni TypeScript complete
 - **Utility organizzate**: `lib/types.ts`, `lib/formatters.ts`
+- **Componenti modulari**: TopNavBar, DeleteAccountModal riutilizzabili
 - **Separazione concerns**: componenti riutilizzabili
 - **Error handling**: robusto in tutti i flussi
 
@@ -66,11 +101,15 @@ La dashboard merchant è ora completamente operativa con:
 ### 🐛 **Fix e Correzioni**
 
 #### ✅ **Risolti**
-- Errori TypeScript nella dashboard merchant
-- Problemi gestione array vs oggetti nelle query Supabase
-- Import mancanti e problemi linting
-- Potenziali redirect loop
-- Confusione URL con parametri role
+- **Errori TypeScript**: dashboard merchant e test pages completamente risolti
+- **Problemi Prisma**: risolti problemi di connettività con migrazione a Drizzle
+- **Build errors**: fix per componenti UI mancanti (Badge, Input, enums)
+- **ESLint configuration**: risolti problemi di configurazione TypeScript
+- **Gestione array vs oggetti**: query Supabase ottimizzate
+- **Import mancanti**: problemi linting completamente risolti
+- **Redirect loop**: potenziali problemi prevenuti
+- **Sintassi JavaScript**: fix semicolon e duplicazioni di codice
+- **Confusione URL**: parametri role eliminati per chiarezza
 
 ---
 

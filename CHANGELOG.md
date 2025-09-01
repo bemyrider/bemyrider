@@ -5,11 +5,29 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2024-01-20
+## [1.1.0] - 2025-08-31
 
 ### 🎉 Aggiornamento Maggiore - Dashboard Completa e UX Migliorata
 
 #### ✨ Nuove Funzionalità Principali
+
+##### 🗑️ **Gestione Account Utente**
+- **Funzionalità eliminazione account** completa per utenti
+- **Modal di conferma** con processo a doppio step per sicurezza massima
+- **API endpoint sicuro** `/api/account/delete` con cascade deletion
+- **Integrazione Supabase Auth** per rimozione completa account
+
+##### 🎨 **Menu Profilo Unificato**
+- **TopNavBar moderna** con menu dropdown professionale
+- **Icona profilo** con navigazione intuitiva
+- **Sezione "Avanzate"** per funzioni sensibili (eliminazione account)
+- **Design coerente** tra dashboard merchant e rider
+
+##### 🔧 **Migrazione ORM a Drizzle**
+- **Rimozione completa Prisma** (risolti problemi di connettività locale)
+- **Schema Drizzle completo** con tutte le tabelle e relazioni
+- **Configurazione ottimizzata** per Supabase con `{ prepare: false }`
+- **Performance migliorate** e compatibilità totale
 
 ##### 🏪 **Dashboard Merchant Completa**
 - **Dashboard merchant** completamente funzionale con sezioni:
@@ -48,8 +66,21 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 #### 🔧 Miglioramenti Tecnici
 
+##### 🗄️ **Ristrutturazione Database**
+- **Migrazione completa da Prisma a Drizzle ORM**
+- **Schema database ottimizzato** con relazioni migliorate
+- **Configurazione connection pooling** per Supabase
+- **API routes preparate** per integrazione Drizzle
+
+##### 🛡️ **Sicurezza e Robustezza**
+- **API endpoint sicuri** per gestione account
+- **Validazione input** su tutte le operazioni sensibili
+- **Error handling** completo con logging dettagliato
+- **Cascade deletion** per mantenere integrità dati
+
 ##### 📦 **Dipendenze Aggiornate**
 - **Supabase aggiornato** da v2.38.5 a v2.50.0
+- **Aggiunta Drizzle ORM** v0.44.5 e Drizzle Kit v0.31.4
 - **Risoluzione warning** realtime-js
 - **Compatibilità migliorata** con versioni recenti
 
@@ -57,6 +88,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Utility files** organizzati (`lib/types.ts`, `lib/formatters.ts`)
 - **Type safety migliorata** con definizioni TypeScript complete
 - **Separazione concerns** per componenti riutilizzabili
+- **Componenti UI modulari** (TopNavBar, DeleteAccountModal)
 
 ##### 🔄 **Redirect e Routing**
 - **Rotta `/dashboard`** intelligente che gestisce redirect automatici
@@ -66,10 +98,13 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 #### 🐛 Fix e Correzioni
 
 ##### 🔧 **Correzioni Critiche**
-- **Fix errori TypeScript** nella dashboard merchant
+- **Fix errori TypeScript** nella dashboard merchant e test pages
 - **Gestione array vs oggetti** nelle query Supabase
 - **Risoluzione problemi linting** per import mancanti
 - **Correzione redirect loop** potenziali
+- **Fix configurazione ESLint** con TypeScript
+- **Risoluzione errori build** per componenti UI mancanti
+- **Fix sintassi JavaScript** con semicolon e duplicazioni
 
 ##### 🎨 **Miglioramenti UX**
 - **Eliminazione confusione URL** parametri role

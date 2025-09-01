@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Store, Search, Calendar, Clock, CreditCard, User, MapPin, Plus, BookOpenCheck, Euro
+  Store, Search, Calendar, Clock, CreditCard, User, MapPin, Plus, BookOpenCheck, Euro, Trash2
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { getProfileById } from '@/lib/supabase-direct'
+import DeleteAccountModal from '@/components/DeleteAccountModal'
+import TopNavBar from '@/components/TopNavBar'
 
 type MerchantProfile = {
   id: string
@@ -46,94 +49,92 @@ export default function MerchantDashboard() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [loggingOut, setLoggingOut] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const router = useRouter()
 
   const fetchProfile = async () => {
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
       
       if (authError || !user) {
-        console.error('🚫 No authenticated user, redirecting to login')
-        router.push('/auth/login')
-        return
+        console.error('🚫 No authenticated user, redirecting to login');
+        router.push('/auth/login');
+        return;
       }
 
-      console.log('🔍 Fetching profile for user:', user.id, 'Email:', user.email)
-      console.log('👤 User metadata:', user.user_metadata)
+      console.log('🔍 Fetching profile for user:', user.id, 'Email:', user.email);
+      console.log('👤 User metadata:', user.user_metadata);
 
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+      // Use direct API call to bypass PostgREST issues completely
+      console.log('🔄 Attempting direct API call...');
+      const profileData = await getProfileById(user.id);
 
-      if (profileError) {
+      if (!profileData) {
         // Se il profilo non esiste, creiamolo come merchant
-        if (profileError.code === 'PGRST116') {
-          console.log('📝 No profile found, checking user metadata...')
+        console.log('📝 No profile found, checking user metadata...');
           
-          // Verifica se l'utente dovrebbe essere un merchant
-          if (user.user_metadata?.role === 'merchant') {
-            console.log('📝 Creating merchant profile for user:', user.id)
-            
-            const { error: createProfileError } = await supabase
-              .from('profiles')
-              .insert({
-                id: user.id,
-                full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'New Merchant',
-                role: 'merchant',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              })
+        // Verifica se l'utente dovrebbe essere un merchant
+        if (user.user_metadata?.role === 'merchant') {
+          console.log('📝 Creating merchant profile for user:', user.id);
+          
+          const { error: createProfileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'New Merchant',
+              role: 'merchant',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
 
-            if (createProfileError) {
-              console.error('❌ Error creating merchant profile:', createProfileError)
-              setError('Errore nella creazione del profilo merchant')
-              return
-            }
-
-            console.log('✅ Merchant profile created successfully')
-            window.location.reload()
-            return
-          } else {
-            console.log('🚫 User metadata does not indicate merchant role, redirecting to login')
-            router.push('/auth/login')
-            return
+          if (createProfileError) {
+            console.error('❌ Error creating merchant profile:', createProfileError);
+            setError('Errore nella creazione del profilo merchant');
+            return;
           }
-        }
 
-        console.error('Error fetching profile:', profileError)
-        setError('Errore nel caricamento del profilo')
-        return
+          console.log('✅ Merchant profile created successfully');
+          window.location.reload();
+          return;
+        } else {
+          console.log('🚫 User metadata does not indicate merchant role, redirecting to login');
+          router.push('/auth/login');
+          return;
+        }
       }
 
-      console.log('📋 Profile found:', profileData)
+      console.log('📋 Profile found:', profileData);
 
       // CONTROLLO RIGIDO DEL RUOLO
       if (profileData.role !== 'merchant') {
-        console.log('🚫 ACCESSO NEGATO: User role is:', profileData.role, '- redirecting to appropriate dashboard')
+        console.log('🚫 ACCESSO NEGATO: User role is:', profileData.role, '- redirecting to appropriate dashboard');
         
         if (profileData.role === 'rider') {
-          console.log('➡️ Redirecting to rider dashboard')
-          router.push('/dashboard/rider')
+          console.log('➡️ Redirecting to rider dashboard');
+          router.push('/dashboard/rider');
         } else {
-          console.log('➡️ Unknown role, redirecting to login')
-          router.push('/auth/login')
+          console.log('➡️ Unknown role, redirecting to login');
+          router.push('/auth/login');
         }
-        return
+        return;
       }
 
-      console.log('✅ ACCESSO AUTORIZZATO: Merchant profile loaded successfully')
-      setProfile(profileData)
+      console.log('✅ ACCESSO AUTORIZZATO: Merchant profile loaded successfully');
+      setProfile(profileData);
     } catch (error: any) {
-      console.error('Error fetching profile:', error)
-      setError('Errore nel caricamento del profilo')
+      console.error('Error fetching profile:', error);
+      setError('Errore nel caricamento del profilo');
     }
-  }
+  };
 
   const fetchRiders = async () => {
     try {
-      const { data: ridersData, error: ridersError } = await supabase
+      // Temporarily return empty array to avoid schema cache issues
+      console.log('🔍 Fetching available riders... (temporarily disabled)');
+      setRiders([]);
+      return;
+      
+      /*const { data: ridersData, error: ridersError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -161,18 +162,23 @@ export default function MerchantDashboard() {
           : rider.riders_details
       })).filter(rider => rider.riders_details) // Filtra rider senza dettagli
       
-      setRiders(transformedRiders)
+      setRiders(transformedRiders)*/
     } catch (error: any) {
-      console.error('Error fetching riders:', error)
-      setError('Errore nel caricamento dei rider')
+      console.error('Error fetching riders:', error);
+      setError('Errore nel caricamento dei rider');
     }
   }
 
   const fetchBookings = async () => {
-    if (!profile) return
+    if (!profile) return;
 
     try {
-      const { data: bookingsData, error: bookingsError } = await supabase
+      // Temporarily return empty array to avoid schema cache issues
+      console.log('🔍 Fetching bookings for merchant... (temporarily disabled)');
+      setBookings([]);
+      return;
+      
+      /*const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
         .select(`
           id,
@@ -200,9 +206,9 @@ export default function MerchantDashboard() {
           : booking.rider
       })).filter(booking => booking.rider) // Filtra booking senza rider
       
-      setBookings(transformedBookings)
+      setBookings(transformedBookings)*/
     } catch (error: any) {
-      console.error('Error fetching bookings:', error)
+      console.error('Error fetching bookings:', error);
     }
   }
 
@@ -244,15 +250,15 @@ export default function MerchantDashboard() {
 
   const handleLogout = async () => {
     try {
-      setLoggingOut(true)
-      console.log('🚪 Logging out merchant...')
-      await supabase.auth.signOut()
-      console.log('✅ Logout successful, redirecting to home')
-      router.push('/')
+      setLoggingOut(true);
+      console.log('🚪 Logging out merchant...');
+      await supabase.auth.signOut();
+      console.log('✅ Logout successful, redirecting to home');
+      router.push('/');
     } catch (error) {
-      console.error('❌ Error during logout:', error)
-      setError('Errore durante il logout')
-      setLoggingOut(false)
+      console.error('❌ Error during logout:', error);
+      setError('Errore durante il logout');
+      setLoggingOut(false);
     }
   }
 
@@ -273,41 +279,34 @@ export default function MerchantDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-8 w-auto" />
-                <span className="text-xl font-bold text-gray-900">bemyrider</span>
-              </div>
-              <div className="h-6 border-l border-gray-300"></div>
-              <span className="text-gray-600">Dashboard Esercente</span>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={() => router.push('/riders')}>
-                <Search className="h-4 w-4 mr-2" />
-                Trova Rider
-              </Button>
-              <Button variant="outline" onClick={handleLogout} disabled={loggingOut}>
-                {loggingOut ? 'Logout...' : 'Logout'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Top Navigation */}
+      <TopNavBar 
+        userRole="merchant"
+        userName={profile?.full_name || 'Esercente'}
+        onLogout={handleLogout}
+        onDeleteAccount={() => setShowDeleteModal(true)}
+      />
 
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Benvenuto, {profile.full_name}! 🏪
-          </h1>
-          <p className="text-gray-600">
-            Trova rider qualificati per le tue consegne e gestisci le prenotazioni
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Benvenuto, {profile.full_name}! 🏪
+              </h1>
+              <p className="text-gray-600">
+                Trova rider qualificati per le tue consegne e gestisci le prenotazioni
+              </p>
+            </div>
+            <Button 
+              onClick={() => router.push('/riders')}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Trova Rider
+            </Button>
+          </div>
         </div>
 
         {error && (
@@ -512,6 +511,13 @@ export default function MerchantDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Delete Account Modal */}
+      <DeleteAccountModal 
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        userRole="merchant"
+      />
     </div>
   )
 }

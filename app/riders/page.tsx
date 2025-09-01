@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bike, Clock, Euro, Search, Filter } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { UserNav } from '@/components/UserNav'
 
 interface Rider {
   id: string
@@ -128,12 +129,7 @@ export default function RidersPage() {
               <Link href="/">
                 <Button variant="ghost">Home</Button>
               </Link>
-              <Link href="/auth/login">
-                <Button variant="outline">Accedi</Button>
-              </Link>
-              <Link href="/auth/register">
-                <Button>Registrati</Button>
-              </Link>
+              <UserNav />
             </div>
           </div>
         </div>

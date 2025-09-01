@@ -2,7 +2,7 @@
 
 ## bemyrider v1.1.0 - Dashboard Completa e UX Migliorata
 
-**Data di Release**: 31 Agosto 2025
+**Data di Release**: 1 Settembre 2025
 
 ---
 

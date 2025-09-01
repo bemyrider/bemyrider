@@ -10,6 +10,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
 import TopNavBar from '@/components/TopNavBar'
+import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 
 type RiderProfile = {
   id: string
@@ -25,6 +26,7 @@ type RiderProfile = {
 
 function RiderDashboardContent() {
   const [profile, setProfile] = useState<RiderProfile | null>(null)
+  const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
@@ -424,7 +426,13 @@ function RiderDashboardContent() {
               </div>
             </CardHeader>
             <CardContent className="text-center">
-              <Button variant="outline" disabled={!riderDetails?.stripe_onboarding_complete}>Gestisci Calendario</Button>
+              <Button 
+                variant="outline" 
+                disabled={!riderDetails?.stripe_onboarding_complete}
+                onClick={() => setShowAvailabilityCalendar(true)}
+              >
+                Gestisci Calendario
+              </Button>
               {!riderDetails?.stripe_onboarding_complete && (
                 <p className="text-xs text-orange-500 mt-2">Completa l'onboarding Stripe per abilitare questa funzione</p>
               )}
@@ -485,11 +493,19 @@ function RiderDashboardContent() {
       </div>
 
       {/* Delete Account Modal */}
-      <DeleteAccountModal 
+            <DeleteAccountModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         userRole="rider"
       />
+
+      {/* Availability Calendar Modal */}
+      {showAvailabilityCalendar && profile && (
+        <AvailabilityCalendar
+          riderId={profile.id}
+          onClose={() => setShowAvailabilityCalendar(false)}
+        />
+      )}
     </div>
   )
 }

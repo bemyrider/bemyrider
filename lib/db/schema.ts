@@ -28,18 +28,13 @@ export const esercenti = pgTable('esercenti', {
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
 });
 
-// Riders table
-export const riders = pgTable('riders', {
-  id: uuid('id').primaryKey(),
-  firstName: varchar('first_name', { length: 100 }).notNull(),
-  lastName: varchar('last_name', { length: 100 }).notNull(),
-  vehicleType: vehicleTypeEnum('vehicle_type').notNull(),
-  profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
-});
-
-// Rider Details table
+// Rider Details table (consolidata con ex-tabella riders)
 export const ridersDetails = pgTable('riders_details', {
   profileId: uuid('profile_id').primaryKey(),
+  firstName: varchar('first_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),
+  vehicleType: vehicleTypeEnum('vehicle_type'),
+  profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
   hourlyRate: decimal('hourly_rate', { precision: 10, scale: 2 }).notNull(),
   avgRating: decimal('avg_rating', { precision: 3, scale: 2 }).default('0.00').notNull(),
@@ -49,20 +44,20 @@ export const ridersDetails = pgTable('riders_details', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Disponibilita Riders table
+// Disponibilita Riders table (ora punta a profiles)
 export const disponibilitaRiders = pgTable('disponibilita_riders', {
   id: uuid('id').primaryKey().defaultRandom(),
-  riderId: uuid('rider_id').notNull(),
+  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
   dayOfWeek: dayOfWeekEnum('day_of_week').notNull(),
   startTime: time('start_time').notNull(),
   endTime: time('end_time').notNull(),
 });
 
-// Prenotazioni table
+// Prenotazioni table (ora rider_id punta a profiles)
 export const prenotazioni = pgTable('prenotazioni', {
   id: uuid('id').primaryKey().defaultRandom(),
   esercenteId: uuid('esercente_id').notNull(),
-  riderId: uuid('rider_id').notNull(),
+  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
   startTime: timestamp('start_time', { withTimezone: true }).notNull(),
   endTime: timestamp('end_time', { withTimezone: true }).notNull(),
   serviceDurationHours: decimal('service_duration_hours', { precision: 5, scale: 2 }).notNull(),
@@ -74,12 +69,12 @@ export const prenotazioni = pgTable('prenotazioni', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Recensioni table
+// Recensioni table (ora rider_id punta a profiles)
 export const recensioni = pgTable('recensioni', {
   id: uuid('id').primaryKey().defaultRandom(),
   prenotazioneId: uuid('prenotazione_id').notNull().unique(),
   esercenteId: uuid('esercente_id').notNull(),
-  riderId: uuid('rider_id').notNull(),
+  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
   rating: integer('rating').notNull(),
   comment: text('comment'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -113,19 +108,19 @@ export const occasionalPerformanceReceipts = pgTable('occasional_performance_rec
 });
 
 // Relations
-export const profilesRelations = relations(profiles, ({ one }) => ({
+export const profilesRelations = relations(profiles, ({ one, many }) => ({
   esercente: one(esercenti, {
     fields: [profiles.id],
     references: [esercenti.id],
-  }),
-  rider: one(riders, {
-    fields: [profiles.id],
-    references: [riders.id],
   }),
   riderDetail: one(ridersDetails, {
     fields: [profiles.id],
     references: [ridersDetails.profileId],
   }),
+  // Direct relations dopo eliminazione tabella riders
+  disponibilita: many(disponibilitaRiders),
+  prenotazioni: many(prenotazioni),
+  recensioni: many(recensioni),
 }));
 
 export const esercentiRelations = relations(esercenti, ({ one, many }) => ({
@@ -141,19 +136,7 @@ export const esercentiRelations = relations(esercenti, ({ one, many }) => ({
   recensioni: many(recensioni),
 }));
 
-export const ridersRelations = relations(riders, ({ one, many }) => ({
-  profile: one(profiles, {
-    fields: [riders.id],
-    references: [profiles.id],
-  }),
-  disponibilita: many(disponibilitaRiders),
-  taxDetails: one(riderTaxDetails, {
-    fields: [riders.id],
-    references: [riderTaxDetails.riderId],
-  }),
-  prenotazioni: many(prenotazioni),
-  recensioni: many(recensioni),
-}));
+// Relazioni riders rimosse - ora tutto punta direttamente a profiles
 
 export const ridersDetailsRelations = relations(ridersDetails, ({ one }) => ({
   profile: one(profiles, {
@@ -163,9 +146,9 @@ export const ridersDetailsRelations = relations(ridersDetails, ({ one }) => ({
 }));
 
 export const disponibilitaRidersRelations = relations(disponibilitaRiders, ({ one }) => ({
-  rider: one(riders, {
+  profile: one(profiles, {
     fields: [disponibilitaRiders.riderId],
-    references: [riders.id],
+    references: [profiles.id],
   }),
 }));
 
@@ -174,9 +157,9 @@ export const prenotazioniRelations = relations(prenotazioni, ({ one }) => ({
     fields: [prenotazioni.esercenteId],
     references: [esercenti.id],
   }),
-  rider: one(riders, {
+  riderProfile: one(profiles, {
     fields: [prenotazioni.riderId],
-    references: [riders.id],
+    references: [profiles.id],
   }),
   recensione: one(recensioni, {
     fields: [prenotazioni.id],
@@ -197,16 +180,16 @@ export const recensioniRelations = relations(recensioni, ({ one }) => ({
     fields: [recensioni.esercenteId],
     references: [esercenti.id],
   }),
-  rider: one(riders, {
+  riderProfile: one(profiles, {
     fields: [recensioni.riderId],
-    references: [riders.id],
+    references: [profiles.id],
   }),
 }));
 
 export const riderTaxDetailsRelations = relations(riderTaxDetails, ({ one }) => ({
-  rider: one(riders, {
+  profile: one(profiles, {
     fields: [riderTaxDetails.riderId],
-    references: [riders.id],
+    references: [profiles.id],
   }),
 }));
 

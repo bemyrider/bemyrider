@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { db, profiles, esercenti, riders, ridersDetails, prenotazioni, recensioni, disponibilitaRiders, riderTaxDetails, esercenteTaxDetails } from '@/lib/db'
+import { db, profiles, esercenti, ridersDetails, prenotazioni, recensioni, disponibilitaRiders, riderTaxDetails, esercenteTaxDetails } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 
 export async function DELETE(request: NextRequest) {
@@ -75,7 +75,7 @@ export async function DELETE(request: NextRequest) {
         await db.delete(disponibilitaRiders).where(eq(disponibilitaRiders.riderId, userId))
         
         // Delete rider profile
-        await db.delete(riders).where(eq(riders.id, userId))
+        // Tabella riders eliminata - dati ora in riders_details
       }
 
       // Delete shared data (with foreign key constraints)

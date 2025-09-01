@@ -5,19 +5,24 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Bike, Euro, Clock, CheckCircle, AlertCircle, Settings, Calendar, CreditCard, User, AlertTriangle, CircleDollarSign, Zap, BookOpenCheck, Trash2
+  Bike, Euro, Clock, CheckCircle, AlertCircle, Settings, Calendar, CreditCard, User, AlertTriangle, CircleDollarSign, Zap, BookOpenCheck, Trash2, FileText
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
 import TopNavBar from '@/components/TopNavBar'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import UpdateRateModal from '@/components/UpdateRateModal'
+import FiscalDataModal from '@/components/FiscalDataModal'
 
 type RiderProfile = {
   id: string
   full_name: string | null
   avatar_url: string | null
   riders_details: {
+    first_name: string | null
+    last_name: string | null
+    vehicle_type: string | null
+    profile_picture_url: string | null
     bio: string | null
     hourly_rate: number | null
     stripe_account_id: string | null
@@ -29,6 +34,7 @@ function RiderDashboardContent() {
   const [profile, setProfile] = useState<RiderProfile | null>(null)
   const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false)
   const [showUpdateRateModal, setShowUpdateRateModal] = useState(false)
+  const [showFiscalDataModal, setShowFiscalDataModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
@@ -112,6 +118,10 @@ function RiderDashboardContent() {
           avatar_url,
           role,
           riders_details (
+            first_name,
+            last_name,
+            vehicle_type,
+            profile_picture_url,
             bio,
             hourly_rate,
             stripe_account_id,
@@ -360,7 +370,12 @@ function RiderDashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p><strong>Nome:</strong> {profile.full_name}</p>
+              <p><strong>Nome:</strong> {
+                riderDetails?.first_name && riderDetails?.last_name 
+                  ? `${riderDetails.first_name} ${riderDetails.last_name}`
+                  : profile.full_name || 'Non impostato'
+              }</p>
+              <p><strong>Tipo Veicolo:</strong> {riderDetails?.vehicle_type || 'Non specificato'}</p>
               <p><strong>Tariffa Oraria:</strong> € {riderDetails?.hourly_rate || 0}/h</p>
               <p><strong>Bio:</strong> {riderDetails?.bio || 'Nessuna descrizione aggiunta'}</p>
               <Button variant="outline" className="mt-4 w-full">Modifica Profilo</Button>
@@ -394,7 +409,7 @@ function RiderDashboardContent() {
                     <AlertTriangle className="inline h-5 w-5 mr-1" />
                     Account Stripe Richiesto
                   </p>
-                  <p className="text-sm text-gray-500 mb-4">Completa l'onboarding Stripe per ricevere pagamenti</p>
+                  <p className="text-sm text-gray-500 mb-4">Completa l&apos;onboarding Stripe per ricevere pagamenti</p>
                   <Button 
                     onClick={handleStripeOnboarding}
                     disabled={loading}
@@ -436,7 +451,7 @@ function RiderDashboardContent() {
                 Gestisci Calendario
               </Button>
               {!riderDetails?.stripe_onboarding_complete && (
-                <p className="text-xs text-orange-500 mt-2">Completa l'onboarding Stripe per abilitare questa funzione</p>
+                <p className="text-xs text-orange-500 mt-2">Completa l&apos;onboarding Stripe per abilitare questa funzione</p>
               )}
             </CardContent>
           </Card>
@@ -453,7 +468,7 @@ function RiderDashboardContent() {
               <p className="text-sm text-gray-500 mb-4">Prenotazioni Attive</p>
               <Button variant="outline" disabled={!riderDetails?.stripe_onboarding_complete}>Visualizza Tutte</Button>
                {!riderDetails?.stripe_onboarding_complete && (
-                <p className="text-xs text-orange-500 mt-2">Completa l'onboarding Stripe per abilitare questa funzione</p>
+                <p className="text-xs text-orange-500 mt-2">Completa l&apos;onboarding Stripe per abilitare questa funzione</p>
               )}
             </CardContent>
           </Card>
@@ -470,7 +485,7 @@ function RiderDashboardContent() {
               <p className="text-sm text-gray-500 mb-4">Questo mese</p>
               <Button variant="outline" disabled={!riderDetails?.stripe_onboarding_complete}>Visualizza Storico</Button>
                {!riderDetails?.stripe_onboarding_complete && (
-                <p className="text-xs text-orange-500 mt-2">Completa l'onboarding Stripe per abilitare questa funzione</p>
+                <p className="text-xs text-orange-500 mt-2">Completa l&apos;onboarding Stripe per abilitare questa funzione</p>
               )}
             </CardContent>
           </Card>
@@ -491,10 +506,17 @@ function RiderDashboardContent() {
               >
                 <Euro className="mr-2 h-4 w-4"/> Aggiorna Tariffa
               </Button>
-               <Button variant="outline" className="w-full justify-start" disabled={!riderDetails?.stripe_onboarding_complete}><Settings className="mr-2 h-4 w-4"/> Impostazioni</Button>
+               <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                disabled={!riderDetails?.stripe_onboarding_complete}
+                onClick={() => setShowFiscalDataModal(true)}
+              >
+                <FileText className="mr-2 h-4 w-4"/> Dati Fiscali
+              </Button>
                <Button variant="outline" className="w-full justify-start" disabled={!riderDetails?.stripe_onboarding_complete}><Clock className="mr-2 h-4 w-4"/> Cronologia</Button>
                {!riderDetails?.stripe_onboarding_complete && (
-                <p className="text-xs text-orange-500 mt-2 text-center">Completa l'onboarding Stripe per abilitare questa funzione</p>
+                <p className="text-xs text-orange-500 mt-2 text-center">Completa l&apos;onboarding Stripe per abilitare questa funzione</p>
               )}
             </CardContent>
           </Card>
@@ -522,6 +544,15 @@ function RiderDashboardContent() {
           riderId={profile.id}
           currentRate={profile.riders_details?.hourly_rate || null}
           onClose={() => setShowUpdateRateModal(false)}
+        />
+      )}
+
+      {/* Fiscal Data Modal */}
+      {showFiscalDataModal && profile && (
+        <FiscalDataModal
+          isOpen={showFiscalDataModal}
+          riderId={profile.id}
+          onClose={() => setShowFiscalDataModal(false)}
         />
       )}
     </div>

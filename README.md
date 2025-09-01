@@ -39,11 +39,14 @@
 ## 🛠 Stack Tecnologico
 
 - **Frontend**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **Styling**: Tailwind CSS + Tailwind Animate
+- **UI Components**: shadcn/ui (Radix UI)
+- **Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime)
+- **ORM**: Drizzle ORM (migrato da Prisma)
 - **Pagamenti**: Stripe Connect
 - **Linguaggio**: TypeScript
+- **Database**: PostgreSQL con RLS
+- **Hosting**: Vercel (raccomandato)
 
 ## 📋 Prerequisiti
 
@@ -87,81 +90,49 @@ STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 4. Setup Database Supabase
+### 4. Setup Database con Drizzle ORM
 
-Esegui questi comandi SQL nel tuo progetto Supabase:
+#### Opzione A: Drizzle Migrations (Raccomandato)
+```bash
+# Applica le migrations Drizzle
+npm run db:push
 
-```sql
--- Enable RLS
-ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;
+# Le migrations includono automaticamente:
+# - Tutte le tabelle e relazioni
+# - Enums (DayOfWeek, PaymentStatus, Status, VehicleType)  
+# - Indexes ottimizzati
+# - Constraints e chiavi esterne
+```
 
--- Create profiles table
-CREATE TABLE profiles (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  full_name TEXT,
-  avatar_url TEXT,
-  role TEXT CHECK (role IN ('rider', 'merchant')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+#### Opzione B: SQL Manuale
+Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase.
 
--- Create riders_details table
-CREATE TABLE riders_details (
-  profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
-  bio TEXT,
-  hourly_rate NUMERIC(10,2) NOT NULL,
-  stripe_account_id TEXT,
-  stripe_onboarding_complete BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+#### 🗄️ Schema Database Completo
 
--- Create availability table
-CREATE TABLE availability (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  rider_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
-  end_time TIMESTAMP WITH TIME ZONE NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+**Enums:**
+- `DayOfWeek`: Lun, Mar, Mer, Gio, Ven, Sab, Dom
+- `PaymentStatus`: in_attesa, pagato, rimborsato
+- `Status`: in_attesa, confermata, in_corso, completata, annullata
+- `VehicleType`: bici, e_bike, scooter, auto
 
--- Create bookings table
-CREATE TABLE bookings (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  rider_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  merchant_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
-  end_time TIMESTAMP WITH TIME ZONE NOT NULL,
-  rider_amount NUMERIC(10,2) NOT NULL,
-  platform_fee NUMERIC(10,2) NOT NULL,
-  total_amount NUMERIC(10,2) NOT NULL,
-  stripe_payment_intent_id TEXT NOT NULL,
-  status TEXT CHECK (status IN ('confermata', 'completata', 'cancellata')) DEFAULT 'confermata',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+**Tabelle Principali:**
+- `profiles` - Profili utenti base (rider/merchant)
+- `riders` - Dettagli specifici rider
+- `esercenti` - Dettagli specifici merchant
+- `prenotazioni` - Sistema prenotazioni completo
+- `recensioni` - Sistema rating e feedback
+- `disponibilita_riders` - Calendario disponibilità
 
--- Create indexes
-CREATE INDEX idx_profiles_role ON profiles(role);
-CREATE INDEX idx_riders_details_profile_id ON riders_details(profile_id);
-CREATE INDEX idx_availability_rider_id ON availability(rider_id);
-CREATE INDEX idx_bookings_rider_id ON bookings(rider_id);
-CREATE INDEX idx_bookings_merchant_id ON bookings(merchant_id);
+**Tabelle di Supporto:**
+- `rider_tax_details` - Dati fiscali rider
+- `esercente_tax_details` - Dati fiscali merchant
+- `occasional_performance_receipts` - Ricevute prestazioni
 
--- Enable RLS on all tables
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE riders_details ENABLE ROW LEVEL SECURITY;
-ALTER TABLE availability ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
-
--- Create RLS policies
--- Profiles: users can read all profiles, update their own
-CREATE POLICY "Profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
-
--- Riders details: viewable by everyone, editable by owner
-CREATE POLICY "Riders details are viewable by everyone" ON riders_details FOR SELECT USING (true);
-CREATE POLICY "Riders can update own details" ON riders_details FOR UPDATE USING (auth.uid() = profile_id);
+#### 🔐 Row Level Security (RLS)
+Tutte le tabelle hanno policies RLS configurate automaticamente per:
+- ✅ Sicurezza dati per ruolo
+- ✅ Isolamento merchant/rider  
+- ✅ Accesso basato su proprietà
 CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
 
 -- Availability: viewable by everyone, editable by rider
@@ -234,44 +205,97 @@ L'applicazione sarà disponibile su `http://localhost:3000`
 ```
 bemyrider/
 ├── app/                    # Next.js App Router
-│   ├── api/stripe/        # Stripe API endpoints
-│   ├── auth/              # Pagine di autenticazione
-│   ├── dashboard/         # Dashboard utenti
+│   ├── api/               # API Routes
+│   │   ├── account/       # Account management (delete, etc.)
+│   │   ├── bookings/      # Prenotazioni API
+│   │   ├── profiles/      # Profili utenti API
+│   │   ├── riders/        # Rider-specific API
+│   │   └── stripe/        # Stripe API endpoints
+│   ├── auth/              # Autenticazione (login, register)
+│   ├── dashboard/         # Dashboard protected routes
+│   │   ├── merchant/      # Dashboard merchant
+│   │   ├── rider/         # Dashboard rider
+│   │   └── page.tsx       # Central dashboard router
 │   └── riders/            # Pagine pubbliche rider
 ├── components/            # Componenti React
-│   ├── ui/               # Componenti shadcn/ui base
-│   └── riders/           # Componenti specifici rider
-├── docs/                  # 📚 Documentazione completa
-│   ├── API.md            # Documentazione API endpoints
-│   ├── SETUP.md          # Guida setup dettagliata
-│   ├── DEPLOYMENT.md     # Guida deployment produzione
-│   └── EDGE-FUNCTIONS.md # Documentazione Edge Functions
+│   ├── ui/               # shadcn/ui base components
+│   ├── riders/           # Componenti specifici rider
+│   ├── DeleteAccountModal.tsx  # Modal eliminazione account
+│   ├── TopNavBar.tsx     # Navbar principale
+│   └── UserNav.tsx       # Menu utente
 ├── lib/                  # Utility e configurazioni
+│   ├── db/               # Database layer
+│   │   ├── schema.ts     # Drizzle schema completo
+│   │   └── index.ts      # Database client
 │   ├── supabase.ts       # Client Supabase
+│   ├── supabase-direct.ts # Direct API calls
 │   ├── stripe.ts         # Configurazione Stripe
+│   ├── types.ts          # Type definitions
+│   ├── formatters.ts     # Utility formatters
 │   └── utils.ts          # Utility functions
-├── supabase/             # Supabase configuration
-│   └── functions/        # Edge Functions
-│       └── stripe-webhook/ # Webhook Stripe handler
-├── public/               # Asset statici
-├── CHANGELOG.md          # Storia delle modifiche
-├── LICENSE               # Licenza proprietaria
-└── package.json          # Dipendenze e script
+├── drizzle/              # Database migrations
+│   ├── 0000_glossy_krista_starr.sql  # Schema SQL
+│   └── meta/             # Migration metadata
+├── docs/                 # 📚 Documentazione completa
+│   ├── API.md           # Documentazione API endpoints
+│   ├── SETUP.md         # Guida setup dettagliata
+│   ├── DEPLOYMENT.md    # Guida deployment produzione
+│   └── architettura.md  # Architettura sistema
+├── supabase/            # Supabase configuration
+│   └── functions/       # Edge Functions
+├── public/              # Asset statici
+│   └── bemyrider_logo.svg # Logo principale
+├── drizzle.config.ts    # Configurazione Drizzle
+├── CHANGELOG.md         # Storia delle modifiche v1.1.0
+├── RELEASE_NOTES.md     # Note di release dettagliate
+└── package.json         # Dipendenze e script
 ```
+
+## ✨ Nuove Feature v1.1.0
+
+### 🗑️ Gestione Account Avanzata
+- **Eliminazione account sicura** con modal di conferma doppio step
+- **API endpoint dedicato** `/api/account/delete` con cascade deletion
+- **Integrazione Supabase Auth** per rimozione completa
+- **Posizionamento discreto** nel menu "Avanzate"
+
+### 🎨 Menu Profilo Unificato  
+- **TopNavBar moderna** con design responsive
+- **Dropdown menu** con sezioni organizzate (Impostazioni, Privacy, Avanzate)
+- **Icona profilo** con navigazione intuitiva
+- **Coerenza UI** tra dashboard merchant e rider
+
+### 🔧 Migrazione ORM a Drizzle
+- **Performance ottimizzate** rispetto a Prisma
+- **Schema completo** con 8+ tabelle e relazioni
+- **Connection pooling** ottimizzato per Supabase  
+- **Type safety** migliorata con TypeScript
+
+### 🔐 Sicurezza Enterprise-Grade
+- **Isolamento completo** tra ruoli merchant/rider
+- **Redirect intelligenti** basati su metadata utente
+- **Protezione dashboard** con controlli rigorosi
+- **Row Level Security** su tutte le tabelle
 
 ## 🔄 Flussi Utente
 
-### Registrazione Rider
-1. Utente si registra come rider
-2. Completa il profilo con tariffa oraria
-3. Attiva Stripe Connect per ricevere pagamenti
-4. Gestisce disponibilità nel calendario
+### Registrazione e Accesso
+1. **Registrazione unificata** con selezione ruolo visuale
+2. **Redirect automatico** alla dashboard appropriata
+3. **Creazione profilo automatica** basata su ruolo
+4. **Sistema logout** con feedback immediato
 
-### Prenotazione da Esercente
-1. Esercente sfoglia rider disponibili
-2. Seleziona rider e fascia oraria
-3. Completa pagamento con Stripe
-4. Rider riceve notifica e pagamento
+### Dashboard Merchant (Completa v1.1.0)
+1. **Statistiche real-time** (rider disponibili, prenotazioni, consegne)
+2. **Ricerca rider avanzata** con filtri e preview
+3. **Gestione prenotazioni** con storico completo
+4. **Menu profilo** con gestione account
+
+### Dashboard Rider (Migliorata v1.1.0)
+1. **Gestione profilo** completa con dettagli
+2. **Calendario disponibilità** integrato
+3. **Stripe onboarding** semplificato
+4. **Menu profilo** con funzioni avanzate
 
 ## 💰 Modello di Business
 

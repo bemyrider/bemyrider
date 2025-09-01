@@ -28,16 +28,13 @@ export const esercenti = pgTable('esercenti', {
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
 });
 
-// Rider Details table (consolidata con ex-tabella riders)
+// Rider Details table (senza first_name e last_name - ora in rider_tax_details)
 export const ridersDetails = pgTable('riders_details', {
   profileId: uuid('profile_id').primaryKey(),
-  firstName: varchar('first_name', { length: 100 }),
-  lastName: varchar('last_name', { length: 100 }),
   vehicleType: vehicleTypeEnum('vehicle_type'),
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
   hourlyRate: decimal('hourly_rate', { precision: 10, scale: 2 }).notNull(),
-  avgRating: decimal('avg_rating', { precision: 3, scale: 2 }).default('0.00').notNull(),
   stripeAccountId: text('stripe_account_id'),
   stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -80,9 +77,11 @@ export const recensioni = pgTable('recensioni', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Rider Tax Details table
+// Rider Tax Details table (ora include first_name e last_name)
 export const riderTaxDetails = pgTable('rider_tax_details', {
   riderId: uuid('rider_id').primaryKey(),
+  firstName: varchar('first_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),
   fiscalCode: varchar('fiscal_code', { length: 50 }),
   birthPlace: varchar('birth_place', { length: 100 }),
   birthDate: timestamp('birth_date', { mode: 'date' }),

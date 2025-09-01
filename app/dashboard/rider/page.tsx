@@ -13,20 +13,28 @@ import TopNavBar from '@/components/TopNavBar'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import UpdateRateModal from '@/components/UpdateRateModal'
 import FiscalDataModal from '@/components/FiscalDataModal'
+import EditProfileModal from '@/components/EditProfileModal'
 
 type RiderProfile = {
   id: string
   full_name: string | null
   avatar_url: string | null
   riders_details: {
-    first_name: string | null
-    last_name: string | null
     vehicle_type: string | null
     profile_picture_url: string | null
     bio: string | null
     hourly_rate: number | null
     stripe_account_id: string | null
     stripe_onboarding_complete: boolean | null
+  } | null
+  rider_tax_details: {
+    first_name: string | null
+    last_name: string | null
+    fiscal_code: string | null
+    birth_place: string | null
+    birth_date: string | null
+    residence_address: string | null
+    residence_city: string | null
   } | null
 }
 
@@ -35,6 +43,7 @@ function RiderDashboardContent() {
   const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false)
   const [showUpdateRateModal, setShowUpdateRateModal] = useState(false)
   const [showFiscalDataModal, setShowFiscalDataModal] = useState(false)
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
@@ -118,14 +127,21 @@ function RiderDashboardContent() {
           avatar_url,
           role,
           riders_details (
-            first_name,
-            last_name,
             vehicle_type,
             profile_picture_url,
             bio,
             hourly_rate,
             stripe_account_id,
             stripe_onboarding_complete
+          ),
+          rider_tax_details (
+            first_name,
+            last_name,
+            fiscal_code,
+            birth_place,
+            birth_date,
+            residence_address,
+            residence_city
           )
         `)
         .eq('id', user.id)
@@ -362,23 +378,116 @@ function RiderDashboardContent() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Profile Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" /> Profilo
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p><strong>Nome:</strong> {
-                riderDetails?.first_name && riderDetails?.last_name 
-                  ? `${riderDetails.first_name} ${riderDetails.last_name}`
-                  : profile.full_name || 'Non impostato'
-              }</p>
-              <p><strong>Tipo Veicolo:</strong> {riderDetails?.vehicle_type || 'Non specificato'}</p>
-              <p><strong>Tariffa Oraria:</strong> € {riderDetails?.hourly_rate || 0}/h</p>
-              <p><strong>Bio:</strong> {riderDetails?.bio || 'Nessuna descrizione aggiunta'}</p>
-              <Button variant="outline" className="mt-4 w-full">Modifica Profilo</Button>
+          {/* Profile Card - Stile Rover.com */}
+          <Card className="relative overflow-hidden">
+            {/* Header con sfondo gradiente */}
+            <div className="h-24 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+            
+            <CardContent className="relative px-6 pb-6">
+              {/* Profile Picture - Posizionata sopra il gradiente */}
+              <div className="flex justify-center -mt-16 mb-4">
+                {riderDetails?.profile_picture_url ? (
+                  <div className="relative">
+                    <img 
+                      src={riderDetails.profile_picture_url} 
+                      alt="Foto profilo" 
+                      className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                    {/* Badge di stato online */}
+                    <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-3 border-white rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                      <span className="text-3xl font-bold text-white">
+                        {profile.full_name 
+                          ? profile.full_name.charAt(0).toUpperCase() 
+                          : profile.rider_tax_details?.first_name?.charAt(0).toUpperCase() || 'R'}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 border-3 border-white rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Nome e rating (simulato) */}
+              <div className="text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                  {profile.rider_tax_details?.first_name && profile.rider_tax_details?.last_name 
+                    ? `${profile.rider_tax_details.first_name} ${profile.rider_tax_details.last_name}`
+                    : profile.full_name || 'Nome non impostato'}
+                </h2>
+                
+                {/* Rating stelle (simulato) */}
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M10 1l2.5 6.5h6.5l-5.25 4 2 6.5-5.75-4.25-5.75 4.25 2-6.5-5.25-4h6.5z"/>
+                    </svg>
+                  ))}
+                  <span className="text-sm text-gray-600 ml-1">5.0 • Nuovo rider</span>
+                </div>
+
+                {/* Tipo di veicolo con icona */}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  {riderDetails?.vehicle_type === 'bicicletta' && <span>🚲</span>}
+                  {riderDetails?.vehicle_type === 'scooter' && <span>🛵</span>}
+                  {riderDetails?.vehicle_type === 'moto' && <span>🏍️</span>}
+                  {riderDetails?.vehicle_type === 'auto' && <span>🚗</span>}
+                  {riderDetails?.vehicle_type === 'furgone' && <span>🚐</span>}
+                  <span className="text-sm font-medium text-gray-700 capitalize">
+                    {riderDetails?.vehicle_type || 'Veicolo non specificato'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Bio / Descrizione */}
+              {riderDetails?.bio && (
+                <div className="mb-4">
+                  <p className="text-gray-700 text-center italic">
+                    "{riderDetails.bio}"
+                  </p>
+                </div>
+              )}
+
+              {/* Informazioni chiave in stile Rover */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-lg font-bold text-gray-900">€{riderDetails?.hourly_rate || 0}</div>
+                  <div className="text-xs text-gray-600">per ora</div>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-lg font-bold text-green-600">Disponibile</div>
+                  <div className="text-xs text-gray-600">Aggiornato ieri</div>
+                </div>
+              </div>
+
+              {/* Badge caratteristiche */}
+              <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  ⚡ Consegne veloci
+                </span>
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                  ✓ Verificato
+                </span>
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                  🏆 Rider professionale
+                </span>
+              </div>
+
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
+                onClick={() => setShowEditProfileModal(true)}
+              >
+                Modifica Profilo
+              </Button>
             </CardContent>
           </Card>
 
@@ -553,6 +662,16 @@ function RiderDashboardContent() {
           isOpen={showFiscalDataModal}
           riderId={profile.id}
           onClose={() => setShowFiscalDataModal(false)}
+        />
+      )}
+
+      {/* Edit Profile Modal */}
+      {showEditProfileModal && profile && (
+        <EditProfileModal
+          isOpen={showEditProfileModal}
+          onClose={() => setShowEditProfileModal(false)}
+          riderId={profile.id}
+          onProfileUpdate={fetchProfile}
         />
       )}
     </div>

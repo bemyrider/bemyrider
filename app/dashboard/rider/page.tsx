@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
 import TopNavBar from '@/components/TopNavBar'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
+import UpdateRateModal from '@/components/UpdateRateModal'
 
 type RiderProfile = {
   id: string
@@ -27,6 +28,7 @@ type RiderProfile = {
 function RiderDashboardContent() {
   const [profile, setProfile] = useState<RiderProfile | null>(null)
   const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(false)
+  const [showUpdateRateModal, setShowUpdateRateModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null)
@@ -481,7 +483,14 @@ function RiderDashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-               <Button variant="outline" className="w-full justify-start" disabled={!riderDetails?.stripe_onboarding_complete}><Bike className="mr-2 h-4 w-4"/> Aggiorna Tariffa</Button>
+               <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                disabled={!riderDetails?.stripe_onboarding_complete}
+                onClick={() => setShowUpdateRateModal(true)}
+              >
+                <Euro className="mr-2 h-4 w-4"/> Aggiorna Tariffa
+              </Button>
                <Button variant="outline" className="w-full justify-start" disabled={!riderDetails?.stripe_onboarding_complete}><Settings className="mr-2 h-4 w-4"/> Impostazioni</Button>
                <Button variant="outline" className="w-full justify-start" disabled={!riderDetails?.stripe_onboarding_complete}><Clock className="mr-2 h-4 w-4"/> Cronologia</Button>
                {!riderDetails?.stripe_onboarding_complete && (
@@ -504,6 +513,15 @@ function RiderDashboardContent() {
         <AvailabilityCalendar
           riderId={profile.id}
           onClose={() => setShowAvailabilityCalendar(false)}
+        />
+      )}
+
+      {/* Update Rate Modal */}
+      {showUpdateRateModal && profile && (
+        <UpdateRateModal
+          riderId={profile.id}
+          currentRate={profile.riders_details?.hourly_rate || null}
+          onClose={() => setShowUpdateRateModal(false)}
         />
       )}
     </div>

@@ -25,7 +25,13 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
     setMessage(null)
 
     try {
-      const rate = parseFloat(hourlyRate)
+      // Prevent any browser validation
+      const form = e.target as HTMLFormElement
+      if (!form.checkValidity()) {
+        e.stopPropagation()
+      }
+
+      const rate = parseFloat(hourlyRate.replace(',', '.'))
       
       // Validate rate
       if (isNaN(rate) || rate <= 0) {
@@ -93,20 +99,23 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div className="space-y-2">
               <Label htmlFor="hourlyRate">Tariffa Oraria (€/ora)</Label>
               <div className="relative">
                 <Euro className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   id="hourlyRate"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  max="12.50"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]+([.,][0-9]+)?"
                   value={hourlyRate}
                   onChange={(e) => {
-                    const value = e.target.value
+                    let value = e.target.value
+                    
+                    // Allow only numbers and decimal separator
+                    value = value.replace(/[^0-9.,]/g, '').replace(',', '.')
+                    
                     setHourlyRate(value)
                     
                     // Clear previous validation message
@@ -115,16 +124,38 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
                     }
                     
                     // Real-time validation with Italian message
-                    if (value && parseFloat(value) > 12.50) {
-                      setMessage({ 
-                        type: 'error', 
-                        text: 'La tariffa non può superare €12,50/ora per rispettare i limiti fiscali' 
-                      })
+                    if (value && !isNaN(parseFloat(value))) {
+                      const numValue = parseFloat(value)
+                      if (numValue > 12.50) {
+                        setMessage({ 
+                          type: 'error', 
+                          text: '⚠️ La tariffa non può superare €12,50/ora per rispettare i limiti fiscali' 
+                        })
+                      } else if (numValue <= 0) {
+                        setMessage({ 
+                          type: 'error', 
+                          text: '⚠️ Inserisci una tariffa valida maggiore di €0,01' 
+                        })
+                      }
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Allow: backspace, delete, tab, escape, enter, decimal point
+                    if ([46, 8, 9, 27, 13, 190, 188].indexOf(e.keyCode) !== -1 ||
+                        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode === 88 && e.ctrlKey === true)) {
+                      return
+                    }
+                    // Ensure that it's a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                      e.preventDefault()
                     }
                   }}
                   placeholder="Es. 12.00"
                   className="pl-10"
-                  required
                   disabled={loading}
                 />
               </div>
@@ -195,7 +226,14 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
               <li>• <strong>Vantaggio:</strong> Nessuna ritenuta d'acconto</li>
             </ul>
             <p className="text-xs text-green-600 mt-2 italic">
-              Fonte: <a href="https://www.agenziaentrate.gov.it" target="_blank" className="underline">Agenzia delle Entrate</a>
+              Fonte: <a 
+                href="https://www.agenziaentrate.gov.it/portale/schede/pagamenti/versamento-modello-f24-ritenute-su-reddito-di-lavoro-autonomo-f24_rit_red_lav_aut/redditi-soggetti-a-ritenuta-f24_rit_red_lav_aut" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="underline hover:text-green-800"
+              >
+                Agenzia delle Entrate - Ritenute Lavoro Autonomo
+              </a>
             </p>
           </div>
         </CardContent>

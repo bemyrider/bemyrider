@@ -71,40 +71,65 @@ export default function RidersPage() {
         return
       }
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          full_name,
-          avatar_url,
-          riders_details (
-            bio,
-            hourly_rate,
-            vehicle_type,
-            profile_picture_url
-          )
-        `)
-        .eq('role', 'rider')
+      // Uso query SQL diretta per bypassare problemi di relazioni Supabase
+      const { data, error } = await supabase.rpc('get_riders_with_details')
 
       if (error) {
-        console.error('Error fetching riders:', error)
-        setError('Errore nel caricamento dei rider')
-        // Fallback to mock data
-        setRiders(mockRiders)
+        console.error('Error fetching riders with RPC:', error)
+        
+        // Fallback: query diretta se RPC non esiste
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('profiles')
+          .select(`
+            id,
+            full_name,
+            avatar_url
+          `)
+          .eq('role', 'rider')
+        
+        if (fallbackError) {
+          console.error('Fallback query failed:', fallbackError)
+          setError('Errore nel caricamento dei rider')
+          setRiders(mockRiders)
+          return
+        }
+
+        // Fetch riders_details separatamente per ogni rider
+        const ridersWithDetails = []
+        for (const rider of fallbackData || []) {
+          const { data: detailsData } = await supabase
+            .from('riders_details')
+            .select('bio, hourly_rate, vehicle_type, profile_picture_url')
+            .eq('profile_id', rider.id)
+            .single()
+          
+          if (detailsData) {
+            ridersWithDetails.push({
+              id: rider.id,
+              full_name: rider.full_name || 'Rider',
+              avatar_url: rider.avatar_url,
+              bio: detailsData.bio,
+              hourly_rate: detailsData.hourly_rate,
+              vehicle_type: detailsData.vehicle_type,
+              profile_picture_url: detailsData.profile_picture_url,
+            })
+          }
+        }
+        
+        setRiders(ridersWithDetails)
         return
       }
 
-      const ridersWithDetails = data
-        .filter(rider => rider.riders_details)
-        .map(rider => ({
-          id: rider.id,
-          full_name: rider.full_name || 'Rider',
-          avatar_url: rider.avatar_url,
-          bio: (rider.riders_details as any).bio,
-          hourly_rate: (rider.riders_details as any).hourly_rate,
-          vehicle_type: (rider.riders_details as any).vehicle_type,
-          profile_picture_url: (rider.riders_details as any).profile_picture_url,
-        }))
+      // Se RPC funziona, usa i dati dell'RPC
+      const ridersWithDetails = data.map((rider: any) => ({
+        id: rider.id,
+        full_name: rider.full_name || 'Rider',
+        avatar_url: rider.avatar_url,
+        bio: rider.bio,
+        hourly_rate: rider.hourly_rate,
+        vehicle_type: rider.vehicle_type,
+        profile_picture_url: rider.profile_picture_url,
+      }))
 
       setRiders(ridersWithDetails)
     } catch (error) {

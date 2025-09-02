@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -365,7 +365,7 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
                 disabled={loading}
               />
               <p className="text-xs text-gray-500">
-                Tariffa massima: €12.50/h per evitare ritenuta d'acconto su prestazioni occasionali
+                Tariffa massima: €12.50/h per evitare ritenuta d&apos;acconto su prestazioni occasionali
               </p>
             </div>
 
@@ -405,7 +405,7 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
                 </div>
               )}
               <p className="text-xs text-gray-500">
-                Inserisci l'URL di un'immagine (JPG, PNG, WEBP)
+                Inserisci l&apos;URL di un&apos;immagine (JPG, PNG, WEBP)
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -53,7 +53,7 @@ export default function MerchantDashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const router = useRouter()
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       
@@ -126,9 +126,9 @@ export default function MerchantDashboard() {
       console.error('Error fetching profile:', error);
       setError('Errore nel caricamento del profilo');
     }
-  };
+  }, [router]);
 
-  const fetchRiders = async () => {
+  const fetchRiders = useCallback(async () => {
     try {
       const { data: ridersData, error: ridersError } = await supabase
         .from('profiles')
@@ -164,9 +164,9 @@ export default function MerchantDashboard() {
       // In caso di errore, mostra comunque qualcosa
       setRiders([]);
     }
-  }
+  }, [])
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     if (!profile) return;
 
     try {
@@ -207,7 +207,7 @@ export default function MerchantDashboard() {
     } catch (error: any) {
       console.error('Error fetching bookings:', error);
     }
-  }
+  }, [profile])
 
   useEffect(() => {
     const initializeData = async () => {
@@ -216,13 +216,13 @@ export default function MerchantDashboard() {
     }
     
     initializeData()
-  }, [])
+  }, [fetchProfile, fetchRiders])
 
   useEffect(() => {
     if (profile) {
       fetchBookings()
     }
-  }, [profile])
+  }, [profile, fetchBookings])
 
   const filteredRiders = riders.filter(rider =>
     rider.full_name.toLowerCase().includes(searchTerm.toLowerCase())

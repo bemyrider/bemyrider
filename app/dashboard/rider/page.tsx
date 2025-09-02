@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -455,7 +455,7 @@ function RiderDashboardContent() {
               {riderDetails?.bio && (
                 <div className="mb-4">
                   <p className="text-gray-700 text-center italic">
-                    "{riderDetails.bio}"
+                    &ldquo;{riderDetails.bio}&rdquo;
                   </p>
                 </div>
               )}

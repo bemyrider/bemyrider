@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -332,6 +332,8 @@ export default function FiscalDataModal({ isOpen, onClose, riderId }: FiscalData
     const remainder = sum % 26
     return checkChars[remainder]
   }
+
+
 
   const handleInputChange = (field: keyof FiscalData, value: string) => {
     setFiscalData(prev => ({ ...prev, [field]: value }))

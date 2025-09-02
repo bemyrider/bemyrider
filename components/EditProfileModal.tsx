@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { X, Save, User, Bike, Euro, MessageSquare, Camera, AlertCircle } from 'lucide-react'
+import { X, Save, User, Bike, Euro, MessageSquare, Camera, AlertCircle, MapPin } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { VehicleType, VEHICLE_TYPE_LABELS } from '@/lib/enums'
 import { executeWithAuthRetry, handleAuthError } from '@/lib/auth-utils'
@@ -24,6 +24,7 @@ interface ProfileData {
   hourly_rate: string
   vehicle_type: string
   profile_picture_url: string
+  active_location: string
 }
 
 interface Message {
@@ -43,7 +44,8 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
     bio: '',
     hourly_rate: '',
     vehicle_type: '',
-    profile_picture_url: ''
+    profile_picture_url: '',
+    active_location: ''
   })
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<Message | null>(null)
@@ -66,7 +68,8 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
             bio,
             hourly_rate,
             vehicle_type,
-            profile_picture_url
+            profile_picture_url,
+            active_location
           )
         `)
         .eq('id', riderId)
@@ -86,7 +89,8 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
           bio: riderDetails?.bio || '',
           hourly_rate: riderDetails?.hourly_rate ? riderDetails.hourly_rate.toString() : '',
           vehicle_type: riderDetails?.vehicle_type || '',
-          profile_picture_url: riderDetails?.profile_picture_url || ''
+          profile_picture_url: riderDetails?.profile_picture_url || '',
+          active_location: riderDetails?.active_location || ''
         })
       }
     } catch (error) {
@@ -156,6 +160,7 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
           bio: profileData.bio.trim() || null,
           vehicle_type: profileData.vehicle_type || null,
           profile_picture_url: profileData.profile_picture_url.trim() || null,
+          active_location: profileData.active_location.trim() || null,
           updated_at: new Date().toISOString()
         }
 
@@ -323,6 +328,26 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
               </select>
             </div>
 
+            {/* Active Location */}
+            <div className="space-y-2">
+              <Label htmlFor="activeLocation" className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Località Attiva
+              </Label>
+              <Input
+                id="activeLocation"
+                type="text"
+                value={profileData.active_location}
+                onChange={(e) => handleInputChange('active_location', e.target.value)}
+                placeholder="Milano, Roma, Torino, ecc..."
+                disabled={loading}
+                maxLength={100}
+              />
+              <p className="text-xs text-gray-500">
+                La città o zona dove sei attivo per le consegne (massimo 100 caratteri)
+              </p>
+            </div>
+
             {/* Hourly Rate */}
             <div className="space-y-2">
               <Label htmlFor="hourlyRate" className="flex items-center gap-2">
@@ -394,6 +419,7 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
                 <li>• <strong>Nome:</strong> Mostrato ai clienti nelle prenotazioni</li>
                 <li>• <strong>Bio:</strong> Aiuta i clienti a conoscerti meglio</li>
                 <li>• <strong>Veicolo:</strong> Influenza i tipi di consegne disponibili</li>
+                <li>• <strong>Località:</strong> Determina la tua visibilità nelle ricerche geografiche</li>
                 <li>• <strong>Tariffa:</strong> Può essere aggiornata in qualsiasi momento</li>
                 <li>• <strong>Foto profilo:</strong> Aumenta la fiducia dei clienti</li>
               </ul>

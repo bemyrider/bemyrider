@@ -5,7 +5,7 @@ export interface RiderCardProps {
     avatar_url: string | null
     bio: string | null
     hourly_rate: number
-    city: string
+    active_location: string // Località dove il rider è attivo
     rating: number
     availability_status: 'available' | 'busy' | 'offline'
     transportation_method: 'ebike' | 'moto' | 'auto'
@@ -28,6 +28,7 @@ export interface RiderDetails {
   profile_id: string
   bio: string | null
   hourly_rate: number
+  active_location: string
   stripe_account_id: string | null
   stripe_onboarding_complete: boolean
   created_at: string

@@ -27,6 +27,7 @@ type Rider = {
     bio: string | null
     hourly_rate: number
     stripe_onboarding_complete: boolean
+    active_location: string | null
   }
 }
 
@@ -129,12 +130,7 @@ export default function MerchantDashboard() {
 
   const fetchRiders = async () => {
     try {
-      // Temporarily return empty array to avoid schema cache issues
-      console.log('🔍 Fetching available riders... (temporarily disabled)');
-      setRiders([]);
-      return;
-      
-      /*const { data: ridersData, error: ridersError } = await supabase
+      const { data: ridersData, error: ridersError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -143,12 +139,11 @@ export default function MerchantDashboard() {
           riders_details (
             bio,
             hourly_rate,
-            stripe_onboarding_complete
+            stripe_onboarding_complete,
+            active_location
           )
         `)
         .eq('role', 'rider')
-        .not('riders_details', 'is', null)
-        .eq('riders_details.stripe_onboarding_complete', true)
 
       if (ridersError) {
         throw ridersError
@@ -160,12 +155,14 @@ export default function MerchantDashboard() {
         riders_details: Array.isArray(rider.riders_details) 
           ? rider.riders_details[0] 
           : rider.riders_details
-      })).filter(rider => rider.riders_details) // Filtra rider senza dettagli
+      })).filter(rider => rider.riders_details) // Solo rider con dettagli (temporaneamente rimosso filtro Stripe)
       
-      setRiders(transformedRiders)*/
+      setRiders(transformedRiders)
     } catch (error: any) {
       console.error('Error fetching riders:', error);
       setError('Errore nel caricamento dei rider');
+      // In caso di errore, mostra comunque qualcosa
+      setRiders([]);
     }
   }
 
@@ -416,6 +413,12 @@ export default function MerchantDashboard() {
                           <p className="text-sm text-gray-500">
                             {formatCurrency(rider.riders_details.hourly_rate)}/ora
                           </p>
+                          {rider.riders_details.active_location && (
+                            <p className="text-xs text-blue-600 flex items-center">
+                              <MapPin className="h-3 w-3 mr-1" />
+                              {rider.riders_details.active_location}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <Button size="sm" onClick={() => router.push(`/riders/${rider.id}`)}>

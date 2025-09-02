@@ -330,7 +330,7 @@ function RiderDashboardContent() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto" style={{borderBottomColor: '#333366'}}></div>
           <p className="mt-4 text-gray-600">Caricamento dashboard...</p>
         </div>
       </div>
@@ -380,12 +380,9 @@ function RiderDashboardContent() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Profile Card - Stile Rover.com */}
           <Card className="relative overflow-hidden">
-            {/* Header con sfondo gradiente */}
-            <div className="h-24 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-            
-            <CardContent className="relative px-6 pb-6">
-              {/* Profile Picture - Posizionata sopra il gradiente */}
-              <div className="flex justify-center -mt-16 mb-4">
+            <CardContent className="relative px-6 pt-6 pb-6">
+              {/* Profile Picture - Centrata senza gradiente */}
+              <div className="flex justify-center mb-4">
                 {riderDetails?.profile_picture_url ? (
                   <div className="relative">
                     <img 
@@ -403,7 +400,7 @@ function RiderDashboardContent() {
                   </div>
                 ) : (
                   <div className="relative">
-                    <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                    <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-xl border-4 border-white" style={{background: 'linear-gradient(to bottom right, #333366, #4a4a7a)'}}>
                       <span className="text-3xl font-bold text-white">
                         {profile.full_name 
                           ? profile.full_name.charAt(0).toUpperCase() 
@@ -471,7 +468,7 @@ function RiderDashboardContent() {
 
               {/* Badge caratteristiche */}
               <div className="flex flex-wrap gap-2 mb-4 justify-center">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                <span className="px-2 py-1 text-xs rounded-full" style={{backgroundColor: 'rgba(51, 51, 102, 0.1)', color: '#333366'}}>
                   ⚡ Consegne veloci
                 </span>
                 <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
@@ -483,7 +480,10 @@ function RiderDashboardContent() {
               </div>
 
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
+                className="w-full text-white font-medium" 
+                style={{backgroundColor: '#333366'}} 
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4a4a7a'} 
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#333366'}
                 onClick={() => setShowEditProfileModal(true)}
               >
                 Modifica Profilo
@@ -683,7 +683,7 @@ export default function RiderDashboard() {
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto" style={{borderBottomColor: '#333366'}}></div>
           <p className="mt-4 text-gray-600">Caricamento dashboard...</p>
         </div>
       </div>

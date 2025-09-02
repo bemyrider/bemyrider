@@ -1,12 +1,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { X, Save, User, Bike, Euro, MessageSquare, Camera, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { VehicleType, VEHICLE_TYPE_LABELS } from '@/lib/enums'
+import { executeWithAuthRetry, handleAuthError } from '@/lib/auth-utils'
 
 interface EditProfileModalProps {
   isOpen: boolean
@@ -28,15 +31,13 @@ interface Message {
   text: string
 }
 
-const vehicleTypes = [
-  { value: 'bicicletta', label: '🚲 Bicicletta' },
-  { value: 'scooter', label: '🛵 Scooter' },
-  { value: 'moto', label: '🏍️ Moto' },
-  { value: 'auto', label: '🚗 Auto' },
-  { value: 'furgone', label: '🚐 Furgone' }
-]
+const vehicleTypes = Object.values(VehicleType).map(value => ({
+  value,
+  label: VEHICLE_TYPE_LABELS[value]
+}))
 
 export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUpdate }: EditProfileModalProps) {
+  const router = useRouter()
   const [profileData, setProfileData] = useState<ProfileData>({
     full_name: '',
     bio: '',
@@ -77,7 +78,9 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
       }
 
       if (profileData) {
-        const riderDetails = profileData.riders_details
+        const riderDetails = Array.isArray(profileData.riders_details) 
+          ? profileData.riders_details[0] 
+          : profileData.riders_details
         setProfileData({
           full_name: profileData.full_name || '',
           bio: riderDetails?.bio || '',
@@ -132,43 +135,46 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
         throw new Error('⚠️ La tariffa oraria deve essere tra €0.01 e €12.50')
       }
 
-      // Update full_name in profiles table
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          full_name: profileData.full_name.trim() || null,
+      // Use executeWithAuthRetry for robust auth handling
+      await executeWithAuthRetry(async () => {
+        // Update full_name in profiles table
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: profileData.full_name.trim() || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', riderId)
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError)
+          throw profileError
+        }
+
+        // Prepare data for riders_details update
+        const riderDetailsToUpdate: any = {
+          bio: profileData.bio.trim() || null,
+          vehicle_type: profileData.vehicle_type || null,
+          profile_picture_url: profileData.profile_picture_url.trim() || null,
           updated_at: new Date().toISOString()
-        })
-        .eq('id', riderId)
+        }
 
-      if (profileError) {
-        console.error('Error updating profile:', profileError)
-        throw new Error('❌ Errore durante l\'aggiornamento del nome. Riprova.')
-      }
+        // Only update hourly_rate if provided
+        if (profileData.hourly_rate.trim()) {
+          riderDetailsToUpdate.hourly_rate = parseFloat(profileData.hourly_rate)
+        }
 
-      // Prepare data for riders_details update
-      const riderDetailsToUpdate: any = {
-        bio: profileData.bio.trim() || null,
-        vehicle_type: profileData.vehicle_type || null,
-        profile_picture_url: profileData.profile_picture_url.trim() || null,
-        updated_at: new Date().toISOString()
-      }
+        // Update riders_details data
+        const { error: riderError } = await supabase
+          .from('riders_details')
+          .update(riderDetailsToUpdate)
+          .eq('profile_id', riderId)
 
-      // Only update hourly_rate if provided
-      if (profileData.hourly_rate.trim()) {
-        riderDetailsToUpdate.hourly_rate = parseFloat(profileData.hourly_rate)
-      }
-
-      // Update riders_details data
-      const { error: riderError } = await supabase
-        .from('riders_details')
-        .update(riderDetailsToUpdate)
-        .eq('profile_id', riderId)
-
-      if (riderError) {
-        console.error('Error updating rider details:', riderError)
-        throw new Error('❌ Errore durante l\'aggiornamento dei dettagli. Riprova.')
-      }
+        if (riderError) {
+          console.error('Error updating rider details:', riderError)
+          throw riderError
+        }
+      }, 2) // Retry up to 2 times
 
       setMessage({ 
         type: 'success', 
@@ -186,10 +192,26 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
       }, 1500)
 
     } catch (error: any) {
-      console.error('Error updating profile:', error)
+      console.error('Profile update error:', error)
+      
+      // Check if it's an auth error and handle redirect
+      if (handleAuthError(error, router)) {
+        setMessage({ 
+          type: 'error', 
+          text: '🔒 Sessione scaduta. Stai per essere reindirizzato al login...' 
+        })
+        
+        // Close modal before redirect
+        setTimeout(() => {
+          onClose()
+        }, 2000)
+        return
+      }
+      
+      // Handle other errors
       setMessage({ 
         type: 'error', 
-        text: error.message || '❌ Errore durante l\'aggiornamento. Riprova.' 
+        text: error.message || '❌ Errore durante l\'aggiornamento del profilo. Riprova.' 
       })
     } finally {
       setLoading(false)

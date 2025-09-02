@@ -152,8 +152,8 @@ function RiderDashboardContent() {
         if (profileError.code === 'PGRST116') {
           console.log('📝 No profile found, checking user metadata...')
           
-          // Verifica se l'utente dovrebbe essere un rider
-          if (user.user_metadata?.role === 'rider' || !user.user_metadata?.role) {
+          // Verifica se l'utente dovrebbe essere un rider (solo se esplicitamente specificato)
+          if (user.user_metadata?.role === 'rider') {
             console.log('📝 Creating rider profile for user:', user.id)
             
             const { error: createProfileError } = await supabase
@@ -193,8 +193,8 @@ function RiderDashboardContent() {
             window.location.reload()
             return
           } else {
-            console.log('🚫 User metadata does not indicate rider role, redirecting to login')
-            router.push('/auth/login')
+            console.log('🚫 User metadata does not indicate rider role or missing role, redirecting to registration')
+            router.push('/auth/register')
             return
           }
         }
@@ -231,7 +231,10 @@ function RiderDashboardContent() {
           id: profileData.id,
           full_name: profileData.full_name,
           avatar_url: profileData.avatar_url,
-          riders_details: riderDetails || null
+          riders_details: riderDetails || null,
+          rider_tax_details: Array.isArray(profileData.rider_tax_details) 
+            ? profileData.rider_tax_details[0] || null 
+            : profileData.rider_tax_details || null
         })
       }
     } catch (error) {
@@ -434,13 +437,16 @@ function RiderDashboardContent() {
 
                 {/* Tipo di veicolo con icona */}
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  {riderDetails?.vehicle_type === 'bicicletta' && <span>🚲</span>}
+                  {riderDetails?.vehicle_type === 'bici' && <span>🚲</span>}
+                  {riderDetails?.vehicle_type === 'e_bike' && <span>🚴‍♂️</span>}
                   {riderDetails?.vehicle_type === 'scooter' && <span>🛵</span>}
-                  {riderDetails?.vehicle_type === 'moto' && <span>🏍️</span>}
                   {riderDetails?.vehicle_type === 'auto' && <span>🚗</span>}
-                  {riderDetails?.vehicle_type === 'furgone' && <span>🚐</span>}
                   <span className="text-sm font-medium text-gray-700 capitalize">
-                    {riderDetails?.vehicle_type || 'Veicolo non specificato'}
+                    {riderDetails?.vehicle_type === 'bici' ? 'Bicicletta' :
+                     riderDetails?.vehicle_type === 'e_bike' ? 'E-Bike' :
+                     riderDetails?.vehicle_type === 'scooter' ? 'Scooter' :
+                     riderDetails?.vehicle_type === 'auto' ? 'Auto' :
+                     'Veicolo non specificato'}
                   </span>
                 </div>
               </div>

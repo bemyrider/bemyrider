@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [role, setRole] = useState<'rider' | 'merchant'>('rider')
+  const [role, setRole] = useState<'rider' | 'merchant' | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -28,6 +28,12 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
+      setLoading(false)
+      return
+    }
+
+    if (!role) {
+      setError("Please select your role (Rider or Merchant)")
       setLoading(false)
       return
     }
@@ -149,6 +155,9 @@ export default function RegisterPage() {
                     <div className="text-xs text-gray-600">Richiedo consegne</div>
                   </div>
                 </div>
+                {!role && error && error.includes("role") && (
+                  <p className="text-sm text-red-500 mt-2">⚠️ Seleziona un ruolo per continuare</p>
+                )}
               </div>
 
               <div>

@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🚀 Preparazione Release bemyrider v1.1.0"
+echo "🚀 Preparazione Release bemyrider v1.2.0"
 echo "========================================="
 
 # Colori per output
@@ -145,7 +145,7 @@ echo "git push origin main --tags"
 echo -e "\n${BLUE}🔗 GitHub Release:${NC}"
 echo "Vai su: https://github.com/bemyrider/bemyrider/releases/new"
 echo "- Tag: v$VERSION"
-echo "- Title: bemyrider v$VERSION - Dashboard Completa e UX Migliorata"
+echo "- Title: bemyrider v$VERSION - Localizzazione e Gestione Account Avanzata"
 echo "- Descrizione: Copia il contenuto da RELEASE_NOTES.md"
 
 print_status "Preparazione release completata!"

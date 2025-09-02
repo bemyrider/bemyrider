@@ -35,6 +35,7 @@ export const ridersDetails = pgTable('riders_details', {
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
   hourlyRate: decimal('hourly_rate', { precision: 10, scale: 2 }).notNull(),
+  activeLocation: varchar('active_location', { length: 100 }).notNull().default('Non specificata'), // Località dove il rider è attivo
   stripeAccountId: text('stripe_account_id'),
   stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

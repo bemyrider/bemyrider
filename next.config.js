@@ -3,6 +3,10 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'supabase.co'],
   },
+  // Riabilita l'icona flottante di Next.js in sviluppo
+  devIndicators: {
+    buildActivity: true,
+  },
   // Escludi le Edge Functions dalla build Next.js
   webpack: (config) => {
     config.resolve.fallback = {

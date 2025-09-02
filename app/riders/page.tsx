@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Bike, Clock, Euro, Search, Filter } from 'lucide-react'
+import { Bike, Clock, Euro, Search, Filter, MapPin } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { UserNav } from '@/components/UserNav'
 
@@ -16,6 +16,7 @@ interface Rider {
   hourly_rate: number
   vehicle_type: string | null
   profile_picture_url: string | null
+  active_location: string | null
 }
 
 // Mock data for demonstration
@@ -24,28 +25,31 @@ const mockRiders: Rider[] = [
     id: '1',
     full_name: 'Marco Rossi',
     avatar_url: null,
-    bio: 'Rider esperto con 5 anni di esperienza nelle consegne. Disponibile per consegne veloci e affidabili.',
-    hourly_rate: 12,
-    vehicle_type: 'bicicletta',
-    profile_picture_url: null
+    bio: 'Rider di test per bemyrider. Esperienza nelle consegne urbane.',
+    hourly_rate: 8.5,
+    vehicle_type: 'bici',
+    profile_picture_url: null,
+    active_location: 'Milano'
   },
   {
     id: '2',
-    full_name: 'Giulia Bianchi',
+    full_name: 'Invalid User',
     avatar_url: null,
-    bio: 'Specializzata in consegne di cibo e farmaci. Zona centro città e periferia.',
+    bio: 'New Rider',
     hourly_rate: 15,
-    vehicle_type: 'scooter',
-    profile_picture_url: null
+    vehicle_type: 'Veicolo',
+    profile_picture_url: null,
+    active_location: 'Milano'
   },
   {
     id: '3',
-    full_name: 'Alessandro Verdi',
+    full_name: 'Rider User A',
     avatar_url: null,
-    bio: 'Rider professionista per consegne urgenti. Disponibile 24/7 per emergenze.',
-    hourly_rate: 18,
-    vehicle_type: 'moto',
-    profile_picture_url: null
+    bio: 'New Rider',
+    hourly_rate: 15,
+    vehicle_type: 'Veicolo',
+    profile_picture_url: null,
+    active_location: 'Milano'
   }
 ]
 
@@ -55,6 +59,7 @@ export default function RidersPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [minRate, setMinRate] = useState('')
   const [maxRate, setMaxRate] = useState('')
+  const [locationFilter, setLocationFilter] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -71,66 +76,40 @@ export default function RidersPage() {
         return
       }
 
-      // Uso query SQL diretta per bypassare problemi di relazioni Supabase
-      const { data, error } = await supabase.rpc('get_riders_with_details')
-
-      if (error) {
-        console.error('Error fetching riders with RPC:', error)
-        
-        // Fallback: query diretta se RPC non esiste
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            full_name,
-            avatar_url
-          `)
-          .eq('role', 'rider')
-        
-        if (fallbackError) {
-          console.error('Fallback query failed:', fallbackError)
-          setError('Errore nel caricamento dei rider')
-          setRiders(mockRiders)
-          return
-        }
-
-        // Fetch riders_details separatamente per ogni rider
-        const ridersWithDetails = []
-        for (const rider of fallbackData || []) {
-          const { data: detailsData } = await supabase
-            .from('riders_details')
-            .select('bio, hourly_rate, vehicle_type, profile_picture_url')
-            .eq('profile_id', rider.id)
-            .single()
-          
-          if (detailsData) {
-            ridersWithDetails.push({
-              id: rider.id,
-              full_name: rider.full_name || 'Rider',
-              avatar_url: rider.avatar_url,
-              bio: detailsData.bio,
-              hourly_rate: detailsData.hourly_rate,
-              vehicle_type: detailsData.vehicle_type,
-              profile_picture_url: detailsData.profile_picture_url,
-            })
-          }
-        }
-        
-        setRiders(ridersWithDetails)
+      // Usa query separata più robusta invece di LEFT JOIN che può causare problemi
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .eq('role', 'rider')
+      
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError)
+        setError('Errore nel caricamento dei rider')
+        setRiders(mockRiders)
         return
       }
 
-      // Se RPC funziona, usa i dati dell'RPC
-      const ridersWithDetails = data.map((rider: any) => ({
-        id: rider.id,
-        full_name: rider.full_name || 'Rider',
-        avatar_url: rider.avatar_url,
-        bio: rider.bio,
-        hourly_rate: rider.hourly_rate,
-        vehicle_type: rider.vehicle_type,
-        profile_picture_url: rider.profile_picture_url,
-      }))
-
+      // Fetch rider details separatamente per ogni rider
+      const ridersWithDetails = []
+      for (const profile of profilesData || []) {
+        const { data: detailsData } = await supabase
+          .from('riders_details')
+          .select('bio, hourly_rate, vehicle_type, profile_picture_url, active_location')
+          .eq('profile_id', profile.id)
+          .single()
+        
+        ridersWithDetails.push({
+          id: profile.id,
+          full_name: profile.full_name || 'Rider',
+          avatar_url: profile.avatar_url,
+          bio: detailsData?.bio || null,
+          hourly_rate: detailsData?.hourly_rate || 15,
+          vehicle_type: detailsData?.vehicle_type || 'Veicolo',
+          profile_picture_url: detailsData?.profile_picture_url || null,
+          active_location: detailsData?.active_location || null,
+        })
+      }
+      
       setRiders(ridersWithDetails)
     } catch (error) {
       console.error('Error:', error)
@@ -149,7 +128,10 @@ export default function RidersPage() {
     const matchesMinRate = !minRate || rider.hourly_rate >= parseFloat(minRate)
     const matchesMaxRate = !maxRate || rider.hourly_rate <= parseFloat(maxRate)
     
-    return matchesSearch && matchesMinRate && matchesMaxRate
+    const matchesLocation = !locationFilter || 
+                           (rider.active_location && rider.active_location.toLowerCase().includes(locationFilter.toLowerCase()))
+    
+    return matchesSearch && matchesMinRate && matchesMaxRate && matchesLocation
   })
 
   return (
@@ -190,7 +172,7 @@ export default function RidersPage() {
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Search className="inline h-4 w-4 mr-1" />
@@ -230,12 +212,26 @@ export default function RidersPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <MapPin className="inline h-4 w-4 mr-1" />
+                Località
+              </label>
+              <input
+                type="text"
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                placeholder="Milano, Roma, Torino..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
             <div className="flex items-end">
               <Button
                 onClick={() => {
                   setSearchTerm('')
                   setMinRate('')
                   setMaxRate('')
+                  setLocationFilter('')
                 }}
                 variant="outline"
                 className="w-full"
@@ -316,7 +312,8 @@ export default function RidersPage() {
                     </div>
 
                     {/* Tipo di veicolo con icona */}
-                    <div className="flex items-center justify-center gap-2 mb-3">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      {rider.vehicle_type === 'bici' && <span>🚲</span>}
                       {rider.vehicle_type === 'bicicletta' && <span>🚲</span>}
                       {rider.vehicle_type === 'scooter' && <span>🛵</span>}
                       {rider.vehicle_type === 'moto' && <span>🏍️</span>}
@@ -326,6 +323,16 @@ export default function RidersPage() {
                         {rider.vehicle_type || 'Veicolo'}
                       </span>
                     </div>
+
+                    {/* Località attiva */}
+                    {rider.active_location && (
+                      <div className="flex items-center justify-center gap-1 mb-3">
+                        <MapPin className="h-3 w-3 text-blue-600" />
+                        <span className="text-xs text-blue-600 font-medium">
+                          {rider.active_location}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Bio / Descrizione */}

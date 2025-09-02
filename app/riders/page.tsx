@@ -250,7 +250,7 @@ export default function RidersPage() {
         {/* Riders Grid */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" style={{borderBottomColor: '#333366'}}></div>
             <p className="mt-4 text-gray-600">Caricamento rider...</p>
           </div>
         ) : filteredRiders.length === 0 ? (
@@ -267,12 +267,9 @@ export default function RidersPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRiders.map((rider) => (
               <Card key={rider.id} className="relative overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                {/* Header con sfondo gradiente */}
-                <div className="h-20 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-                
-                <CardContent className="relative px-6 pb-6">
-                  {/* Profile Picture - Posizionata sopra il gradiente */}
-                  <div className="flex justify-center -mt-12 mb-4">
+                <CardContent className="relative px-6 pt-6 pb-6">
+                  {/* Profile Picture - Centrata senza gradiente */}
+                  <div className="flex justify-center mb-4">
                     {rider.profile_picture_url || rider.avatar_url ? (
                       <div className="relative">
                         <img 
@@ -290,7 +287,7 @@ export default function RidersPage() {
                       </div>
                     ) : (
                       <div className="relative">
-                        <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg border-4 border-white" style={{background: 'linear-gradient(to bottom right, #333366, #4a4a7a)'}}>
                           <span className="text-2xl font-bold text-white">
                             {rider.full_name.charAt(0).toUpperCase()}
                           </span>
@@ -354,7 +351,7 @@ export default function RidersPage() {
 
                   {/* Badge caratteristiche */}
                   <div className="flex flex-wrap gap-1 mb-4 justify-center">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                    <span className="px-2 py-1 text-xs rounded-full" style={{backgroundColor: 'rgba(51, 51, 102, 0.1)', color: '#333366'}}>
                       ⚡ Veloce
                     </span>
                     <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
@@ -364,7 +361,7 @@ export default function RidersPage() {
 
                   {/* Pulsante prenotazione */}
                   <Link href={`/riders/${rider.id}`}>
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium">
+                    <Button className="w-full text-white font-medium" style={{backgroundColor: '#333366'}} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4a4a7a'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#333366'}>
                       <Clock className="h-4 w-4 mr-2" />
                       Prenota Rider
                     </Button>

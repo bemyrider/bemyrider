@@ -472,11 +472,20 @@ export default function MerchantDashboard() {
                 )}
               </div>
               
-              {bookings.length > 0 && (
-                <Button variant="outline" className="w-full mt-4">
-                  Visualizza Tutte
+              <div className="flex gap-2 mt-4">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => router.push('/dashboard/merchant/bookings')}
+                >
+                  Gestisci Prenotazioni
                 </Button>
-              )}
+                {bookings.length > 0 && (
+                  <Button variant="outline" className="flex-1">
+                    Visualizza Tutte
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>

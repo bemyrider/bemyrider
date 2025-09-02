@@ -23,3 +23,19 @@ export enum TransportationType {
   MOTORBIKE = 'motorbike',
   WALKING = 'walking'
 }
+
+// Enum che rispecchia esattamente il database PostgreSQL
+export enum VehicleType {
+  BICI = 'bici',
+  E_BIKE = 'e_bike', 
+  SCOOTER = 'scooter',
+  AUTO = 'auto'
+}
+
+// Mapping per i label UI
+export const VEHICLE_TYPE_LABELS: Record<VehicleType, string> = {
+  [VehicleType.BICI]: '🚲 Bicicletta',
+  [VehicleType.E_BIKE]: '🚴‍♂️ E-Bike',
+  [VehicleType.SCOOTER]: '🛵 Scooter',
+  [VehicleType.AUTO]: '🚗 Auto'
+}

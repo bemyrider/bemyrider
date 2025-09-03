@@ -339,7 +339,7 @@ export default function RidersPage() {
                   {rider.bio && (
                     <div className="mb-4">
                       <p className="text-gray-700 text-center text-sm italic line-clamp-2">
-                        "{rider.bio}"
+                        &ldquo;{rider.bio}&rdquo;
                       </p>
                     </div>
                   )}

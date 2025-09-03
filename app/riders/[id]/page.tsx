@@ -36,21 +36,36 @@ export default function RiderBookingPage() {
   const [loading, setLoading] = useState(true)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [availability, setAvailability] = useState<any[]>([])
+  const [merchant, setMerchant] = useState<any>(null)
   
   // Booking form state
   const [startDate, setStartDate] = useState('')
   const [startTime, setStartTime] = useState('')
   const [duration, setDuration] = useState('')
   const [description, setDescription] = useState('')
+  const [merchantAddress, setMerchantAddress] = useState('')
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchRiderProfile()
   }, [riderId])
 
+  // Validazione disponibilità in tempo reale
+  useEffect(() => {
+    if (startDate && startTime && duration) {
+      const validation = validateAvailability()
+      setAvailabilityError(validation.isValid ? null : validation.message)
+    } else {
+      setAvailabilityError(null)
+    }
+  }, [startDate, startTime, duration, availability])
+
   const fetchRiderProfile = async () => {
     try {
       setLoading(true)
       
+      // Fetch rider profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
@@ -87,6 +102,31 @@ export default function RiderBookingPage() {
         riders_details: riderDetails
       })
 
+      // Fetch rider availability
+      const { data: availabilityData, error: availabilityError } = await supabase
+        .from('disponibilita_riders')
+        .select('*')
+        .eq('rider_id', riderId)
+        .order('day_of_week')
+
+      if (!availabilityError && availabilityData) {
+        setAvailability(availabilityData)
+      }
+
+      // Fetch current merchant data
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: merchantData, error: merchantError } = await supabase
+          .from('esercenti')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+
+        if (!merchantError && merchantData) {
+          setMerchant(merchantData)
+        }
+      }
+
     } catch (error) {
       console.error('Error:', error)
       setError('Errore nel caricamento del profilo rider')
@@ -95,13 +135,66 @@ export default function RiderBookingPage() {
     }
   }
 
+  // Funzione per validare le disponibilità del rider
+  const validateAvailability = () => {
+    if (!startDate || !startTime || !duration || availability.length === 0) {
+      return { isValid: true, message: '' }
+    }
+
+    // Converti la data selezionata in giorno della settimana
+    const selectedDate = new Date(startDate)
+    const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+    const selectedDay = dayNames[selectedDate.getDay()]
+
+    // Trova la disponibilità per il giorno selezionato
+    const dayAvailability = availability.find(slot => slot.day_of_week === selectedDay)
+    
+    if (!dayAvailability) {
+      return {
+        isValid: false,
+        message: `Il rider non è disponibile il ${selectedDay.toLowerCase()}. Giorni disponibili: ${availability.map(s => s.day_of_week).join(', ')}`
+      }
+    }
+
+    // Calcola l'orario di fine del servizio
+    const [startHour, startMinute] = startTime.split(':').map(Number)
+    const durationHours = parseFloat(duration)
+    const endHour = startHour + Math.floor(durationHours)
+    const endMinute = startMinute + ((durationHours % 1) * 60)
+    
+    const endTime = `${endHour.toString().padStart(2, '0')}:${Math.floor(endMinute).toString().padStart(2, '0')}`
+
+    // Verifica se l'orario di inizio e fine rientrano nella disponibilità
+    const availableStart = dayAvailability.start_time
+    const availableEnd = dayAvailability.end_time
+
+    if (startTime < availableStart || endTime > availableEnd) {
+      return {
+        isValid: false,
+        message: `Il servizio (${startTime} - ${endTime}) non rientra negli orari disponibili del rider per il ${selectedDay.toLowerCase()} (${availableStart} - ${availableEnd})`
+      }
+    }
+
+    return { isValid: true, message: '' }
+  }
+
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!startDate || !startTime || !duration) {
+    if (!startDate || !startTime || !duration || !merchantAddress || !description || description.trim().length < 2) {
       toast({
         title: "Errore",
-        description: "Compila tutti i campi obbligatori"
+        description: "Compila tutti i campi obbligatori. Le istruzioni devono contenere almeno 2 caratteri."
+      })
+      return
+    }
+
+    // Validazione disponibilità
+    const validation = validateAvailability()
+    if (!validation.isValid) {
+      toast({
+        title: "Conflitto con le Disponibilità",
+        description: validation.message
       })
       return
     }
@@ -121,8 +214,8 @@ export default function RiderBookingPage() {
         return
       }
 
-      // Chiamata API per creare booking
-      const response = await fetch('/api/bookings', {
+      // Chiamata API per creare service request
+      const response = await fetch('/api/service-requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,19 +225,21 @@ export default function RiderBookingPage() {
           startDate,
           startTime,
           duration,
-          description
+          description,
+          merchantAddress,
+          userId: user.id
         })
       })
 
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Errore durante la creazione della prenotazione')
+        throw new Error(result.error || 'Errore durante l\'invio della richiesta di servizio')
       }
 
       toast({
-        title: "Prenotazione Creata!",
-        description: result.booking.message || `Prenotazione confermata con ${rider?.full_name}`,
+        title: "Richiesta Inviata!",
+        description: result.request.message || `Richiesta di servizio inviata a ${rider?.full_name}. Riceverai una risposta entro 24 ore.`,
       })
       
       // Redirect alla dashboard merchant
@@ -154,7 +249,7 @@ export default function RiderBookingPage() {
       console.error('Error creating booking:', error)
       toast({
         title: "Errore",
-        description: "Errore durante la creazione della prenotazione"
+        description: "Errore durante l'invio della richiesta di servizio"
       })
     } finally {
       setBookingLoading(false)
@@ -268,9 +363,30 @@ export default function RiderBookingPage() {
               )}
 
               {/* Availability Status */}
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-green-600 font-medium">Disponibile</span>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-green-600 font-medium">Disponibile</span>
+                </div>
+                
+                {/* Availability Schedule */}
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Orari Disponibili</h4>
+                  {availability.length > 0 ? (
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {availability.map((slot) => (
+                        <div key={slot.id} className="flex justify-between">
+                          <span>{slot.day_of_week}:</span>
+                          <span>{slot.start_time} - {slot.end_time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-500 italic">
+                      Nessun orario di disponibilità configurato
+                    </div>
+                  )}
+                </div>
               </div>
               
             </CardContent>
@@ -279,9 +395,9 @@ export default function RiderBookingPage() {
           {/* Booking Form */}
           <Card>
             <CardHeader>
-              <CardTitle>Dettagli Prenotazione</CardTitle>
+              <CardTitle>Richiesta di Servizio</CardTitle>
               <CardDescription>
-                Compila i dettagli per richiedere una prenotazione
+                Compila i dettagli per inviare una richiesta di servizio. Il rider valuterà la sua disponibilità e ti risponderà.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -296,6 +412,7 @@ export default function RiderBookingPage() {
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
+                    max={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
                     required
                   />
                 </div>
@@ -314,62 +431,107 @@ export default function RiderBookingPage() {
 
                 {/* Durata */}
                 <div>
-                  <Label htmlFor="duration">Durata (ore) *</Label>
-                  <Input
+                  <Label htmlFor="duration">Durata *</Label>
+                  <select
                     id="duration"
-                    type="number"
-                    step="0.5"
-                    min="0.5"
-                    max="12"
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
-                    placeholder="es. 2.5"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Seleziona durata</option>
+                    <option value="1">1 ora</option>
+                    <option value="2">2 ore</option>
+                  </select>
+                </div>
+
+                {/* Indirizzo di Servizio */}
+                <div>
+                  <Label htmlFor="merchantAddress">Indirizzo di Servizio *</Label>
+                  <Input
+                    id="merchantAddress"
+                    type="text"
+                    value={merchantAddress}
+                    onChange={(e) => setMerchantAddress(e.target.value)}
+                    placeholder="L'indirizzo completo dove il rider deve presentarsi"
                     required
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Può essere l'indirizzo della tua attività o qualsiasi altro indirizzo dove serve il servizio
+                  </p>
                 </div>
 
                 {/* Descrizione */}
                 <div>
-                  <Label htmlFor="description">Descrizione del Lavoro</Label>
+                  <Label htmlFor="description">Istruzioni e Comunicazioni *</Label>
                   <textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     rows={3}
-                    placeholder="Descrivi brevemente il tipo di consegna o servizio richiesto..."
+                    placeholder="Inserisci istruzioni specifiche, indirizzi, note particolari o comunicazioni per il rider..."
+                    required
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Campo obbligatorio - minimo 2 caratteri
+                  </p>
                 </div>
 
+                {/* Alert per conflitti di disponibilità */}
+                {availabilityError && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                    <strong>⚠️ Conflitto con le Disponibilità:</strong><br />
+                    {availabilityError}
+                  </div>
+                )}
+
                 {/* Riepilogo */}
-                {startDate && startTime && duration && (
-                  <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                    <h4 className="font-medium text-gray-900">Riepilogo Prenotazione</h4>
+                {startDate && startTime && duration && merchantAddress && description && description.trim().length >= 2 && (
+                  <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+                    <h4 className="font-medium text-gray-900">Riepilogo Richiesta</h4>
                     <div className="text-sm space-y-1">
                       <div className="flex justify-between">
-                        <span>Data:</span>
+                        <span>Data richiesta:</span>
                         <span>{formatDate(startDate)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Ora:</span>
+                        <span>Ora di inizio:</span>
                         <span>{startTime}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Durata:</span>
-                        <span>{duration} ore</span>
+                        <span>{duration} {duration === '1' ? 'ora' : 'ore'}</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span>Indirizzo di servizio:</span>
+                        <span className="text-right max-w-xs truncate" title={merchantAddress}>
+                          {merchantAddress}
+                        </span>
+                      </div>
+                      {description && (
+                        <div className="flex justify-between">
+                          <span>Istruzioni:</span>
+                          <span className="text-right max-w-xs truncate" title={description}>
+                            {description}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex justify-between font-medium">
-                        <span>Totale Stimato:</span>
+                        <span>Costo stimato:</span>
                         <span>{formatCurrency(calculateTotal())}</span>
                       </div>
+                    </div>
+                    <div className="mt-3 p-2 bg-blue-100 rounded text-xs text-blue-800">
+                      💡 Il rider riceverà questa richiesta e ti risponderà entro 24 ore
                     </div>
                   </div>
                 )}
 
                 <Button 
                   type="submit" 
-                  className="w-full" 
-                  disabled={bookingLoading}
+                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                  disabled={bookingLoading || !!availabilityError}
                 >
                   {bookingLoading ? (
                     <>
@@ -379,7 +541,7 @@ export default function RiderBookingPage() {
                   ) : (
                     <>
                       <Calendar className="h-4 w-4 mr-2" />
-                      Richiedi Prenotazione
+                      Verifica Disponibilità
                     </>
                   )}
                 </Button>

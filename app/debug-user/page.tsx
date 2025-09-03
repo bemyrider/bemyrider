@@ -227,7 +227,7 @@ export default function DebugUserPage() {
           {userInfo.user_metadata?.role !== profileInfo?.role && (
             <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
               <p className="text-yellow-800">
-                ⚠️ <strong>Mismatch detected!</strong> The intended role doesn't match the database role.
+                ⚠️ <strong>Mismatch detected!</strong> The intended role doesn&apos;t match the database role.
               </p>
             </div>
           )}

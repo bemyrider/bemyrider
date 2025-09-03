@@ -94,9 +94,9 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 #### 🐛 Fix e Correzioni
 
 ##### 🔧 **Pulizia Repository**
-- **Rimozione file TestSprite** dal tracking git
+- **Ottimizzazione build** e eliminazione file temporanei
 - **Aggiornamento .gitignore** per ignorare file generati
-- **Repository pulito** senza file di test automatici
+- **Repository pulito** e ottimizzato
 - **Commit history** ottimizzata
 
 #### 📱 **Funzionalità UI/UX**
@@ -121,7 +121,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 ##### 🔄 **File Aggiornati**
 - `app/dashboard/merchant/page.tsx` - Dashboard merchant completa
-- `.gitignore` - Regole per file TestSprite
+- `.gitignore` - Ottimizzazione regole ignore
 - `CHANGELOG.md` - Documentazione nuove funzionalità
 
 #### 🎯 **Impatto Utente**

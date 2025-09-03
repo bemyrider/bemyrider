@@ -1,6 +1,6 @@
-# Release Notes v1.4.0 🚀
+# Release Notes v0.4.0 🚀
 
-## bemyrider v1.4.0 - Sistema Richieste di Servizio Avanzato
+## bemyrider v0.4.0 - Sistema Richieste di Servizio Avanzato
 
 **Data di Release**: 3 Settembre 2025
 
@@ -170,7 +170,7 @@ Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 
 ### 🔮 **Prossimi Sviluppi**
 
-#### **v1.5.0 - Pianificata**
+#### **v0.5.0 - Pianificata**
 - Dashboard merchant per gestione richieste inviate
 - Dashboard rider per gestione richieste ricevute
 - Sistema di notifiche real-time per richieste
@@ -190,9 +190,9 @@ Grazie a tutti gli utenti che hanno testato il sistema di richieste di servizio 
 
 ---
 
-# Release Notes v1.1.0 🚀
+# Release Notes v0.1.0 🚀
 
-## bemyrider v1.1.0 - Dashboard Completa e UX Migliorata
+## bemyrider v0.1.0 - Dashboard Completa e UX Migliorata
 
 **Data di Release**: 1 Settembre 2025
 
@@ -386,7 +386,7 @@ Nessuna migrazione richiesta - compatibile con schema esistente.
 
 ### 🔮 **Prossimi Sviluppi**
 
-#### **v1.2.0 - Pianificata**
+#### **v0.2.0 - Pianificata**
 - Sistema di prenotazioni avanzato
 - Calendario disponibilità rider
 - Notifiche real-time

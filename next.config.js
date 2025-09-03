@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'supabase.co'],
+    domains: ['localhost', 'supabase.co', 'www.rover.com'],
   },
   // Riabilita l'icona flottante di Next.js in sviluppo
   devIndicators: {

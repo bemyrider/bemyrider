@@ -5,7 +5,101 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2025-08-31
+## [1.3.0] - 2025-01-03
+
+### 🎉 Aggiornamento Maggiore - Dashboard Merchant Completa
+
+#### ✨ Nuove Funzionalità Principali
+
+##### 🏪 **Dashboard Merchant Completa**
+- **Sezione profilo attività** completa con gestione informazioni business
+- **Modal di modifica profilo** con validazione e salvataggio automatico
+- **Gestione dati fiscali** per fatturazione e ricevute
+- **Indicatori di completamento** profilo con stato visivo
+- **Integrazione database** con tabelle `esercenti` e `esercente_tax_details`
+
+##### 📝 **Gestione Profilo Attività**
+- **Informazioni business**: Nome attività, descrizione, telefono, indirizzo
+- **Validazione campi** obbligatori e formattazione automatica
+- **Salvataggio real-time** con feedback immediato
+- **Gestione errori** completa con messaggi user-friendly
+
+##### 🏢 **Dati Fiscali Avanzati**
+- **Ragione sociale** e partita IVA per fatturazione
+- **Indirizzo fiscale** separato da quello business
+- **Validazione partita IVA** italiana (11 cifre)
+- **Modal dedicato** per gestione dati fiscali
+
+##### 🎨 **Interfaccia Utente Migliorata**
+- **Design coerente** con il resto dell'applicazione
+- **Layout responsive** per mobile e desktop
+- **Pulsanti di azione** facilmente accessibili
+- **Indicatori di stato** per completamento profilo
+
+#### 🔧 Miglioramenti Tecnici
+
+##### 🗄️ **Integrazione Database**
+- **Componenti modali** per gestione dati merchant
+- **API calls** ottimizzate per Supabase
+- **Gestione stati** con React hooks
+- **Type safety** completa con TypeScript
+
+##### 🛡️ **Validazione e Sicurezza**
+- **Validazione input** lato client e server
+- **Gestione errori** robusta con fallback
+- **Sanitizzazione dati** prima del salvataggio
+- **Controlli di accesso** per operazioni sensibili
+
+#### 🐛 Fix e Correzioni
+
+##### 🔧 **Pulizia Repository**
+- **Rimozione file TestSprite** dal tracking git
+- **Aggiornamento .gitignore** per ignorare file generati
+- **Repository pulito** senza file di test automatici
+- **Commit history** ottimizzata
+
+#### 📱 **Funzionalità UI/UX**
+
+##### 🎪 **Dashboard Merchant Rinnovata**
+- **Sezione profilo** prominente in alto
+- **Azioni rapide** per modifica profilo e dati fiscali
+- **Visualizzazione stato** completamento informazioni
+- **Navigazione intuitiva** tra sezioni
+
+##### 🔒 **Gestione Dati**
+- **Modal dedicati** per ogni tipo di informazione
+- **Salvataggio progressivo** senza perdita dati
+- **Feedback visivo** per operazioni in corso
+- **Gestione stati** di caricamento e errore
+
+#### 🛠️ File e Strutture Create/Modificate
+
+##### 📄 **Nuovi File**
+- `components/EditMerchantProfileModal.tsx` - Modal gestione profilo business
+- `components/FiscalDataMerchantModal.tsx` - Modal gestione dati fiscali
+
+##### 🔄 **File Aggiornati**
+- `app/dashboard/merchant/page.tsx` - Dashboard merchant completa
+- `.gitignore` - Regole per file TestSprite
+- `CHANGELOG.md` - Documentazione nuove funzionalità
+
+#### 🎯 **Impatto Utente**
+
+##### 🚀 **Esperienza Merchant Migliorata**
+- **Profilo completo** con tutte le informazioni necessarie
+- **Gestione facile** di dati business e fiscali
+- **Feedback immediato** per operazioni
+- **Design professionale** e intuitivo
+
+##### 🔒 **Dati Sicuri e Organizzati**
+- **Separazione** tra dati business e fiscali
+- **Validazione** automatica dei campi
+- **Salvataggio sicuro** nel database
+- **Gestione errori** user-friendly
+
+---
+
+## [1.2.0] - 2025-08-31
 
 ### 🎉 Aggiornamento Maggiore - Dashboard Completa e UX Migliorata
 

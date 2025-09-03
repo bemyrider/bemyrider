@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Store, Search, Calendar, Clock, CreditCard, User, MapPin, Plus, BookOpenCheck, Euro, Trash2
+  Store, Search, Calendar, Clock, CreditCard, User, MapPin, Plus, BookOpenCheck, Euro, Trash2, Edit, Building2, FileText
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { getProfileById } from '@/lib/supabase-direct'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
+import EditMerchantProfileModal from '@/components/EditMerchantProfileModal'
+import FiscalDataMerchantModal from '@/components/FiscalDataMerchantModal'
 import TopNavBar from '@/components/TopNavBar'
 
 type MerchantProfile = {
@@ -17,6 +19,24 @@ type MerchantProfile = {
   full_name: string | null
   avatar_url: string | null
   role: 'merchant' | 'rider'
+}
+
+type MerchantBusinessData = {
+  id: string
+  business_name: string
+  address: string | null
+  city: string | null
+  phone_number: string | null
+  description: string | null
+  profile_picture_url: string | null
+}
+
+type MerchantFiscalData = {
+  esercente_id: string
+  company_name: string | null
+  vat_number: string | null
+  address: string | null
+  city: string | null
 }
 
 type Rider = {
@@ -44,6 +64,8 @@ type Booking = {
 
 export default function MerchantDashboard() {
   const [profile, setProfile] = useState<MerchantProfile | null>(null)
+  const [merchantBusinessData, setMerchantBusinessData] = useState<MerchantBusinessData | null>(null)
+  const [merchantFiscalData, setMerchantFiscalData] = useState<MerchantFiscalData | null>(null)
   const [riders, setRiders] = useState<Rider[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,6 +73,8 @@ export default function MerchantDashboard() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loggingOut, setLoggingOut] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+  const [showFiscalDataModal, setShowFiscalDataModal] = useState(false)
   const router = useRouter()
 
   const fetchProfile = useCallback(async () => {
@@ -127,6 +151,40 @@ export default function MerchantDashboard() {
       setError('Errore nel caricamento del profilo');
     }
   }, [router]);
+
+  const fetchMerchantData = useCallback(async () => {
+    if (!profile) return;
+
+    try {
+      // Carica dati business
+      const { data: businessData, error: businessError } = await supabase
+        .from('esercenti')
+        .select('*')
+        .eq('id', profile.id)
+        .single()
+
+      if (businessError && businessError.code !== 'PGRST116') {
+        console.error('Error fetching business data:', businessError)
+      } else if (businessData) {
+        setMerchantBusinessData(businessData)
+      }
+
+      // Carica dati fiscali
+      const { data: fiscalData, error: fiscalError } = await supabase
+        .from('esercente_tax_details')
+        .select('*')
+        .eq('esercente_id', profile.id)
+        .single()
+
+      if (fiscalError && fiscalError.code !== 'PGRST116') {
+        console.error('Error fetching fiscal data:', fiscalError)
+      } else if (fiscalData) {
+        setMerchantFiscalData(fiscalData)
+      }
+    } catch (error: any) {
+      console.error('Error fetching merchant data:', error)
+    }
+  }, [profile])
 
   const fetchRiders = useCallback(async () => {
     try {
@@ -220,9 +278,10 @@ export default function MerchantDashboard() {
 
   useEffect(() => {
     if (profile) {
+      fetchMerchantData()
       fetchBookings()
     }
-  }, [profile, fetchBookings])
+  }, [profile, fetchMerchantData, fetchBookings])
 
   const filteredRiders = riders.filter(rider =>
     rider.full_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -257,6 +316,16 @@ export default function MerchantDashboard() {
       setError('Errore durante il logout');
       setLoggingOut(false);
     }
+  }
+
+  const handleProfileUpdated = (updatedProfile: MerchantBusinessData) => {
+    setMerchantBusinessData(updatedProfile)
+    console.log('✅ Profilo business aggiornato:', updatedProfile)
+  }
+
+  const handleFiscalDataUpdated = (updatedFiscalData: MerchantFiscalData) => {
+    setMerchantFiscalData(updatedFiscalData)
+    console.log('✅ Dati fiscali aggiornati:', updatedFiscalData)
   }
 
   if (loading && !profile) {
@@ -311,6 +380,132 @@ export default function MerchantDashboard() {
             {error}
           </div>
         )}
+
+        {/* Profile Section */}
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Store className="h-5 w-5" />
+                    Profilo Attività
+                  </CardTitle>
+                  <CardDescription>
+                    Gestisci le informazioni della tua attività e i dati fiscali
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowEditProfileModal(true)}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Modifica Profilo
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFiscalDataModal(true)}
+                  >
+                    <Building2 className="h-4 w-4 mr-2" />
+                    Dati Fiscali
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Business Info */}
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <Store className="h-4 w-4" />
+                    Informazioni Attività
+                  </h4>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Nome Attività:</span>
+                      <p className="text-gray-900">
+                        {merchantBusinessData?.business_name || 'Non specificato'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Descrizione:</span>
+                      <p className="text-gray-900">
+                        {merchantBusinessData?.description || 'Nessuna descrizione'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Telefono:</span>
+                      <p className="text-gray-900">
+                        {merchantBusinessData?.phone_number || 'Non specificato'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Indirizzo:</span>
+                      <p className="text-gray-900">
+                        {merchantBusinessData?.address && merchantBusinessData?.city 
+                          ? `${merchantBusinessData.address}, ${merchantBusinessData.city}`
+                          : 'Non specificato'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fiscal Info */}
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    Dati Fiscali
+                  </h4>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Ragione Sociale:</span>
+                      <p className="text-gray-900">
+                        {merchantFiscalData?.company_name || 'Non specificato'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Partita IVA:</span>
+                      <p className="text-gray-900">
+                        {merchantFiscalData?.vat_number || 'Non specificato'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Indirizzo Fiscale:</span>
+                      <p className="text-gray-900">
+                        {merchantFiscalData?.address && merchantFiscalData?.city 
+                          ? `${merchantFiscalData.address}, ${merchantFiscalData.city}`
+                          : 'Non specificato'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status Indicators */}
+              <div className="mt-6 pt-6 border-t">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${merchantBusinessData ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                    <span className="text-sm text-gray-600">
+                      Profilo Attività {merchantBusinessData ? 'Completato' : 'Incompleto'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${merchantFiscalData ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                    <span className="text-sm text-gray-600">
+                      Dati Fiscali {merchantFiscalData ? 'Completati' : 'Incompleti'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Stats */}
@@ -513,7 +708,10 @@ export default function MerchantDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:shadow-md transition-shadow">
+            <Card 
+              className="cursor-pointer hover:shadow-md transition-shadow" 
+              onClick={() => setShowEditProfileModal(true)}
+            >
               <CardContent className="p-6 text-center">
                 <User className="h-12 w-12 text-purple-600 mx-auto mb-4" />
                 <h3 className="font-semibold text-gray-900 mb-2">Profilo Esercente</h3>
@@ -529,6 +727,22 @@ export default function MerchantDashboard() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         userRole="merchant"
+      />
+
+      {/* Edit Profile Modal */}
+      <EditMerchantProfileModal
+        isOpen={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+        profileId={profile?.id || ''}
+        onProfileUpdated={handleProfileUpdated}
+      />
+
+      {/* Fiscal Data Modal */}
+      <FiscalDataMerchantModal
+        isOpen={showFiscalDataModal}
+        onClose={() => setShowFiscalDataModal(false)}
+        profileId={profile?.id || ''}
+        onFiscalDataUpdated={handleFiscalDataUpdated}
       />
     </div>
   )

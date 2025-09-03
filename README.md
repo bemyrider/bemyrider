@@ -11,6 +11,36 @@
 🏪 **Per Esercenti**: Trova e prenota rider qualificati per le tue consegne  
 🚴‍♂️ **Per Rider**: Monetizza il tuo tempo con tariffe personalizzate
 
+## 🚀 Deployment su Vercel
+
+### Configurazione Variabili d'Ambiente
+
+Per il deployment su Vercel, configura queste variabili d'ambiente nel dashboard:
+
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Database (opzionale per Drizzle)
+DATABASE_URL=postgres://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+
+# Stripe Configuration
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
+```
+
+**Come ottenere le chiavi Supabase:**
+1. Vai su [Supabase Dashboard](https://supabase.com/dashboard)
+2. Seleziona il tuo progetto
+3. Vai su **Settings** → **API**
+4. Copia `URL` e `anon public` key
+
 ## 🚀 Caratteristiche Principali
 
 ### Per i Rider

@@ -2,7 +2,7 @@
 
 ## bemyrider v1.4.0 - Sistema Richieste di Servizio Avanzato
 
-**Data di Release**: 3 Gennaio 2025
+**Data di Release**: 3 Settembre 2025
 
 ---
 

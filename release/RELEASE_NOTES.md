@@ -1,136 +1,141 @@
-# Release Notes v1.2.0 🚀
+# Release Notes v1.4.0 🚀
 
-## bemyrider v1.2.0 - Localizzazione e Gestione Account Avanzata
+## bemyrider v1.4.0 - Sistema Richieste di Servizio Avanzato
 
-**Data di Release**: 2 Settembre 2025
+**Data di Release**: 3 Gennaio 2025
 
 ---
 
 ### 🎉 **Highlights di questa Release**
 
-Questa release introduce funzionalità di **localizzazione geografica** per i rider e un sistema avanzato di **gestione account** con eliminazione sicura e pulizia automatica del database.
+Questa release introduce un **sistema completo di richieste di servizio** con validazione intelligente delle disponibilità rider, form avanzato per merchant e controlli di sicurezza enterprise-grade.
 
 #### 🏆 **Risultati Principali**
-- ✅ **Sistema di localizzazione geografica** per ricerca rider
-- ✅ **Filtro ricerca per località** nella pagina marketplace
-- ✅ **Gestione account sicura** con eliminazione in cascata
-- ✅ **Pulizia automatica database** da record orfani
-- ✅ **API admin** per manutenzione e testing
-- ✅ **Database schema ottimizzato** con nuove colonne
+- ✅ **Sistema richieste di servizio** completo con validazione disponibilità
+- ✅ **Form di richiesta avanzato** con controlli intelligenti
+- ✅ **Validazione disponibilità rider** in tempo reale
+- ✅ **Campo indirizzo di servizio** flessibile per merchant
+- ✅ **Validazione istruzioni obbligatorie** con controlli di qualità
+- ✅ **Alert visivi** per conflitti di disponibilità
 
 ---
 
 ### 🚀 **Cosa C'è di Nuovo**
 
-#### 1. 📍 **Sistema di Localizzazione Geografica**
-I rider possono ora specificare la loro località attiva per migliorare la ricerca:
-- **Campo "Località Attiva"** nel profilo rider con validazione
-- **Filtro ricerca geografica** nella pagina `/riders` con icona MapPin
-- **Visualizzazione località** nelle card rider e dashboard merchant
-- **Integrazione completa** con il sistema di ricerca esistente
-- **Supporto multilingua** per nomi città italiane
+#### 1. 🚀 **Sistema Richieste di Servizio Completo**
+I merchant possono ora inviare richieste di servizio ai rider con validazione intelligente:
+- **Form di richiesta avanzato** con controlli di validazione in tempo reale
+- **Validazione disponibilità rider** automatica per giorni e orari
+- **Campo indirizzo di servizio** flessibile per indirizzi diversi dall'attività
+- **Validazione istruzioni obbligatorie** con minimo 2 caratteri
+- **Alert visivi** per conflitti di disponibilità con messaggi specifici
+- **Prevenzione errori** con disabilitazione pulsante in caso di conflitti
 
-#### 2. 🔍 **Filtro Ricerca Avanzato**
-Miglioramenti significativi al sistema di ricerca rider:
-- **Filtro per località** con ricerca case-insensitive
-- **Icona MapPin** per identificazione visiva immediata
-- **Reset filtri** che include la località
-- **Layout responsive** con griglia ottimizzata per 5 filtri
-- **Performance migliorate** con query ottimizzate
+#### 2. 📅 **Controlli Temporali Intelligenti**
+Sistema avanzato per la gestione delle disponibilità:
+- **Calendario limitato** a 7 giorni massimo per le richieste
+- **Dropdown durata** con opzioni "1 ora" o "2 ore"
+- **Validazione giorni disponibili** del rider in tempo reale
+- **Controllo orari** per verificare che il servizio rientri nelle fasce disponibili
+- **Calcolo automatico** dell'orario di fine servizio
 
-#### 3. 🗑️ **Sistema di Eliminazione Account Avanzato**
-Gestione completa e sicura degli account utente:
-- **API endpoint sicura** `/api/account/delete` con eliminazione in cascata
-- **Eliminazione automatica** di tutti i dati correlati (bookings, reviews, tax details)
-- **Integrazione Supabase Auth** per rimozione completa
-- **Modal di conferma** con doppia verifica per sicurezza
-- **Logging dettagliato** per audit trail
+#### 3. 🎨 **Form di Richiesta Avanzato**
+Interfaccia utente migliorata per l'invio richieste:
+- **Riepilogo dinamico** con validazione completa
+- **Feedback immediato** per errori di validazione
+- **Messaggi di errore specifici** e informativi
+- **Campo indirizzo di servizio** con placeholder descrittivo
+- **Istruzioni e comunicazioni** obbligatorie con validazione qualità
 
-#### 4. 🧹 **Pulizia Database Automatica**
-Sistema di manutenzione per integrità dati:
-- **Endpoint admin** `/api/admin/cleanup-orphans` per pulizia record orfani
-- **Script automatizzato** per eliminazione utenti di test
-- **Funzione SQL** `find_orphaned_profiles()` per identificazione automatica
-- **Trigger database** per prevenzione futuri record orfani
-- **Endpoint di test** per verifica funzionalità eliminazione
+#### 4. 🛡️ **Sicurezza e Validazione**
+Sistema di sicurezza enterprise-grade:
+- **Validazione doppia** client-side e server-side
+- **RLS attivo** per tabella service_requests
+- **Politiche di accesso** specifiche per merchant e rider
+- **Controlli di integrità** completi per tutti i campi
+- **Prevenzione conflitti** di disponibilità automatica
 
-#### 5. 🏪 **Dashboard Merchant Potenziata**
-Miglioramenti alla visualizzazione rider per merchant:
-- **Località rider** visibile nella sezione "Rider Disponibili"
-- **Icona MapPin** per identificazione geografica immediata
-- **Query ottimizzate** per performance migliorate
-- **Filtro Stripe** rimosso per mostrare tutti i rider attivi
-- **Layout migliorato** con informazioni geografiche
+#### 5. 🗄️ **Database Schema Avanzato**
+Nuova architettura per le richieste di servizio:
+- **Tabella service_requests** con RLS e relazioni complete
+- **Campo merchant_address** obbligatorio per flessibilità
+- **Enum ServiceRequestStatus** per gestione stati
+- **Relazioni** merchant-rider-requests ottimizzate
+- **Indici** per performance migliorate
 
-#### 6. 🎨 **UI/UX Miglioramenti**
-Aggiornamenti all'interfaccia utente:
-- **Icona MapPin** consistente in tutta l'applicazione
-- **Placeholder informativi** per campo località
-- **Validazione real-time** per input località
-- **Feedback visivo** per operazioni di eliminazione
-- **Design responsive** per tutti i nuovi componenti
+#### 6. 🔧 **API Endpoints Potenziati**
+Nuovi endpoint per la gestione richieste:
+- **POST /api/service-requests** per creazione richieste
+- **GET /api/service-requests** per recupero richieste
+- **PUT /api/service-requests/[id]/respond** per risposte rider
+- **Validazione completa** input con controlli di sicurezza
+- **Gestione errori** robusta con messaggi informativi
 
 ---
 
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 🗄️ **Database Schema Updates**
-- **Nuova colonna** `active_location` in `riders_details` table
-- **Indice ottimizzato** per ricerche geografiche
-- **Migration SQL** `0003_add_active_location.sql` per deployment
-- **RLS policies** aggiornate per ricerca pubblica
-- **Funzione SQL** per identificazione profili orfani
+- **Nuova tabella** `service_requests` con RLS e relazioni complete
+- **Enum ServiceRequestStatus** per gestione stati richieste
+- **Campo merchant_address** obbligatorio per flessibilità indirizzi
+- **Migration SQL** `0003_white_firedrake.sql` per deployment
+- **RLS policies** specifiche per accesso merchant e rider
+- **Indici ottimizzati** per performance query richieste
 
 #### 🛡️ **Sicurezza e Integrità**
-- **Cascade deletion** per mantenimento integrità referenziale
-- **Admin endpoints** con autenticazione e autorizzazione
-- **Input validation** per tutti i nuovi campi
-- **Error handling** robusto per operazioni critiche
-- **Audit logging** per operazioni di eliminazione
+- **Validazione doppia** client-side e server-side per tutti i campi
+- **RLS attivo** per tabella service_requests con politiche specifiche
+- **Controlli di integrità** per prevenzione conflitti disponibilità
+- **Error handling** robusto con messaggi informativi
+- **Input validation** rigorosa per tutti i nuovi endpoint
 
 #### 📦 **Nuove Dipendenze**
-- **dotenv**: per gestione variabili ambiente negli script
-- **Scripts Node.js** per automazione operazioni database
-- **Admin API routes** per manutenzione sistema
+- **Drizzle ORM** per gestione schema database
+- **TypeScript types** aggiornati per service requests
+- **API routes** per gestione richieste di servizio
+- **Componenti React** per form di richiesta avanzato
 
 #### 🏗️ **Architettura**
-- **TypeScript interfaces** aggiornate per localizzazione
-- **Componenti modulari** per gestione località
-- **API routes** organizzate per funzionalità admin
-- **Database utilities** per operazioni di manutenzione
-- **Error boundaries** per gestione errori critici
+- **TypeScript interfaces** per service requests e validazione
+- **Componenti modulari** per form di richiesta e validazione
+- **API routes** organizzate per gestione richieste
+- **Validazione real-time** con useEffect e controlli intelligenti
+- **Error boundaries** per gestione errori di validazione
 
 ---
 
 ### 🐛 **Fix e Correzioni**
 
 #### ✅ **Risolti**
-- **RLS policies** corrette per accesso pubblico ai rider details
-- **Query Supabase** ottimizzate per performance migliorate
-- **Record orfani** eliminati dal database
-- **Trigger database** problematici disattivati
-- **Configurazione Next.js** per dev indicators
-- **Font loading** con fallback per problemi di connessione
+- **RLS policies** corrette per accesso pubblico alle disponibilità rider
+- **Validazione disponibilità** ora funziona correttamente con dati reali
+- **Campo merchant_address** reso obbligatorio per completezza richieste
+- **Validazione istruzioni** implementata con controlli di qualità
+- **Script prepare-release.sh** migliorato per ignorare file .gitignore
+- **Build errors** risolti per compatibilità TypeScript
+- **File API temporanei** rimossi per pulizia repository
 
 ---
 
 ### 📱 **Impact sull'Esperienza Utente**
 
-#### 🚀 **Prima della v1.2.0**
-- Ricerca rider limitata a nome e descrizione
-- Nessuna informazione geografica disponibile
-- Eliminazione account manuale e rischiosa
-- Database con record orfani
-- Dashboard merchant con rider limitati
+#### 🚀 **Prima della v1.4.0**
+- Pulsante "Richiedi Prenotazione" non funzionante
+- Nessuna validazione delle disponibilità rider
+- Form di richiesta limitato e senza controlli
+- Possibilità di inviare richieste in conflitto con disponibilità
+- Nessun feedback visivo per errori di validazione
 
-#### ✨ **Dopo la v1.2.0**
-- **Ricerca geografica avanzata** per trovare rider locali
-- **Informazioni località** visibili in tutte le interfacce
-- **Eliminazione account sicura** con conferma doppia
-- **Database pulito** e ottimizzato
-- **Dashboard merchant completa** con tutti i rider attivi
-- **Filtri di ricerca** più potenti e intuitivi
-- **Gestione admin** per manutenzione sistema
+#### ✨ **Dopo la v1.4.0**
+- **Sistema richieste di servizio** completamente funzionale
+- **Validazione disponibilità** in tempo reale con controlli intelligenti
+- **Form di richiesta avanzato** con validazione completa
+- **Prevenzione conflitti** automatica con alert visivi
+- **Feedback immediato** per errori di validazione
+- **Controlli temporali** per giorni e orari disponibili
+- **Campo indirizzo flessibile** per servizi in diverse località
+- **Validazione qualità** per istruzioni e comunicazioni
 
 ---
 
@@ -146,8 +151,7 @@ npm install
 
 # Applica migration database
 # Eseguire manualmente in Supabase SQL Editor:
-# ALTER TABLE riders_details ADD COLUMN active_location VARCHAR(100) DEFAULT 'Milano' NOT NULL;
-# CREATE INDEX idx_riders_details_active_location ON riders_details(active_location);
+# Migration 0003_white_firedrake.sql già applicata automaticamente
 
 # Avvia in modalità sviluppo
 npm run dev
@@ -157,30 +161,32 @@ npm run dev
 Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 
 #### **Database Migrations**
-- **Migration richiesta**: `0003_add_active_location.sql`
-- **Indici**: `idx_riders_details_active_location` per performance
-- **Funzioni SQL**: `find_orphaned_profiles()` per manutenzione
+- **Migration applicata**: `0003_white_firedrake.sql` per tabella service_requests
+- **RLS policies**: Attivate per tabella service_requests
+- **Enum**: ServiceRequestStatus per gestione stati richieste
+- **Indici**: Ottimizzati per performance query richieste
 
 ---
 
 ### 🔮 **Prossimi Sviluppi**
 
-#### **v1.3.0 - Pianificata**
-- Sistema di prenotazioni con localizzazione
-- Mappa interattiva per selezione zona
-- Notifiche geografiche per rider vicini
-- Sistema di rating basato su località
+#### **v1.5.0 - Pianificata**
+- Dashboard merchant per gestione richieste inviate
+- Dashboard rider per gestione richieste ricevute
+- Sistema di notifiche real-time per richieste
+- Calendario disponibilità rider interattivo
+- Sistema di rating e recensioni post-servizio
 
 #### **Feedback e Contributi**
-Questa release migliora significativamente la capacità di ricerca e gestione della piattaforma. Continua a condividere i tuoi suggerimenti!
+Questa release introduce un sistema completo di richieste di servizio con validazione intelligente. Continua a condividere i tuoi suggerimenti per migliorare l'esperienza!
 
 ---
 
 ### 🙏 **Ringraziamenti**
 
-Grazie a tutti gli utenti che hanno testato le funzionalità di localizzazione e fornito feedback per migliorare l'esperienza di ricerca rider.
+Grazie a tutti gli utenti che hanno testato il sistema di richieste di servizio e fornito feedback per migliorare l'esperienza di validazione disponibilità e gestione richieste.
 
-**Happy Localized Riding! 🚴‍♂️📍🏪**
+**Happy Service Requesting! 🚴‍♂️📋🏪**
 
 ---
 

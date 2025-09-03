@@ -5,6 +5,38 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2025-09-04
+
+### 🔧 Aggiornamento - Gestione Richieste e Configurazione Drizzle
+
+#### ✨ Nuove Funzionalità
+
+##### 🛠️ **Gestione Richieste di Servizio**
+- **Modal di modifica richieste** completo con validazione e riepilogo
+- **Funzionalità di eliminazione** richieste con conferma e feedback
+- **Policy RLS** per aggiornamento e eliminazione richieste
+- **Interfaccia utente migliorata** per gestione richieste merchant
+
+##### 🔧 **Configurazione Drizzle ORM**
+- **Configurazione ufficiale** seguendo la documentazione Supabase
+- **Workflow migrazioni** funzionante con `generate` + `migrate`
+- **Schema database** completamente sincronizzato
+- **Connessione database** ottimizzata e stabile
+
+#### 🐛 Correzioni
+- **Pulsanti Modifica/Elimina** ora funzionanti correttamente
+- **Chiavi API Supabase** aggiornate alla versione corretta
+- **Build process** ottimizzato e stabile
+
+#### 📁 File Aggiornati
+- `components/EditServiceRequestModal.tsx` - Nuovo modal per modifica richieste
+- `app/dashboard/merchant/requests/page.tsx` - Gestione richieste completa
+- `drizzle.config.ts` - Configurazione ufficiale Drizzle
+- `lib/supabase.ts` - Chiavi API aggiornate
+- `app/api/stripe/*` - Chiavi API aggiornate
+
+---
+
 ## [0.4.0] - 2025-09-03
 
 ### 🎉 Aggiornamento Maggiore - Sistema Richieste di Servizio Avanzato

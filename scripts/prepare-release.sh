@@ -42,10 +42,11 @@ fi
 VERSION=$(grep '"version"' package.json | sed 's/.*"version": "\([^"]*\)".*/\1/')
 echo -e "\n${BLUE}📦 Versione attuale: $VERSION${NC}"
 
-# Verifica che non ci siano modifiche non committate
-if [ -n "$(git status --porcelain)" ]; then
+# Verifica che non ci siano modifiche non committate (escludendo file ignorati)
+UNTRACKED_FILES=$(git status --porcelain | grep -v '^??' | grep -v '^!!')
+if [ -n "$UNTRACKED_FILES" ]; then
     print_warning "Ci sono modifiche non committate:"
-    git status --short
+    echo "$UNTRACKED_FILES"
     echo ""
     read -p "Vuoi continuare comunque? (y/N): " -n 1 -r
     echo ""

@@ -5,7 +5,9 @@
 
 set -e
 
-echo "🚀 Preparazione Release bemyrider v1.2.0"
+# Verifica versione in package.json
+VERSION=$(grep '"version"' package.json | sed 's/.*"version": "\([^"]*\)".*/\1/')
+echo "🚀 Preparazione Release bemyrider v$VERSION"
 echo "========================================="
 
 # Colori per output
@@ -38,8 +40,6 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
-# Verifica versione in package.json
-VERSION=$(grep '"version"' package.json | sed 's/.*"version": "\([^"]*\)".*/\1/')
 echo -e "\n${BLUE}📦 Versione attuale: $VERSION${NC}"
 
 # Verifica che non ci siano modifiche non committate (escludendo file ignorati)

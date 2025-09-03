@@ -5,7 +5,7 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] - 2025-01-03
+## [0.4.0] - 2025-09-03
 
 ### 🎉 Aggiornamento Maggiore - Sistema Richieste di Servizio Avanzato
 
@@ -46,7 +46,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 ---
 
-## [1.3.0] - 2025-01-03
+## [0.3.0] - 2025-01-03
 
 ### 🎉 Aggiornamento Maggiore - Dashboard Merchant Completa
 
@@ -94,9 +94,9 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 #### 🐛 Fix e Correzioni
 
 ##### 🔧 **Pulizia Repository**
-- **Rimozione file TestSprite** dal tracking git
+- **Ottimizzazione build** e eliminazione file temporanei
 - **Aggiornamento .gitignore** per ignorare file generati
-- **Repository pulito** senza file di test automatici
+- **Repository pulito** e ottimizzato
 - **Commit history** ottimizzata
 
 #### 📱 **Funzionalità UI/UX**
@@ -121,7 +121,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 ##### 🔄 **File Aggiornati**
 - `app/dashboard/merchant/page.tsx` - Dashboard merchant completa
-- `.gitignore` - Regole per file TestSprite
+- `.gitignore` - Ottimizzazione regole ignore
 - `CHANGELOG.md` - Documentazione nuove funzionalità
 
 #### 🎯 **Impatto Utente**
@@ -140,7 +140,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 ---
 
-## [1.2.0] - 2025-08-31
+## [0.2.0] - 2025-08-31
 
 ### 🎉 Aggiornamento Maggiore - Dashboard Completa e UX Migliorata
 
@@ -291,7 +291,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 
 ---
 
-## [1.0.0] - 2024-01-17
+## [0.1.0] - 2024-01-17
 
 ### 🎉 Prima Release Stabile
 
@@ -359,13 +359,13 @@ bemyrider/
 
 ## Versioni Future
 
-### [1.1.0] - Pianificata
+### [0.1.0] - Pianificata
 - Sistema di prenotazioni
 - Calendario disponibilità rider
 - Notifiche real-time
 - Dashboard esercenti
 
-### [1.2.0] - Pianificata
+### [0.2.0] - Pianificata
 - Sistema di rating e recensioni
 - Tracking GPS consegne
 - Report e analytics

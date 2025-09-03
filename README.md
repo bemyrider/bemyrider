@@ -90,11 +90,22 @@ STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
+#### Come ottenere le chiavi Supabase:
+1. **Vai al tuo progetto Supabase** su https://supabase.com
+2. **Settings → API**
+3. **Copia:**
+   - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
+   - **anon/public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **service_role key** → `SUPABASE_SERVICE_ROLE_KEY` ⚠️ **Questa chiave è segreta!**
+
+**⚠️ IMPORTANTE**: La `SUPABASE_SERVICE_ROLE_KEY` ha privilegi amministrativi completi. Non condividerla mai pubblicamente e usala solo per operazioni server-side come le migrations Drizzle.
+
 ### 4. Setup Database con Drizzle ORM
 
 #### Opzione A: Drizzle Migrations (Raccomandato)
 ```bash
-# Applica le migrations Drizzle
+# Assicurati di avere SUPABASE_SERVICE_ROLE_KEY nel .env.local
+# Applica le migrations Drizzle al database Supabase
 npm run db:push
 
 # Le migrations includono automaticamente:

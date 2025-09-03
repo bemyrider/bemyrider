@@ -44,8 +44,8 @@ export default function RiderBookingPage() {
   const [startDate, setStartDate] = useState('')
   const [startTime, setStartTime] = useState('')
   const [duration, setDuration] = useState('')
-  const [description, setDescription] = useState('')
   const [merchantAddress, setMerchantAddress] = useState('')
+  const [description, setDescription] = useState('')
   const [availabilityError, setAvailabilityError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -181,8 +181,11 @@ export default function RiderBookingPage() {
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!startDate || !startTime || !duration || !merchantAddress || !description || description.trim().length < 2) {
+    console.log('🚀 handleBookingSubmit called')
+    console.log('📝 Form data:', { startDate, startTime, duration, description })
+
+    if (!startDate || !startTime || !duration || !description || description.trim().length < 2) {
+      console.log('❌ Validation failed - missing required fields')
       toast({
         title: "Errore",
         description: "Compila tutti i campi obbligatori. Le istruzioni devono contenere almeno 2 caratteri."
@@ -191,14 +194,20 @@ export default function RiderBookingPage() {
     }
 
     // Validazione disponibilità
+    console.log('🔍 Validating availability...')
     const validation = validateAvailability()
+    console.log('🔍 Validation result:', validation)
+
     if (!validation.isValid) {
+      console.log('❌ Availability validation failed')
       toast({
         title: "Conflitto con le Disponibilità",
         description: validation.message
       })
       return
     }
+
+    console.log('✅ Validation passed, proceeding with booking...')
 
     setBookingLoading(true)
     
@@ -215,32 +224,32 @@ export default function RiderBookingPage() {
         return
       }
 
-      // Chiamata API per creare service request
-      const response = await fetch('/api/service-requests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          riderId: rider?.id,
-          startDate,
-          startTime,
-          duration,
-          description,
-          merchantAddress,
-          userId: user.id
+      // Creazione diretta della service request tramite Supabase
+      const { data: serviceRequest, error: serviceError } = await supabase
+        .from('service_requests')
+        .insert({
+          merchant_id: user.id,
+          rider_id: rider?.id,
+          requested_date: new Date(startDate + 'T' + startTime).toISOString(),
+          start_time: startTime,
+          duration_hours: parseFloat(duration),
+          merchant_address: merchantAddress,
+          description: description,
+          status: 'pending'
         })
-      })
+        .select()
+        .single()
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Errore durante l\'invio della richiesta di servizio')
+      if (serviceError) {
+        console.error('❌ Error creating service request:', serviceError)
+        throw new Error('Errore nella creazione della richiesta di servizio')
       }
+
+      console.log('✅ Service request created:', serviceRequest)
 
       toast({
         title: "Richiesta Inviata!",
-        description: result.request.message || `Richiesta di servizio inviata a ${rider?.full_name}. Riceverai una risposta entro 24 ore.`,
+        description: `Richiesta di servizio inviata a ${rider?.full_name}. Riceverai una risposta entro 24 ore.`,
       })
       
       // Redirect alla dashboard merchant
@@ -507,7 +516,7 @@ export default function RiderBookingPage() {
                         <span>{duration} {duration === '1' ? 'ora' : 'ore'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Indirizzo di servizio:</span>
+                        <span>Indirizzo:</span>
                         <span className="text-right max-w-xs truncate" title={merchantAddress}>
                           {merchantAddress}
                         </span>

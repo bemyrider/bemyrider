@@ -52,6 +52,24 @@ type Rider = {
   }
 }
 
+type ServiceRequest = {
+  id: string
+  merchant_id: string
+  rider_id: string
+  requested_date: string
+  start_time: string
+  duration_hours: number
+  description: string | null
+  status: 'pending' | 'accepted' | 'rejected' | 'expired'
+  rider_response: string | null
+  created_at: string
+  updated_at: string
+  rider: {
+    full_name: string
+    avatar_url: string | null
+  }
+}
+
 type Booking = {
   id: string
   start_time: string
@@ -69,6 +87,7 @@ export default function MerchantDashboard() {
   const [merchantFiscalData, setMerchantFiscalData] = useState<MerchantFiscalData | null>(null)
   const [riders, setRiders] = useState<Rider[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -268,6 +287,56 @@ export default function MerchantDashboard() {
     }
   }, [profile])
 
+  const fetchServiceRequests = useCallback(async () => {
+    if (!profile) return;
+
+    try {
+      console.log('🔍 Fetching service requests for merchant...');
+
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('service_requests')
+        .select(`
+          id,
+          merchant_id,
+          rider_id,
+          requested_date,
+          start_time,
+          duration_hours,
+          description,
+          status,
+          rider_response,
+          created_at,
+          updated_at,
+          rider:profiles!rider_id (
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('merchant_id', profile.id)
+        .order('created_at', { ascending: false })
+        .limit(10)
+
+      if (requestsError) {
+        throw requestsError
+      }
+
+      // Trasforma i dati per assicurarsi che rider sia un oggetto
+      const transformedRequests = (requestsData || []).map(request => ({
+        ...request,
+        rider: Array.isArray(request.rider)
+          ? request.rider[0]
+          : request.rider
+      })).filter(request => request.rider) // Filtra richieste senza rider
+
+      console.log('✅ Service requests loaded:', transformedRequests.length)
+      setServiceRequests(transformedRequests)
+    } catch (error: any) {
+      console.error('Error fetching service requests:', error);
+      setError('Errore nel caricamento delle richieste di servizio');
+      setServiceRequests([]);
+    }
+  }, [profile])
+
   useEffect(() => {
     const initializeData = async () => {
       await fetchProfile()
@@ -281,8 +350,9 @@ export default function MerchantDashboard() {
     if (profile) {
       fetchMerchantData()
       fetchBookings()
+      fetchServiceRequests()
     }
-  }, [profile, fetchMerchantData, fetchBookings])
+  }, [profile, fetchMerchantData, fetchBookings, fetchServiceRequests])
 
   const filteredRiders = riders.filter(rider =>
     rider.full_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -685,6 +755,96 @@ export default function MerchantDashboard() {
                   </Button>
                 )}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Service Requests */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpenCheck className="h-5 w-5" />
+                Richieste di Servizio
+              </CardTitle>
+              <CardDescription>
+                Gestisci le richieste di servizio inviate ai rider
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {serviceRequests.length > 0 ? (
+                  serviceRequests.slice(0, 5).map((request) => (
+                    <div key={request.id} className="p-3 border rounded-lg hover:bg-gray-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                            {request.rider.avatar_url ? (
+                              <Image
+                                src={request.rider.avatar_url}
+                                alt={request.rider.full_name}
+                                width={32}
+                                height={32}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold text-sm">
+                                {request.rider.full_name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{request.rider.full_name}</p>
+                            <p className="text-sm text-gray-600">
+                              {new Date(request.requested_date).toLocaleDateString('it-IT')} alle {request.start_time}
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          request.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                          request.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          request.status === 'expired' ? 'bg-gray-100 text-gray-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {request.status === 'pending' ? 'In Attesa' :
+                           request.status === 'accepted' ? 'Accettata' :
+                           request.status === 'rejected' ? 'Rifiutata' :
+                           request.status === 'expired' ? 'Scaduta' : 'Completata'}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <p>{request.duration_hours}h di servizio</p>
+                        {request.description && (
+                          <p className="text-xs text-gray-500 truncate">{request.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <BookOpenCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-4">Nessuna richiesta di servizio ancora inviata</p>
+                    <Button onClick={() => router.push('/riders')}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Invia Prima Richiesta
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {serviceRequests.length > 0 && (
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => router.push('/dashboard/merchant/requests')}
+                  >
+                    Gestisci Richieste
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    Visualizza Tutte
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

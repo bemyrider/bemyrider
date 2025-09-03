@@ -8,6 +8,7 @@ import {
   Store, Search, Calendar, Clock, CreditCard, User, MapPin, Plus, BookOpenCheck, Euro, Trash2, Edit, Building2, FileText
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 import { getProfileById } from '@/lib/supabase-direct'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
 import EditMerchantProfileModal from '@/components/EditMerchantProfileModal'
@@ -596,7 +597,7 @@ export default function MerchantDashboard() {
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
                           {rider.avatar_url ? (
-                            <img src={rider.avatar_url} alt={rider.full_name} className="w-full h-full object-cover" />
+                            <Image src={rider.avatar_url} alt={rider.full_name} width={40} height={40} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold">
                               {rider.full_name.split(' ').map(n => n[0]).join('')}

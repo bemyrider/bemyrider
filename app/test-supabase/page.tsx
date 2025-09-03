@@ -101,7 +101,7 @@ export default function TestSupabase() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
           <h2 className="text-blue-800 font-semibold mb-2">ℹ️ Test RPC Functions</h2>
           <p className="text-blue-700 text-sm">
-            This test uses RPC functions to bypass PostgREST's schema cache issues (PGRST002 error).
+            This test uses RPC functions to bypass PostgREST&apos;s schema cache issues (PGRST002 error).
             RPC functions work directly with the database and should succeed even when regular table queries fail.
           </p>
         </div>

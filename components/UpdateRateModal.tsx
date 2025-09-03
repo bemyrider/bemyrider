@@ -223,7 +223,7 @@ export default function UpdateRateModal({ riderId, currentRate, onClose }: Updat
               <li>• <strong>Tariffa max:</strong> €12,50/ora</li>
               <li>• <strong>Durata max:</strong> 2 ore per prenotazione</li>
               <li>• <strong>Totale max:</strong> €25,00 (&lt; €25,82)</li>
-              <li>• <strong>Vantaggio:</strong> Nessuna ritenuta d'acconto</li>
+              <li>• <strong>Vantaggio:</strong> Nessuna ritenuta d&apos;acconto</li>
             </ul>
             <p className="text-xs text-green-600 mt-2 italic">
               Fonte: <a 

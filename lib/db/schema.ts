@@ -6,6 +6,7 @@ export const vehicleTypeEnum = pgEnum('VehicleType', ['bici', 'e_bike', 'scooter
 export const dayOfWeekEnum = pgEnum('DayOfWeek', ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']);
 export const statusEnum = pgEnum('Status', ['in_attesa', 'confermata', 'in_corso', 'completata', 'annullata']);
 export const paymentStatusEnum = pgEnum('PaymentStatus', ['in_attesa', 'pagato', 'rimborsato']);
+export const serviceRequestStatusEnum = pgEnum('ServiceRequestStatus', ['pending', 'accepted', 'rejected', 'expired']);
 
 // Profile table (compatible with existing Supabase schema)
 export const profiles = pgTable('profiles', {
@@ -65,6 +66,22 @@ export const prenotazioni = pgTable('prenotazioni', {
   status: statusEnum('status').notNull(),
   paymentStatus: paymentStatusEnum('payment_status').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Service Requests table (richieste di servizio prima della prenotazione)
+export const serviceRequests = pgTable('service_requests', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  merchantId: uuid('merchant_id').notNull(),
+  riderId: uuid('rider_id').notNull(),
+  requestedDate: timestamp('requested_date', { mode: 'date' }).notNull(),
+  startTime: time('start_time').notNull(),
+  durationHours: decimal('duration_hours', { precision: 5, scale: 2 }).notNull(),
+  description: text('description'),
+  merchantAddress: text('merchant_address').notNull(),
+  status: serviceRequestStatusEnum('status').notNull().default('pending'),
+  riderResponse: text('rider_response'), // Motivazione accettazione/rifiuto
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 // Recensioni table (ora rider_id punta a profiles)
@@ -168,6 +185,17 @@ export const prenotazioniRelations = relations(prenotazioni, ({ one }) => ({
   receipt: one(occasionalPerformanceReceipts, {
     fields: [prenotazioni.id],
     references: [occasionalPerformanceReceipts.prenotazioneId],
+  }),
+}));
+
+export const serviceRequestsRelations = relations(serviceRequests, ({ one }) => ({
+  merchant: one(profiles, {
+    fields: [serviceRequests.merchantId],
+    references: [profiles.id],
+  }),
+  rider: one(profiles, {
+    fields: [serviceRequests.riderId],
+    references: [profiles.id],
   }),
 }));
 

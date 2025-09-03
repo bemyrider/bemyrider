@@ -5,6 +5,47 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-01-03
+
+### 🎉 Aggiornamento Maggiore - Sistema Richieste di Servizio Avanzato
+
+#### ✨ Nuove Funzionalità Principali
+
+##### 🚀 **Sistema Richieste di Servizio Completo**
+- **Validazione disponibilità rider** in tempo reale con controlli intelligenti
+- **Form di richiesta avanzato** con validazione client-side e server-side
+- **Campo indirizzo di servizio** flessibile per indirizzi diversi dall'attività
+- **Validazione istruzioni obbligatorie** con minimo 2 caratteri
+- **Alert visivi** per conflitti di disponibilità con messaggi specifici
+- **Controlli temporali** per giorni e orari disponibili del rider
+- **Prevenzione errori** con disabilitazione pulsante in caso di conflitti
+
+##### 🔧 **Miglioramenti UX/UI**
+- **Calendario limitato** a 7 giorni massimo per le richieste
+- **Dropdown durata** con opzioni "1 ora" e "2 ore"
+- **Riepilogo dinamico** che appare solo con campi validi
+- **Feedback immediato** per validazione disponibilità
+- **Messaggi di errore** chiari e specifici
+
+##### 🛡️ **Sicurezza e Validazione**
+- **Row Level Security (RLS)** attivato per tabella `service_requests`
+- **Politiche di accesso** specifiche per merchant e rider
+- **Validazione doppia** client-side e server-side
+- **Controlli di integrità** per tutti i campi obbligatori
+
+#### 🗄️ **Aggiornamenti Database**
+- **Tabella `service_requests`** con RLS attivo e politiche di sicurezza
+- **Campo `merchant_address`** obbligatorio per indirizzi di servizio
+- **Enum `ServiceRequestStatus`** per gestione stati richieste
+- **Relazioni** tra merchant, rider e richieste di servizio
+
+#### 🧹 **Pulizia e Ottimizzazione**
+- **Rimozione file temporanei** API di debug
+- **Correzione tipi TypeScript** per compatibilità build
+- **Ottimizzazione validazioni** per performance migliori
+
+---
+
 ## [1.3.0] - 2025-01-03
 
 ### 🎉 Aggiornamento Maggiore - Dashboard Merchant Completa

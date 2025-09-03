@@ -78,7 +78,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userRole }: Delete
                   <li>• Le recensioni e valutazioni saranno rimosse</li>
                   {userRole === 'rider' && <li>• I dati fiscali e di disponibilità saranno eliminati</li>}
                   {userRole === 'merchant' && <li>• I dati aziendali e fiscali saranno eliminati</li>}
-                  <li>• L'accesso all'account sarà revocato</li>
+                  <li>• L&apos;accesso all&apos;account sarà revocato</li>
                   <li>• <strong>Questi dati NON possono essere recuperati</strong></li>
                 </ul>
               </div>
@@ -107,7 +107,7 @@ export default function DeleteAccountModal({ isOpen, onClose, userRole }: Delete
             <div className="space-y-4">
               <div className="text-sm text-gray-600">
                 <p className="mb-4">
-                  Per confermare l'eliminazione del tuo account, 
+                  Per confermare l&apos;eliminazione del tuo account, 
                   digita esattamente il seguente testo:
                 </p>
                 <div className="bg-gray-100 p-3 rounded font-mono text-center">

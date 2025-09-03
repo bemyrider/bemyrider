@@ -1,6 +1,150 @@
-# Release Notes v1.2.0 🚀
+# Release Notes v0.4.0 🚀
 
-## bemyrider v1.2.0 - Localizzazione e Gestione Account Avanzata
+## bemyrider v0.4.0 - Ottimizzazione Build e Pulizia Repository
+
+**Data di Release**: 3 Settembre 2025
+
+---
+
+### 🎉 **Highlights di questa Release**
+
+Questa release si concentra sull'**ottimizzazione del build** e la **pulizia del repository**, eliminando warning e migliorando le performance dell'applicazione.
+
+#### 🏆 **Risultati Principali**
+- ✅ **Build ottimizzato** con Next.js Image per performance migliorate
+- ✅ **Warning immagini risolti** sostituendo tutti i tag `<img>` con `<Image />`
+- ✅ **Repository pulito** con eliminazione file SQL manuali
+- ✅ **Aderenza regola Drizzle** per tutte le operazioni database
+- ✅ **Build production-ready** con 0 warning critici
+
+---
+
+### 🚀 **Cosa C'è di Nuovo**
+
+#### 1. 🖼️ **Ottimizzazione Immagini con Next.js Image**
+Sostituzione completa del sistema di gestione immagini:
+- **Tutti i tag `<img>` sostituiti** con `<Image />` da `next/image`
+- **Lazy loading automatico** per migliori performance
+- **Dimensioni ottimizzate** con width/height specificati
+- **Formati moderni** supportati automaticamente
+- **Performance migliorate** con compressione automatica
+
+#### 2. 🧹 **Pulizia Repository e Database**
+Eliminazione file non conformi alle best practices:
+- **File SQL manuali rimossi** per aderenza alla regola "sempre usare Drizzle"
+- **Script di migrazione manuali** eliminati
+- **Repository ottimizzato** senza file ridondanti
+- **Architettura pulita** e mantenibile
+
+#### 3. ⚡ **Build Performance**
+Miglioramenti significativi al processo di build:
+- **0 warning critici** nel build di produzione
+- **Bundle size ottimizzato** con Next.js Image
+- **Loading performance** migliorate per immagini
+- **SEO ottimizzato** con immagini responsive
+
+---
+
+### 🔧 **Miglioramenti Tecnici**
+
+#### 🖼️ **Sistema Immagini**
+- **Next.js Image**: implementazione completa in tutti i componenti
+- **Lazy loading**: caricamento ottimizzato delle immagini
+- **Responsive images**: adattamento automatico ai dispositivi
+- **WebP support**: formati moderni per performance migliori
+
+#### 🗄️ **Database Architecture**
+- **Drizzle-only**: eliminazione script SQL manuali
+- **Migration consistency**: solo migrazioni Drizzle autorizzate
+- **Schema integrity**: mantenimento coerenza architetturale
+- **Best practices**: aderenza alle regole del progetto
+
+#### 📦 **Build Optimization**
+- **Warning elimination**: risoluzione warning build
+- **Bundle optimization**: riduzione dimensioni bundle
+- **Performance metrics**: miglioramento Core Web Vitals
+- **Production ready**: build completamente ottimizzato
+
+---
+
+### 🐛 **Fix e Correzioni**
+
+#### ✅ **Risolti**
+- **Warning immagini**: tutti i tag `<img>` sostituiti con `<Image />`
+- **File SQL manuali**: eliminati per coerenza architetturale
+- **Build warnings**: risolti warning non critici
+- **Repository cleanup**: file ridondanti rimossi
+- **Performance issues**: ottimizzazioni immagini implementate
+
+---
+
+### 📱 **Impact sull'Esperienza Utente**
+
+#### 🚀 **Prima della v0.4.0**
+- Warning build per immagini non ottimizzate
+- File SQL manuali nel repository
+- Performance immagini non ottimizzate
+- Bundle size non ottimizzato
+
+#### ✨ **Dopo la v0.4.0**
+- **Build completamente pulito** senza warning critici
+- **Performance immagini ottimizzate** con Next.js Image
+- **Repository pulito** e ben organizzato
+- **Loading performance migliorate** per tutte le immagini
+- **SEO ottimizzato** con immagini responsive
+- **Bundle size ridotto** per caricamento più veloce
+
+---
+
+### 🛠️ **Deployment e Setup**
+
+#### **Per Sviluppatori**
+```bash
+# Aggiorna il repository
+git pull origin main
+
+# Installa dipendenze
+npm install
+
+# Build ottimizzato
+npm run build
+
+# Avvia in modalità sviluppo
+npm run dev
+```
+
+#### **Nuove Dipendenze**
+Nessuna nuova dipendenza richiesta - ottimizzazioni con librerie esistenti.
+
+#### **Database Migrations**
+Nessuna migrazione richiesta - compatibile con schema esistente.
+
+---
+
+### 🔮 **Prossimi Sviluppi**
+
+#### **v0.5.0 - Pianificata**
+- Sistema di prenotazioni avanzato
+- Dashboard merchant per gestione richieste
+- Sistema di notifiche real-time
+- Calendario disponibilità rider interattivo
+
+#### **Feedback e Contributi**
+Questa release migliora significativamente le performance e la pulizia del codice. Continua a condividere i tuoi suggerimenti!
+
+---
+
+### 🙏 **Ringraziamenti**
+
+Grazie a tutti gli utenti che hanno testato le versioni precedenti e fornito feedback per l'ottimizzazione delle performance.
+
+**Happy Optimized Riding! 🚴‍♂️⚡🏪**
+
+---
+
+# Release Notes v0.2.0 🚀
+
+## bemyrider v0.2.0 - Localizzazione e Gestione Account Avanzata
 
 **Data di Release**: 2 Settembre 2025
 
@@ -165,7 +309,7 @@ Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 
 ### 🔮 **Prossimi Sviluppi**
 
-#### **v1.3.0 - Pianificata**
+#### **v0.3.0 - Pianificata**
 - Sistema di prenotazioni con localizzazione
 - Mappa interattiva per selezione zona
 - Notifiche geografiche per rider vicini
@@ -184,9 +328,9 @@ Grazie a tutti gli utenti che hanno testato le funzionalità di localizzazione e
 
 ---
 
-# Release Notes v1.1.0 🚀
+# Release Notes v0.1.0 🚀
 
-## bemyrider v1.1.0 - Dashboard Completa e UX Migliorata
+## bemyrider v0.1.0 - Dashboard Completa e UX Migliorata
 
 **Data di Release**: 1 Settembre 2025
 
@@ -380,7 +524,7 @@ Nessuna migrazione richiesta - compatibile con schema esistente.
 
 ### 🔮 **Prossimi Sviluppi**
 
-#### **v1.2.0 - Pianificata**
+#### **v0.2.0 - Pianificata**
 - Sistema di prenotazioni avanzato
 - Calendario disponibilità rider
 - Notifiche real-time

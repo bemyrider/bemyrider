@@ -8,6 +8,7 @@ import {
   Bike, Euro, Clock, CheckCircle, AlertCircle, Settings, Calendar, CreditCard, User, AlertTriangle, CircleDollarSign, Zap, BookOpenCheck, Trash2, FileText
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
 import TopNavBar from '@/components/TopNavBar'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
@@ -388,9 +389,11 @@ function RiderDashboardContent() {
               <div className="flex justify-center mb-4">
                 {riderDetails?.profile_picture_url ? (
                   <div className="relative">
-                    <img 
+                    <Image 
                       src={riderDetails.profile_picture_url} 
                       alt="Foto profilo" 
+                      width={128}
+                      height={128}
                       className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none'

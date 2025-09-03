@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { 
   User, 
@@ -40,7 +41,7 @@ export default function TopNavBar({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push('/')}>
-            <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-8 w-auto" />
+            <Image src="/bemyrider_logo.svg" alt="bemyrider logo" width={32} height={32} className="h-8 w-auto" />
             <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
           </div>
 

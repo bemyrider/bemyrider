@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { X, Save, User, Bike, Euro, MessageSquare, Camera, AlertCircle, MapPin } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 import { VehicleType, VEHICLE_TYPE_LABELS } from '@/lib/enums'
 import { executeWithAuthRetry, handleAuthError } from '@/lib/auth-utils'
 
@@ -389,9 +390,11 @@ export default function EditProfileModal({ isOpen, onClose, riderId, onProfileUp
                   <p className="text-xs text-gray-600 mb-3">Anteprima:</p>
                   <div className="flex justify-center">
                     <div className="relative">
-                      <img 
+                      <Image 
                         src={profileData.profile_picture_url} 
                         alt="Anteprima foto profilo" 
+                        width={96}
+                        height={96}
                         className="w-24 h-24 rounded-full object-cover border-3 border-blue-200 shadow-md"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none'

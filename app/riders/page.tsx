@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bike, Clock, Euro, Search, Filter, MapPin } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 import { UserNav } from '@/components/UserNav'
 
 interface Rider {
@@ -141,7 +142,7 @@ export default function RidersPage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-8 w-auto" />
+              <Image src="/bemyrider_logo.svg" alt="bemyrider logo" width={32} height={32} className="h-8 w-auto" />
               <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
             </div>
             <div className="flex items-center space-x-4">
@@ -268,9 +269,11 @@ export default function RidersPage() {
                   <div className="flex justify-center mb-4">
                     {rider.profile_picture_url || rider.avatar_url ? (
                       <div className="relative">
-                        <img 
+                        <Image 
                           src={rider.profile_picture_url || rider.avatar_url || ''} 
                           alt={rider.full_name}
+                          width={96}
+                          height={96}
                           className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none'

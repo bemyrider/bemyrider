@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bike, Store, Clock, Shield, Euro, Users } from 'lucide-react'
 import { UserNav } from '@/components/UserNav'
+import Image from 'next/image'
 
 export default function HomePage() {
   return (
@@ -11,7 +12,7 @@ export default function HomePage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-10 w-auto" />
+            <Image src="/bemyrider_logo.svg" alt="bemyrider logo" width={40} height={40} className="h-10 w-auto" />
             <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
           </div>
           <UserNav />

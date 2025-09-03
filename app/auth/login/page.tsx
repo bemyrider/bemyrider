@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bike, Store } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -87,7 +88,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <img src="/bemyrider_logo.svg" alt="bemyrider logo" className="h-8 w-auto" />
+            <Image src="/bemyrider_logo.svg" alt="bemyrider logo" width={32} height={32} className="h-8 w-auto" />
             <span className="text-2xl font-bold text-gray-900 logo-font">bemyrider</span>
           </div>
           <CardTitle>Accedi al tuo account</CardTitle>

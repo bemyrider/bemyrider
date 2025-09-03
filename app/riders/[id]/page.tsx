@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar, Clock, Euro, MapPin, User, Bike } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 import { useToast } from "@/components/ui/use-toast"
 import { formatCurrency } from '@/lib/formatters'
 
@@ -321,9 +322,11 @@ export default function RiderBookingPage() {
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
                   {rider.riders_details?.profile_picture_url || rider.avatar_url ? (
-                    <img 
+                    <Image 
                       src={rider.riders_details?.profile_picture_url || rider.avatar_url || ''} 
                       alt={rider.full_name}
+                      width={64}
+                      height={64}
                       className="w-full h-full object-cover"
                     />
                   ) : (

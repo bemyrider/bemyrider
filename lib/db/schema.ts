@@ -78,6 +78,14 @@ export const ridersDetails = pgTable('riders_details', {
   activeLocation: varchar('active_location', { length: 100 })
     .notNull()
     .default('Non specificata'), // Località dove il rider è attivo
+  // Nuovi campi per dati ricchi dei rider fantocci
+  experienceYears: integer('experience_years'),
+  specializations: text('specializations').array(),
+  completedJobs: integer('completed_jobs').default(0),
+  rating: decimal('rating', { precision: 3, scale: 2 }),
+  responseTime: varchar('response_time', { length: 20 }),
+  isVerified: boolean('is_verified').default(false),
+  isPremium: boolean('is_premium').default(false),
   stripeAccountId: text('stripe_account_id'),
   stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(
     false

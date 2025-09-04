@@ -27,6 +27,14 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Colorazione dinamica** con `currentColor` invece di colori fissi
 - **Performance migliorate** con rendering più veloce delle icone
 
+##### 🤖 **Sistema Rider Fantocci**
+- **3 rider fantocci creati** con dati realistici per testing e demo
+- **Script create-mock-riders.js** per generazione automatica
+- **Dati ricchi**: esperienza, specializzazioni, rating, velocità risposta
+- **Diversi veicoli**: e-bike, scooter, auto con tariffe differenti
+- **Località distribuite**: Milano, Torino, Roma
+- **Credenziali sicure** per accesso e testing
+
 #### 🐛 Correzioni
 - **Build process** verificato e funzionante
 - **Prettier formatting** applicato a tutto il codebase

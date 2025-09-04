@@ -1,63 +1,88 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { serviceRequests } from '@/lib/db/schema'
-import { eq, desc, and } from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { serviceRequests } from '@/lib/db/schema';
+import { eq, desc, and } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { riderId, startDate, startTime, duration, description, merchantAddress, userId } = body
+    const body = await request.json();
+    const {
+      riderId,
+      startDate,
+      startTime,
+      duration,
+      description,
+      merchantAddress,
+      userId,
+    } = body;
 
     // Verifica che userId sia presente (inviato dal client)
     if (!userId) {
-      return NextResponse.json({ error: 'User ID required' }, { status: 400 })
+      return NextResponse.json({ error: 'User ID required' }, { status: 400 });
     }
 
     // Validazione input
-    if (!riderId || !startDate || !startTime || !duration || !merchantAddress || !description || description.trim().length < 2) {
-      return NextResponse.json({ 
-        error: 'Missing required fields: riderId, startDate, startTime, duration, merchantAddress, description (min 2 characters)' 
-      }, { status: 400 })
+    if (
+      !riderId ||
+      !startDate ||
+      !startTime ||
+      !duration ||
+      !merchantAddress ||
+      !description ||
+      description.trim().length < 2
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            'Missing required fields: riderId, startDate, startTime, duration, merchantAddress, description (min 2 characters)',
+        },
+        { status: 400 }
+      );
     }
 
     // Crea la service request nel database
-    const [newRequest] = await db.insert(serviceRequests).values({
-      merchantId: userId,
-      riderId: riderId,
-      requestedDate: new Date(startDate),
-      startTime: startTime,
-      durationHours: duration.toString(),
-      description: description || '',
-      merchantAddress: merchantAddress,
-      status: 'pending'
-    }).returning()
+    const [newRequest] = await db
+      .insert(serviceRequests)
+      .values({
+        merchantId: userId,
+        riderId: riderId,
+        requestedDate: new Date(startDate),
+        startTime: startTime,
+        durationHours: duration.toString(),
+        description: description || '',
+        merchantAddress: merchantAddress,
+        status: 'pending',
+      })
+      .returning();
 
     return NextResponse.json({
       success: true,
       request: newRequest,
-      message: 'Service request created successfully'
-    })
-
+      message: 'Service request created successfully',
+    });
   } catch (error) {
-    console.error('Error creating service request:', error)
+    console.error('Error creating service request:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const type = searchParams.get('type') // 'merchant' o 'rider'
-    const userId = searchParams.get('userId')
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type'); // 'merchant' o 'rider'
+    const userId = searchParams.get('userId');
 
     if (!type || !userId) {
-      return NextResponse.json({ error: 'Missing type or userId parameter' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Missing type or userId parameter' },
+        { status: 400 }
+      );
     }
 
-    let requests
+    let requests;
 
     if (type === 'merchant') {
       // Ottieni richieste inviate dal merchant
@@ -73,11 +98,11 @@ export async function GET(request: NextRequest) {
           status: serviceRequests.status,
           riderResponse: serviceRequests.riderResponse,
           createdAt: serviceRequests.createdAt,
-          updatedAt: serviceRequests.updatedAt
+          updatedAt: serviceRequests.updatedAt,
         })
         .from(serviceRequests)
         .where(eq(serviceRequests.merchantId, userId))
-        .orderBy(desc(serviceRequests.createdAt))
+        .orderBy(desc(serviceRequests.createdAt));
     } else if (type === 'rider') {
       // Ottieni richieste ricevute dal rider
       requests = await db
@@ -92,25 +117,27 @@ export async function GET(request: NextRequest) {
           status: serviceRequests.status,
           riderResponse: serviceRequests.riderResponse,
           createdAt: serviceRequests.createdAt,
-          updatedAt: serviceRequests.updatedAt
+          updatedAt: serviceRequests.updatedAt,
         })
         .from(serviceRequests)
         .where(eq(serviceRequests.riderId, userId))
-        .orderBy(desc(serviceRequests.createdAt))
+        .orderBy(desc(serviceRequests.createdAt));
     } else {
-      return NextResponse.json({ error: 'Invalid type parameter' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Invalid type parameter' },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({
       success: true,
-      requests
-    })
-
+      requests,
+    });
   } catch (error) {
-    console.error('Error fetching service requests:', error)
+    console.error('Error fetching service requests:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }

@@ -12,7 +12,9 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('❌ Errore: Variabili ambiente mancanti!');
-  console.log('Assicurati di avere NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY in .env.local');
+  console.log(
+    'Assicurati di avere NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY in .env.local'
+  );
   process.exit(1);
 }
 
@@ -25,30 +27,31 @@ const TEST_ACCOUNTS = [
     email: 'test.rider@bemyrider.test',
     password: 'TestRider2024!',
     fullName: 'Test Rider',
-    role: 'rider'
+    role: 'rider',
   },
   {
-    email: 'test.merchant@bemyrider.test', 
+    email: 'test.merchant@bemyrider.test',
     password: 'TestMerchant2024!',
     fullName: 'Test Merchant',
-    role: 'merchant'
-  }
+    role: 'merchant',
+  },
 ];
 
 async function createTestUser(userData) {
   console.log(`\n🔄 Creando utente: ${userData.email}...`);
-  
+
   try {
     // 1. Crea l'utente in Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: userData.email,
-      password: userData.password,
-      email_confirm: true, // Conferma email automaticamente
-      user_metadata: {
-        full_name: userData.fullName,
-        role: userData.role
-      }
-    });
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email: userData.email,
+        password: userData.password,
+        email_confirm: true, // Conferma email automaticamente
+        user_metadata: {
+          full_name: userData.fullName,
+          role: userData.role,
+        },
+      });
 
     if (authError) {
       if (authError.message.includes('already registered')) {
@@ -61,18 +64,18 @@ async function createTestUser(userData) {
     console.log(`✅ Utente Auth creato: ${authData.user.id}`);
 
     // 2. Crea il profilo nella tabella profiles
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .upsert({
-        id: authData.user.id,
-        full_name: userData.fullName,
-        role: userData.role,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
+    const { error: profileError } = await supabase.from('profiles').upsert({
+      id: authData.user.id,
+      full_name: userData.fullName,
+      role: userData.role,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
 
     if (profileError) {
-      console.log(`⚠️  Errore profilo (potrebbe già esistere): ${profileError.message}`);
+      console.log(
+        `⚠️  Errore profilo (potrebbe già esistere): ${profileError.message}`
+      );
     } else {
       console.log(`✅ Profilo creato per: ${userData.email}`);
     }
@@ -83,12 +86,12 @@ async function createTestUser(userData) {
         .from('riders_details')
         .upsert({
           profile_id: authData.user.id,
-          hourly_rate: 15.00, // Tariffa di default per test
+          hourly_rate: 15.0, // Tariffa di default per test
           vehicle_type: 'bici',
           description: 'Account di test per automazione Playwright',
           active_location: 'Milano', // Località di default per test
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         });
 
       if (riderError) {
@@ -99,7 +102,6 @@ async function createTestUser(userData) {
     }
 
     return { success: true, userId: authData.user.id };
-
   } catch (error) {
     console.error(`❌ Errore creando ${userData.email}:`, error.message);
     return { success: false, error: error.message };
@@ -108,9 +110,9 @@ async function createTestUser(userData) {
 
 async function createAllTestUsers() {
   console.log('🚀 Iniziando creazione account di test...\n');
-  
+
   const results = [];
-  
+
   for (const userData of TEST_ACCOUNTS) {
     const result = await createTestUser(userData);
     results.push({ ...userData, ...result });
@@ -118,23 +120,29 @@ async function createAllTestUsers() {
 
   console.log('\n📊 Riepilogo:');
   console.log('================');
-  
+
   results.forEach(result => {
-    const status = result.success 
-      ? (result.existed ? '🟡 Esisteva già' : '🟢 Creato') 
+    const status = result.success
+      ? result.existed
+        ? '🟡 Esisteva già'
+        : '🟢 Creato'
       : '🔴 Errore';
     console.log(`${status} - ${result.email} (${result.role})`);
   });
 
   const successful = results.filter(r => r.success).length;
   console.log(`\n✅ ${successful}/${results.length} account pronti per test!`);
-  
+
   if (successful > 0) {
     console.log('\n🎯 Credenziali per Playwright:');
     console.log('==============================');
-    results.filter(r => r.success).forEach(result => {
-      console.log(`${result.role.toUpperCase()}: ${result.email} / ${TEST_ACCOUNTS.find(a => a.email === result.email).password}`);
-    });
+    results
+      .filter(r => r.success)
+      .forEach(result => {
+        console.log(
+          `${result.role.toUpperCase()}: ${result.email} / ${TEST_ACCOUNTS.find(a => a.email === result.email).password}`
+        );
+      });
   }
 }
 
@@ -148,4 +156,3 @@ createAllTestUsers()
     console.error('\n💥 Errore fatale:', error);
     process.exit(1);
   });
-

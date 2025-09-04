@@ -28,20 +28,39 @@ const nextConfig = {
       },
     ],
   },
-  // Riabilita l'icona flottante di Next.js in sviluppo
+
+  // Configurazioni di sicurezza per testing
   devIndicators: {
     buildActivity: true,
+    appIsrStatus: false, // Disabilita per ridurre risorse
   },
+
+  // Limite memoria per build
+  experimental: {
+    esmExternals: 'loose',
+    serverComponentsExternalPackages: [],
+  },
+
   // Escludi le Edge Functions dalla build Next.js
-  webpack: (config) => {
+  webpack: config => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
     };
+
+    // Ottimizzazioni per testing
+    if (process.env.NODE_ENV === 'test') {
+      config.optimization = {
+        ...config.optimization,
+        minimize: false, // Disabilita minimizzazione in test
+      };
+    }
+
     return config;
   },
+
   // Ignora i file Supabase durante la build
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
-}
+};
 
-module.exports = nextConfig 
+module.exports = nextConfig;

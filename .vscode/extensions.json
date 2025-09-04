@@ -1,0 +1,40 @@
+{
+  "recommendations": [
+    // Prettier - Formattazione codice
+    "esbenp.prettier-vscode",
+
+    // ESLint - Linting e qualità codice
+    "dbaeumer.vscode-eslint",
+
+    // TypeScript - Supporto TypeScript
+    "ms-vscode.vscode-typescript-next",
+
+    // Tailwind CSS - IntelliSense per Tailwind
+    "bradlc.vscode-tailwindcss",
+
+    // Auto Rename Tag - Rinomina tag HTML/JSX automaticamente
+    "formulahendry.auto-rename-tag",
+
+    // Bracket Pair Colorizer - Colora parentesi annidate
+    "coenraads.bracket-pair-colorizer-2",
+
+    // Path Intellisense - Autocompletamento percorsi
+    "christian-kohler.path-intellisense",
+
+    // GitLens - Funzionalità Git avanzate
+    "eamodio.gitlens",
+
+    // Todo Tree - Gestione TODO nel codice
+    "gruntfuggly.todo-tree",
+
+    // Import Cost - Mostra dimensione delle importazioni
+    "wix.vscode-import-cost",
+
+    // Better Comments - Migliora i commenti
+    "aaron-bond.better-comments"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify"
+  ]
+}

@@ -1,8 +1,8 @@
-import Stripe from 'stripe'
+import Stripe from 'stripe';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
-})
+});
 
 export const createStripeAccount = async () => {
   try {
@@ -14,28 +14,31 @@ export const createStripeAccount = async () => {
         card_payments: { requested: true },
         transfers: { requested: true },
       },
-    })
-    return account
+    });
+    return account;
   } catch (error) {
-    console.error('Error creating Stripe account:', error)
-    throw error
+    console.error('Error creating Stripe account:', error);
+    throw error;
   }
-}
+};
 
-export const createAccountLink = async (accountId: string, returnUrl: string) => {
+export const createAccountLink = async (
+  accountId: string,
+  returnUrl: string
+) => {
   try {
     const accountLink = await stripe.accountLinks.create({
       account: accountId,
       refresh_url: returnUrl,
       return_url: returnUrl,
       type: 'account_onboarding',
-    })
-    return accountLink
+    });
+    return accountLink;
   } catch (error) {
-    console.error('Error creating account link:', error)
-    throw error
+    console.error('Error creating account link:', error);
+    throw error;
   }
-}
+};
 
 export const createPaymentIntent = async (
   amount: number,
@@ -51,10 +54,10 @@ export const createPaymentIntent = async (
       transfer_data: {
         destination: destinationAccountId,
       },
-    })
-    return paymentIntent
+    });
+    return paymentIntent;
   } catch (error) {
-    console.error('Error creating payment intent:', error)
-    throw error
+    console.error('Error creating payment intent:', error);
+    throw error;
   }
-} 
+};

@@ -152,7 +152,7 @@
     },
     "public.VehicleType": {
       "name": "VehicleType",
-      "schema": "public", 
+      "schema": "public",
       "values": ["bici", "e_bike", "scooter", "auto"]
     }
   },

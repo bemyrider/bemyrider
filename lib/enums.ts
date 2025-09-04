@@ -1,19 +1,19 @@
 export enum AvailabilityStatus {
   AVAILABLE = 'available',
   BUSY = 'busy',
-  OFFLINE = 'offline'
+  OFFLINE = 'offline',
 }
 
 export enum BookingStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
   COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum UserRole {
   RIDER = 'rider',
-  MERCHANT = 'merchant'
+  MERCHANT = 'merchant',
 }
 
 export enum TransportationType {
@@ -21,15 +21,15 @@ export enum TransportationType {
   SCOOTER = 'scooter',
   CAR = 'car',
   MOTORBIKE = 'motorbike',
-  WALKING = 'walking'
+  WALKING = 'walking',
 }
 
 // Enum che rispecchia esattamente il database PostgreSQL
 export enum VehicleType {
   BICI = 'bici',
-  E_BIKE = 'e_bike', 
+  E_BIKE = 'e_bike',
   SCOOTER = 'scooter',
-  AUTO = 'auto'
+  AUTO = 'auto',
 }
 
 // Mapping per i label UI
@@ -37,5 +37,5 @@ export const VEHICLE_TYPE_LABELS: Record<VehicleType, string> = {
   [VehicleType.BICI]: '🚲 Bicicletta',
   [VehicleType.E_BIKE]: '🚴‍♂️ E-Bike',
   [VehicleType.SCOOTER]: '🛵 Scooter',
-  [VehicleType.AUTO]: '🚗 Auto'
-}
+  [VehicleType.AUTO]: '🚗 Auto',
+};

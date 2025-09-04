@@ -37,6 +37,12 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Consegne specializzate**: farmaceutici, prodotti lusso, documenti legali, bio
 - **Credenziali sicure** per testing completo del sistema
 
+##### 🎨 **Miglioramento Design Top Navigation**
+- **Sfondo tenue applicato** alla top nav bar (grigio chiaro invece di bianco)
+- **Maggiore distinzione visiva** rispetto al contenuto principale
+- **Input ricerca migliorato** con sfondo bianco e leggera ombra
+- **Migliorata leggibilità** e separazione gerarchica degli elementi
+
 #### 🐛 Correzioni
 - **Build process** verificato e funzionante
 - **Prettier formatting** applicato a tutto il codebase

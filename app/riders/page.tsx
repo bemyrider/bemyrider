@@ -24,6 +24,8 @@ import {
   MessageCircle,
   Eye,
   X,
+  HeartHandshake,
+  User,
 } from 'lucide-react';
 import {
   Dialog,
@@ -299,7 +301,21 @@ export default function RidersPage() {
         {/* Search Bar */}
         <div className='px-4 py-3'>
           <div className='relative'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='20'
+              height='20'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='#333366'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5'
+            >
+              <path d='m21 21-4.34-4.34' />
+              <circle cx='11' cy='11' r='8' />
+            </svg>
             <input
               type='text'
               placeholder='Cerca rider a Milano...'
@@ -472,7 +488,22 @@ export default function RidersPage() {
 
           {activeTab === 'favorites' && userProfile?.role === 'merchant' && (
             <div className='text-center py-12'>
-              <div className='text-6xl mb-4'>❤️</div>
+              <div className='text-6xl mb-4'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='64'
+                  height='64'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='#333366'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  className='w-16 h-16 mx-auto'
+                >
+                  <path d='M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762' />
+                </svg>
+              </div>
               <h3 className='text-xl font-bold text-gray-900 mb-2'>
                 Rider Preferiti
               </h3>
@@ -558,7 +589,21 @@ export default function RidersPage() {
                 activeTab === 'riders' ? 'text-blue-600' : 'text-gray-400'
               }`}
             >
-              <Search className='h-5 w-5' />
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='#333366'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='h-5 w-5'
+              >
+                <path d='m21 21-4.34-4.34' />
+                <circle cx='11' cy='11' r='8' />
+              </svg>
             </button>
 
             {/* Preferiti */}
@@ -577,7 +622,20 @@ export default function RidersPage() {
               }`}
               disabled={userProfile?.role !== 'merchant'}
             >
-              <span className='text-lg'>❤️</span>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='#333366'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='h-5 w-5'
+              >
+                <path d='M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762' />
+              </svg>
             </button>
 
             {/* BeMyRider */}
@@ -589,22 +647,22 @@ export default function RidersPage() {
               }
             >
               <button
-                className='flex flex-col items-center p-2 rounded-xl text-white shadow-lg transition-colors'
-                style={{ backgroundColor: '#333366' }}
+                className='flex flex-col items-center p-2 rounded-xl text-gray-700 shadow-lg transition-colors'
+                style={{ backgroundColor: '#f5f5f5' }}
                 onMouseEnter={e =>
-                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                  (e.currentTarget.style.backgroundColor = '#e5e5e5')
                 }
                 onMouseLeave={e =>
-                  (e.currentTarget.style.backgroundColor = '#333366')
+                  (e.currentTarget.style.backgroundColor = '#f5f5f5')
                 }
               >
-                <div className='flex items-center justify-center w-6 h-6 bg-white bg-opacity-20 rounded-full'>
+                <div className='flex items-center justify-center w-7 h-7 bg-gray-300 bg-opacity-30 rounded-full'>
                   <Image
                     src='/bemyrider_logo.svg'
                     alt='bemyrider'
-                    width={16}
-                    height={16}
-                    className='w-4 h-4'
+                    width={20}
+                    height={20}
+                    className='w-5 h-5'
                   />
                 </div>
               </button>
@@ -618,7 +676,20 @@ export default function RidersPage() {
               className='flex flex-col items-center p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed'
               disabled
             >
-              <span className='text-lg'>💬</span>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='#333366'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='h-5 w-5'
+              >
+                <path d='M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719' />
+              </svg>
             </button>
 
             {/* Profilo con dropdown */}
@@ -631,7 +702,22 @@ export default function RidersPage() {
                     : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                <span className='text-lg'>👤</span>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='20'
+                  height='20'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='#333366'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  className='h-5 w-5'
+                >
+                  <path d='M4 5h16' />
+                  <path d='M4 12h16' />
+                  <path d='M4 19h16' />
+                </svg>
               </button>
 
               {showProfileDropdown && (

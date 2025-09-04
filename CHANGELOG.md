@@ -5,6 +5,26 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2025-01-09
+
+### 🔧 Aggiornamento - Configurazione e Ottimizzazioni
+
+#### ✨ Nuove Funzionalità
+
+##### ⚙️ **Configurazione VSCode**
+- **Settings VSCode aggiornati** per migliorare l'esperienza di sviluppo
+- **Configurazione editor** ottimizzata per il progetto bemyrider
+
+##### 📱 **Pagina Riders Migliorata**
+- **Funzionalità riders page** aggiornate e ottimizzate
+- **Miglioramenti UX** per la visualizzazione dei rider
+- **Codice ottimizzato** con 120 inserimenti e 15 eliminazioni
+
+#### 🐛 Correzioni
+- **Build process** verificato e funzionante
+- **Prettier formatting** applicato a tutto il codebase
+- **Codice formattato** secondo gli standard del progetto
+
 ## [0.4.2] - 2025-09-04
 
 ### 🎨 Aggiornamento - Redesign Pagina Riders Mobile-First

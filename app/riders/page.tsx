@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,9 +11,27 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Bike, Clock, Euro, Search, Filter, MapPin } from 'lucide-react';
+import {
+  Bike,
+  Clock,
+  Euro,
+  Search,
+  Filter,
+  MapPin,
+  Grid,
+  Map,
+  Star,
+  MessageCircle,
+  Eye,
+  X,
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabase';
-import Image from 'next/image';
 import { UserNav } from '@/components/UserNav';
 
 interface Rider {
@@ -24,39 +43,72 @@ interface Rider {
   vehicle_type: string | null;
   profile_picture_url: string | null;
   active_location: string | null;
+  // Nuove proprietà per design professionale
+  experience_years?: number;
+  specializations?: string[];
+  completed_jobs?: number;
+  rating?: number;
+  response_time?: string;
+  is_verified?: boolean;
+  is_premium?: boolean;
 }
 
-// Mock data for demonstration
+// Mock data for demonstration with professional features
 const mockRiders: Rider[] = [
   {
     id: '1',
     full_name: 'Marco Rossi',
     avatar_url: null,
-    bio: 'Rider di test per bemyrider. Esperienza nelle consegne urbane.',
+    bio: 'Rider professionista con 5 anni di esperienza nelle consegne urbane. Specializzato in consegne rapide e affidabili nel centro città.',
     hourly_rate: 8.5,
     vehicle_type: 'bici',
     profile_picture_url: null,
     active_location: 'Milano',
+    experience_years: 5,
+    specializations: [
+      'Consegne rapide',
+      'Centro città',
+      'Documenti importanti',
+    ],
+    completed_jobs: 1247,
+    rating: 4.8,
+    response_time: '< 5 min',
+    is_verified: true,
+    is_premium: true,
   },
   {
     id: '2',
-    full_name: 'Invalid User',
+    full_name: 'Giulia Bianchi',
     avatar_url: null,
-    bio: 'New Rider',
-    hourly_rate: 15,
-    vehicle_type: 'Veicolo',
+    bio: 'Specializzata in consegne di prodotti freschi e farmaceutici. Sempre puntuale e professionale.',
+    hourly_rate: 12,
+    vehicle_type: 'scooter',
     profile_picture_url: null,
     active_location: 'Milano',
+    experience_years: 3,
+    specializations: ['Prodotti freschi', 'Farmaceutici', 'Consegne urgenti'],
+    completed_jobs: 856,
+    rating: 4.9,
+    response_time: '< 3 min',
+    is_verified: true,
+    is_premium: false,
   },
   {
     id: '3',
-    full_name: 'Rider User A',
+    full_name: 'Luca Verdi',
     avatar_url: null,
-    bio: 'New Rider',
-    hourly_rate: 15,
-    vehicle_type: 'Veicolo',
+    bio: 'Rider affidabile per consegne pesanti e di grandi dimensioni. Disponibile anche nei weekend.',
+    hourly_rate: 10,
+    vehicle_type: 'auto',
     profile_picture_url: null,
-    active_location: 'Milano',
+    active_location: 'Torino',
+    experience_years: 7,
+    specializations: ['Consegne pesanti', 'Weekend', 'Extra-urbane'],
+    completed_jobs: 2156,
+    rating: 4.7,
+    response_time: '< 10 min',
+    is_verified: true,
+    is_premium: false,
   },
 ];
 
@@ -64,14 +116,100 @@ export default function RidersPage() {
   const [riders, setRiders] = useState<Rider[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [minRate, setMinRate] = useState('');
-  const [maxRate, setMaxRate] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [error, setError] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState<
+    'ebike' | 'scooter' | 'auto'
+  >('ebike');
+  const [activeTab, setActiveTab] = useState<
+    'riders' | 'favorites' | 'messages'
+  >('riders');
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [userProfile, setUserProfile] = useState<{
+    id: string;
+    role: 'merchant' | 'rider' | null;
+    full_name: string;
+  } | null>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchRiders();
+    fetchUserProfile();
   }, []);
+
+  // Click outside handler per il dropdown profilo
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        setUserProfile(null);
+        return;
+      }
+
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, role, full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (!profileError && profileData) {
+        setUserProfile(profileData);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      setUserProfile(null);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setShowProfileDropdown(false);
+      setUserProfile(null);
+      // Redirect alla home page
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const toggleFavorite = (riderId: string) => {
+    setFavorites(prev =>
+      prev.includes(riderId)
+        ? prev.filter(id => id !== riderId)
+        : [...prev, riderId]
+    );
+  };
+
+  const getVehicleFilter = (vehicle: 'ebike' | 'scooter' | 'auto') => {
+    switch (vehicle) {
+      case 'ebike':
+        return ['ebike', 'e_bike'];
+      case 'scooter':
+        return ['scooter', 'scoter'];
+      case 'auto':
+        return ['auto'];
+    }
+  };
 
   const fetchRiders = async () => {
     try {
@@ -134,315 +272,423 @@ export default function RidersPage() {
   };
 
   const filteredRiders = riders.filter(rider => {
-    const matchesSearch =
+    // Filtro ricerca (nome + località)
+    const searchFilter =
+      searchTerm === '' ||
       rider.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (rider.bio && rider.bio.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    const matchesMinRate = !minRate || rider.hourly_rate >= parseFloat(minRate);
-    const matchesMaxRate = !maxRate || rider.hourly_rate <= parseFloat(maxRate);
-
-    const matchesLocation =
-      !locationFilter ||
       (rider.active_location &&
-        rider.active_location
-          .toLowerCase()
-          .includes(locationFilter.toLowerCase()));
+        rider.active_location.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    return matchesSearch && matchesMinRate && matchesMaxRate && matchesLocation;
+    // Filtro veicolo
+    const vehicleFilter = getVehicleFilter(selectedVehicle).includes(
+      rider.vehicle_type || ''
+    );
+
+    return searchFilter && vehicleFilter;
   });
 
+  const displayedRiders =
+    activeTab === 'favorites'
+      ? filteredRiders.filter(rider => favorites.includes(rider.id))
+      : filteredRiders;
+
   return (
-    <div className='min-h-screen bg-gray-50'>
-      {/* Header */}
-      <div className='bg-white border-b'>
-        <div className='container mx-auto px-4 py-6'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center space-x-2'>
-              <Image
-                src='/bemyrider_logo.svg'
-                alt='bemyrider logo'
-                width={32}
-                height={32}
-                className='h-8 w-auto'
-              />
-              <span className='text-2xl font-bold text-gray-900 logo-font'>
-                bemyrider
-              </span>
-            </div>
-            <div className='flex items-center space-x-4'>
-              <Link href='/'>
-                <Button variant='ghost'>Home</Button>
-              </Link>
-              <UserNav />
-            </div>
+    <div className='min-h-screen bg-gray-50 flex flex-col'>
+      {/* Top Navigation Bar - Fixed */}
+      <div className='fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 shadow-sm'>
+        {/* Search Bar */}
+        <div className='px-4 py-3'>
+          <div className='relative'>
+            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+            <input
+              type='text'
+              placeholder='Cerca rider a Milano...'
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className='w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500'
+            />
+          </div>
+        </div>
+
+        {/* Vehicle Tabs */}
+        <div className='px-4 pb-3'>
+          <div className='flex space-x-2'>
+            <button
+              onClick={() => setSelectedVehicle('ebike')}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                selectedVehicle === 'ebike'
+                  ? 'text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+              style={
+                selectedVehicle === 'ebike'
+                  ? { backgroundColor: '#333366' }
+                  : {}
+              }
+            >
+              ⚡ E-bike
+            </button>
+            <button
+              onClick={() => setSelectedVehicle('scooter')}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                selectedVehicle === 'scooter'
+                  ? 'text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+              style={
+                selectedVehicle === 'scooter'
+                  ? { backgroundColor: '#333366' }
+                  : {}
+              }
+            >
+              🛵 Moto
+            </button>
+            <button
+              onClick={() => setSelectedVehicle('auto')}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                selectedVehicle === 'auto'
+                  ? 'text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+              style={
+                selectedVehicle === 'auto' ? { backgroundColor: '#333366' } : {}
+              }
+            >
+              🚗 Auto
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-8'>
-          <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-            Trova il tuo Rider
-          </h1>
-          <p className='text-gray-600'>
-            Sfoglia i rider disponibili e prenota il servizio di consegna
-          </p>
-          {error && (
-            <div className='mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-700 text-sm'>
-              ⚠️ Modalità demo: Visualizzazione dati di esempio. Configura
-              Supabase per i dati reali.
+      <div className='flex-1 pt-32 pb-20'>
+        <div className='px-4'>
+          {/* Content based on active tab */}
+          {activeTab === 'riders' && (
+            <>
+              {/* Riders List */}
+              {loading ? (
+                <div className='flex justify-center items-center py-12'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
+                </div>
+              ) : displayedRiders.length === 0 ? (
+                <div className='text-center py-12'>
+                  <div className='text-6xl mb-4'>🔍</div>
+                  <h3 className='text-xl font-bold text-gray-900 mb-2'>
+                    Nessun rider trovato
+                  </h3>
+                  <p className='text-gray-600 mb-6'>
+                    Prova a cercare in un'altra città
+                  </p>
+                  <div className='flex justify-center'>
+                    <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center'>
+                      <Image
+                        src='/bemyrider_logo.svg'
+                        alt='bemyrider'
+                        width={40}
+                        height={40}
+                        className='w-10 h-10'
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='space-y-4'>
+                  {displayedRiders.map(rider => (
+                    <Link key={rider.id} href={`/riders/${rider.id}`}>
+                      <div className='bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95'>
+                        <div className='flex items-center space-x-4'>
+                          {/* Profile Picture */}
+                          <div className='relative'>
+                            {rider.profile_picture_url || rider.avatar_url ? (
+                              <Image
+                                src={
+                                  rider.profile_picture_url ||
+                                  rider.avatar_url ||
+                                  ''
+                                }
+                                alt={rider.full_name}
+                                width={60}
+                                height={60}
+                                className='w-15 h-15 rounded-full object-cover'
+                              />
+                            ) : (
+                              <div className='w-15 h-15 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center'>
+                                <span className='text-lg font-bold text-white'>
+                                  {rider.full_name.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                            {/* Online Status */}
+                            <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full'></div>
+                          </div>
+
+                          {/* Rider Info */}
+                          <div className='flex-1 min-w-0'>
+                            <div className='flex items-center gap-2 mb-1'>
+                              <h3 className='text-lg font-bold text-gray-900 truncate'>
+                                {rider.full_name}
+                              </h3>
+                              {rider.is_verified && (
+                                <span className='inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'>
+                                  ✓
+                                </span>
+                              )}
+                            </div>
+
+                            <div className='flex items-center gap-1 mb-1'>
+                              <Star className='h-4 w-4 text-yellow-400 fill-current' />
+                              <span className='text-sm font-medium text-gray-900'>
+                                {rider.rating || 4.5}
+                              </span>
+                              <span className='text-sm text-gray-500'>
+                                ({rider.completed_jobs || 0})
+                              </span>
+                            </div>
+
+                            <div className='flex items-center gap-1 text-sm text-gray-600'>
+                              <MapPin className='h-3 w-3' />
+                              <span className='truncate'>
+                                {rider.active_location || 'Milano'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Price */}
+                          <div className='text-right'>
+                            <div className='text-xl font-bold text-gray-900'>
+                              €{rider.hourly_rate}
+                            </div>
+                            <div className='text-xs text-gray-600'>/ora</div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {activeTab === 'favorites' && userProfile?.role === 'merchant' && (
+            <div className='text-center py-12'>
+              <div className='text-6xl mb-4'>❤️</div>
+              <h3 className='text-xl font-bold text-gray-900 mb-2'>
+                Rider Preferiti
+              </h3>
+              <p className='text-gray-600 mb-6'>
+                I tuoi rider preferiti appariranno qui
+              </p>
+              <Button
+                onClick={() => setActiveTab('riders')}
+                className='text-white'
+                style={{ backgroundColor: '#333366' }}
+                onMouseEnter={e =>
+                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                }
+                onMouseLeave={e =>
+                  (e.currentTarget.style.backgroundColor = '#333366')
+                }
+              >
+                Scopri nuovi rider
+              </Button>
+            </div>
+          )}
+
+          {activeTab === 'favorites' && userProfile?.role !== 'merchant' && (
+            <div className='text-center py-12'>
+              <div className='text-6xl mb-4'>🔒</div>
+              <h3 className='text-xl font-bold text-gray-900 mb-2'>
+                Funzione Riservata
+              </h3>
+              <p className='text-gray-600 mb-6'>
+                La gestione dei preferiti è riservata agli esercenti
+              </p>
+              <Button
+                onClick={() => setActiveTab('riders')}
+                className='text-white'
+                style={{ backgroundColor: '#333366' }}
+                onMouseEnter={e =>
+                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                }
+                onMouseLeave={e =>
+                  (e.currentTarget.style.backgroundColor = '#333366')
+                }
+              >
+                Torna alla ricerca
+              </Button>
+            </div>
+          )}
+
+          {activeTab === 'messages' && (
+            <div className='text-center py-12'>
+              <div className='text-6xl mb-4'>🚧</div>
+              <h3 className='text-xl font-bold text-gray-900 mb-2'>
+                Funzione in Sviluppo
+              </h3>
+              <p className='text-gray-600 mb-6'>
+                Il sistema di messaggistica sarà disponibile a breve
+              </p>
+              <Button
+                onClick={() => setActiveTab('riders')}
+                className='text-white'
+                style={{ backgroundColor: '#333366' }}
+                onMouseEnter={e =>
+                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                }
+                onMouseLeave={e =>
+                  (e.currentTarget.style.backgroundColor = '#333366')
+                }
+              >
+                Torna alla ricerca
+              </Button>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Filters */}
-        <div className='bg-white rounded-lg shadow-sm border p-6 mb-8'>
-          <div className='grid md:grid-cols-5 gap-4'>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                <Search className='inline h-4 w-4 mr-1' />
-                Cerca
-              </label>
-              <input
-                type='text'
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder='Nome o descrizione...'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-            </div>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                <Euro className='inline h-4 w-4 mr-1' />
-                Tariffa Minima (€/h)
-              </label>
-              <input
-                type='number'
-                value={minRate}
-                onChange={e => setMinRate(e.target.value)}
-                placeholder='0'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-            </div>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                <Euro className='inline h-4 w-4 mr-1' />
-                Tariffa Massima (€/h)
-              </label>
-              <input
-                type='number'
-                value={maxRate}
-                onChange={e => setMaxRate(e.target.value)}
-                placeholder='100'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-            </div>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                <MapPin className='inline h-4 w-4 mr-1' />
-                Località
-              </label>
-              <input
-                type='text'
-                value={locationFilter}
-                onChange={e => setLocationFilter(e.target.value)}
-                placeholder='Milano, Roma, Torino...'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-            </div>
-            <div className='flex items-end'>
-              <Button
-                onClick={() => {
-                  setSearchTerm('');
-                  setMinRate('');
-                  setMaxRate('');
-                  setLocationFilter('');
-                }}
-                variant='outline'
-                className='w-full'
+      {/* Bottom Navigation Bar - Fixed */}
+      <div className='fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg'>
+        <div className='flex items-center justify-center px-4 py-1'>
+          <div className='flex items-center justify-around w-full max-w-md'>
+            {/* Ricerca */}
+            <button
+              onClick={() => setActiveTab('riders')}
+              className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
+                activeTab === 'riders' ? 'text-blue-600' : 'text-gray-400'
+              }`}
+            >
+              <Search className='h-5 w-5' />
+            </button>
+
+            {/* Preferiti */}
+            <button
+              onClick={() => {
+                if (userProfile?.role === 'merchant') {
+                  setActiveTab('favorites');
+                }
+              }}
+              className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
+                activeTab === 'favorites'
+                  ? 'text-red-500'
+                  : userProfile?.role === 'merchant'
+                    ? 'text-gray-400 hover:text-gray-600'
+                    : 'text-gray-300 cursor-not-allowed'
+              }`}
+              disabled={userProfile?.role !== 'merchant'}
+            >
+              <span className='text-lg'>❤️</span>
+            </button>
+
+            {/* BeMyRider */}
+            <Link
+              href={
+                userProfile?.role === 'rider'
+                  ? '/dashboard/rider'
+                  : '/dashboard/merchant'
+              }
+            >
+              <button
+                className='flex flex-col items-center p-2 rounded-xl text-white shadow-lg transition-colors'
+                style={{ backgroundColor: '#333366' }}
+                onMouseEnter={e =>
+                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                }
+                onMouseLeave={e =>
+                  (e.currentTarget.style.backgroundColor = '#333366')
+                }
               >
-                <Filter className='h-4 w-4 mr-2' />
-                Reset Filtri
-              </Button>
+                <div className='flex items-center justify-center w-6 h-6 bg-white bg-opacity-20 rounded-full'>
+                  <Image
+                    src='/bemyrider_logo.svg'
+                    alt='bemyrider'
+                    width={16}
+                    height={16}
+                    className='w-4 h-4'
+                  />
+                </div>
+              </button>
+            </Link>
+
+            {/* Messaggi - Disabilitato per ora */}
+            <button
+              onClick={() => {
+                /* Messaggi non ancora implementati */
+              }}
+              className='flex flex-col items-center p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed'
+              disabled
+            >
+              <span className='text-lg'>💬</span>
+            </button>
+
+            {/* Profilo con dropdown */}
+            <div className='relative' ref={profileDropdownRef}>
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
+                  showProfileDropdown
+                    ? 'text-blue-600'
+                    : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                <span className='text-lg'>👤</span>
+              </button>
+
+              {showProfileDropdown && (
+                <div className='absolute bottom-full right-0 mb-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50'>
+                  <div className='py-2'>
+                    <div className='px-4 py-2 text-sm text-gray-700 border-b border-gray-100'>
+                      <p className='font-medium'>
+                        {userProfile?.full_name || 'Utente'}
+                      </p>
+                      <p className='text-xs text-gray-500 capitalize'>
+                        {userProfile?.role || 'Ospite'}
+                      </p>
+                    </div>
+
+                    {userProfile?.role === 'merchant' && (
+                      <Link href='/dashboard/merchant'>
+                        <button
+                          className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                          onClick={() => setShowProfileDropdown(false)}
+                        >
+                          Dashboard
+                        </button>
+                      </Link>
+                    )}
+
+                    {userProfile?.role === 'rider' && (
+                      <Link href='/dashboard/rider'>
+                        <button
+                          className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                          onClick={() => setShowProfileDropdown(false)}
+                        >
+                          Dashboard Rider
+                        </button>
+                      </Link>
+                    )}
+
+                    <Link href='/profile'>
+                      <button
+                        className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                        onClick={() => setShowProfileDropdown(false)}
+                      >
+                        Impostazioni
+                      </button>
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        {/* Riders Grid */}
-        {loading ? (
-          <div className='text-center py-12'>
-            <div
-              className='animate-spin rounded-full h-12 w-12 border-b-2 mx-auto'
-              style={{ borderBottomColor: '#333366' }}
-            ></div>
-            <p className='mt-4 text-gray-600'>Caricamento rider...</p>
-          </div>
-        ) : filteredRiders.length === 0 ? (
-          <div className='text-center py-12'>
-            <Bike className='h-16 w-16 text-gray-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
-              Nessun rider trovato
-            </h3>
-            <p className='text-gray-600'>
-              Prova a modificare i filtri di ricerca
-            </p>
-          </div>
-        ) : (
-          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {filteredRiders.map(rider => (
-              <Card
-                key={rider.id}
-                className='relative overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'
-              >
-                <CardContent className='relative px-6 pt-6 pb-6'>
-                  {/* Profile Picture - Centrata senza gradiente */}
-                  <div className='flex justify-center mb-4'>
-                    {rider.profile_picture_url || rider.avatar_url ? (
-                      <div className='relative'>
-                        <Image
-                          src={
-                            rider.profile_picture_url || rider.avatar_url || ''
-                          }
-                          alt={rider.full_name}
-                          width={96}
-                          height={96}
-                          className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg'
-                          onError={e => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        {/* Badge di stato online */}
-                        <div className='absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full flex items-center justify-center'>
-                          <div className='w-1.5 h-1.5 bg-white rounded-full'></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className='relative'>
-                        <div
-                          className='w-24 h-24 rounded-full flex items-center justify-center shadow-lg border-4 border-white'
-                          style={{
-                            background:
-                              'linear-gradient(to bottom right, #333366, #4a4a7a)',
-                          }}
-                        >
-                          <span className='text-2xl font-bold text-white'>
-                            {rider.full_name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className='absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full flex items-center justify-center'>
-                          <div className='w-1.5 h-1.5 bg-white rounded-full'></div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Nome e rating */}
-                  <div className='text-center mb-3'>
-                    <h3 className='text-xl font-bold text-gray-900 mb-1'>
-                      {rider.full_name}
-                    </h3>
-
-                    {/* Rating stelle (simulato) */}
-                    <div className='flex items-center justify-center gap-1 mb-2'>
-                      {[1, 2, 3, 4, 5].map(star => (
-                        <svg
-                          key={star}
-                          className='w-3 h-3 text-yellow-400 fill-current'
-                          viewBox='0 0 20 20'
-                        >
-                          <path d='M10 1l2.5 6.5h6.5l-5.25 4 2 6.5-5.75-4.25-5.75 4.25 2-6.5-5.25-4h6.5z' />
-                        </svg>
-                      ))}
-                      <span className='text-xs text-gray-600 ml-1'>5.0</span>
-                    </div>
-
-                    {/* Tipo di veicolo con icona */}
-                    <div className='flex items-center justify-center gap-2 mb-2'>
-                      {rider.vehicle_type === 'bici' && <span>🚲</span>}
-                      {rider.vehicle_type === 'bicicletta' && <span>🚲</span>}
-                      {rider.vehicle_type === 'scooter' && <span>🛵</span>}
-                      {rider.vehicle_type === 'moto' && <span>🏍️</span>}
-                      {rider.vehicle_type === 'auto' && <span>🚗</span>}
-                      {rider.vehicle_type === 'furgone' && <span>🚐</span>}
-                      <span className='text-sm font-medium text-gray-700 capitalize'>
-                        {rider.vehicle_type || 'Veicolo'}
-                      </span>
-                    </div>
-
-                    {/* Località attiva */}
-                    {rider.active_location && (
-                      <div className='flex items-center justify-center gap-1 mb-3'>
-                        <MapPin className='h-3 w-3 text-blue-600' />
-                        <span className='text-xs text-blue-600 font-medium'>
-                          {rider.active_location}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Bio / Descrizione */}
-                  {rider.bio && (
-                    <div className='mb-4'>
-                      <p className='text-gray-700 text-center text-sm italic line-clamp-2'>
-                        &ldquo;{rider.bio}&rdquo;
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Tariffa e disponibilità */}
-                  <div className='grid grid-cols-2 gap-3 mb-4'>
-                    <div className='text-center p-2 bg-gray-50 rounded-lg'>
-                      <div className='text-lg font-bold text-gray-900'>
-                        €{rider.hourly_rate}
-                      </div>
-                      <div className='text-xs text-gray-600'>per ora</div>
-                    </div>
-                    <div className='text-center p-2 bg-gray-50 rounded-lg'>
-                      <div className='text-sm font-bold text-green-600'>
-                        Disponibile
-                      </div>
-                      <div className='text-xs text-gray-600'>Ora</div>
-                    </div>
-                  </div>
-
-                  {/* Badge caratteristiche */}
-                  <div className='flex flex-wrap gap-1 mb-4 justify-center'>
-                    <span
-                      className='px-2 py-1 text-xs rounded-full'
-                      style={{
-                        backgroundColor: 'rgba(51, 51, 102, 0.1)',
-                        color: '#333366',
-                      }}
-                    >
-                      ⚡ Veloce
-                    </span>
-                    <span className='px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full'>
-                      ✓ Verificato
-                    </span>
-                  </div>
-
-                  {/* Pulsante prenotazione */}
-                  <Link href={`/riders/${rider.id}`}>
-                    <Button
-                      className='w-full text-white font-medium'
-                      style={{ backgroundColor: '#333366' }}
-                      onMouseEnter={e =>
-                        (e.currentTarget.style.backgroundColor = '#4a4a7a')
-                      }
-                      onMouseLeave={e =>
-                        (e.currentTarget.style.backgroundColor = '#333366')
-                      }
-                    >
-                      <Clock className='h-4 w-4 mr-2' />
-                      Prenota Rider
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

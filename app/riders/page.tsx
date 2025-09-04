@@ -302,15 +302,10 @@ export default function RidersPage() {
         <div className='px-4 py-3'>
           <div className='relative'>
             <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='20'
-              height='20'
               viewBox='0 0 24 24'
               fill='none'
-              stroke='#333366'
+              stroke='currentColor'
               strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
               className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5'
             >
               <path d='m21 21-4.34-4.34' />
@@ -490,18 +485,13 @@ export default function RidersPage() {
             <div className='text-center py-12'>
               <div className='text-6xl mb-4'>
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='64'
-                  height='64'
                   viewBox='0 0 24 24'
                   fill='none'
-                  stroke='#333366'
+                  stroke='currentColor'
                   strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
                   className='w-16 h-16 mx-auto'
                 >
-                  <path d='M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762' />
+                  <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
                 </svg>
               </div>
               <h3 className='text-xl font-bold text-gray-900 mb-2'>
@@ -590,15 +580,10 @@ export default function RidersPage() {
               }`}
             >
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='20'
-                height='20'
                 viewBox='0 0 24 24'
                 fill='none'
-                stroke='#333366'
+                stroke='currentColor'
                 strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
                 className='h-5 w-5'
               >
                 <path d='m21 21-4.34-4.34' />
@@ -623,18 +608,13 @@ export default function RidersPage() {
               disabled={userProfile?.role !== 'merchant'}
             >
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='20'
-                height='20'
                 viewBox='0 0 24 24'
                 fill='none'
-                stroke='#333366'
+                stroke='currentColor'
                 strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
                 className='h-5 w-5'
               >
-                <path d='M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762' />
+                <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
               </svg>
             </button>
 
@@ -677,18 +657,13 @@ export default function RidersPage() {
               disabled
             >
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='20'
-                height='20'
                 viewBox='0 0 24 24'
                 fill='none'
-                stroke='#333366'
+                stroke='currentColor'
                 strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
                 className='h-5 w-5'
               >
-                <path d='M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719' />
+                <path d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z' />
               </svg>
             </button>
 
@@ -703,20 +678,15 @@ export default function RidersPage() {
                 }`}
               >
                 <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='20'
-                  height='20'
                   viewBox='0 0 24 24'
                   fill='none'
-                  stroke='#333366'
+                  stroke='currentColor'
                   strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
                   className='h-5 w-5'
                 >
-                  <path d='M4 5h16' />
-                  <path d='M4 12h16' />
-                  <path d='M4 19h16' />
+                  <path d='M3 6h18' />
+                  <path d='M3 12h18' />
+                  <path d='M3 18h18' />
                 </svg>
               </button>
 

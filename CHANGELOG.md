@@ -27,13 +27,15 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Colorazione dinamica** con `currentColor` invece di colori fissi
 - **Performance migliorate** con rendering più veloce delle icone
 
-##### 🤖 **Sistema Rider Fantocci**
-- **3 rider fantocci creati** con dati realistici per testing e demo
-- **Script create-mock-riders.js** per generazione automatica
-- **Dati ricchi**: esperienza, specializzazioni, rating, velocità risposta
-- **Diversi veicoli**: e-bike, scooter, auto con tariffe differenti
-- **Località distribuite**: Milano, Torino, Roma
-- **Credenziali sicure** per accesso e testing
+##### 🏍️ **Sistema Rider Professionisti in Moto**
+- **10 rider professionisti in moto creati** con dati ultra-realistici italiani
+- **Script create-mock-riders.js** aggiornato per generazione di massa
+- **Dati ricchi**: esperienza 2-9 anni, specializzazioni specifiche, rating 4.5-4.9
+- **Veicoli premium italiani**: Honda SH, Yamaha TMAX, Vespa Primavera, BMW C400X
+- **Località distribuite**: Milano, Torino, Roma, Firenze, Bologna, Genova
+- **Tariffe competitive**: €10.5-16.0/ora basate su esperienza e specializzazioni
+- **Consegne specializzate**: farmaceutici, prodotti lusso, documenti legali, bio
+- **Credenziali sicure** per testing completo del sistema
 
 #### 🐛 Correzioni
 - **Build process** verificato e funzionante

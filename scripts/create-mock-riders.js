@@ -22,19 +22,38 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Rider fantocci da creare con dati realistici
+// 10 Rider in moto (scooter) da creare con dati realistici italiani
 const MOCK_RIDERS = [
   {
-    email: 'marco.bianchi@bemyrider.test',
-    password: 'RiderMarco2024!',
-    fullName: 'Marco Bianchi',
+    email: 'alessandro.conti@bemyrider.test',
+    password: 'MotoAlessandro2024!',
+    fullName: 'Alessandro Conti',
     role: 'rider',
-    bio: 'Rider professionista con 5 anni di esperienza. Specializzato in consegne rapide in centro città. Disponibile 7 giorni su 7.',
-    hourlyRate: 12.5,
-    vehicleType: 'e_bike',
+    bio: 'Pilota esperto con Honda SH 125. Specializzato in consegne rapide nel centro storico. Conosco ogni vicolo di Milano.',
+    hourlyRate: 11.5,
+    vehicleType: 'scooter',
     activeLocation: 'Milano',
-    experienceYears: 5,
-    specializations: ['Consegne rapide', 'Centro città', 'Documenti importanti'],
-    completedJobs: 1247,
+    experienceYears: 6,
+    specializations: ['Centro storico', 'Consegne rapide', 'Documenti legali'],
+    completedJobs: 1847,
+    rating: 4.9,
+    responseTime: '< 3 min',
+    isVerified: true,
+    isPremium: true,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'valentina.moretti@bemyrider.test',
+    password: 'MotoValentina2024!',
+    fullName: 'Valentina Moretti',
+    role: 'rider',
+    bio: 'Pilota donna con Yamaha TMAX. Perfetta per consegne delicate e prodotti di lusso. Sempre elegante e professionale.',
+    hourlyRate: 14.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Milano',
+    experienceYears: 4,
+    specializations: ['Prodotti di lusso', 'Consegne delicate', 'Eventi speciali'],
+    completedJobs: 1245,
     rating: 4.8,
     responseTime: '< 5 min',
     isVerified: true,
@@ -42,37 +61,145 @@ const MOCK_RIDERS = [
     profilePictureUrl: null,
   },
   {
-    email: 'giulia.verdi@bemyrider.test',
-    password: 'RiderGiulia2024!',
-    fullName: 'Giulia Verdi',
+    email: 'francesco.galli@bemyrider.test',
+    password: 'MotoFrancesco2024!',
+    fullName: 'Francesco Galli',
     role: 'rider',
-    bio: 'Specializzata in consegne di prodotti freschi e farmaceutici. Sempre puntuale e affidabile. Uso veicoli elettrici ecologici.',
-    hourlyRate: 15.0,
+    bio: 'Rider giovane e dinamico con Piaggio Beverly. Perfetto per consegne veloci e affidabili in zona universitaria.',
+    hourlyRate: 10.5,
     vehicleType: 'scooter',
-    activeLocation: 'Torino',
-    experienceYears: 3,
-    specializations: ['Prodotti freschi', 'Farmaceutici', 'Consegne urgenti'],
-    completedJobs: 856,
-    rating: 4.9,
-    responseTime: '< 3 min',
+    activeLocation: 'Milano',
+    experienceYears: 2,
+    specializations: ['Università', 'Consegne veloci', 'Piccoli pacchi'],
+    completedJobs: 756,
+    rating: 4.7,
+    responseTime: '< 4 min',
     isVerified: true,
     isPremium: false,
     profilePictureUrl: null,
   },
   {
-    email: 'luca.rossi@bemyrider.test',
-    password: 'RiderLuca2024!',
-    fullName: 'Luca Rossi',
+    email: 'sofia.ferrari@bemyrider.test',
+    password: 'MotoSofia2024!',
+    fullName: 'Sofia Ferrari',
     role: 'rider',
-    bio: 'Rider affidabile per consegne pesanti e di grandi dimensioni. Disponibile anche nei weekend. Uso furgone per carichi speciali.',
-    hourlyRate: 18.0,
-    vehicleType: 'auto',
-    activeLocation: 'Roma',
+    bio: 'Pilota esperta con Vespa Primavera. Specializzata in consegne artistiche e prodotti creativi. Adoro il mio lavoro!',
+    hourlyRate: 12.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Torino',
+    experienceYears: 5,
+    specializations: ['Prodotti artistici', 'Consegne creative', 'Piccole imprese'],
+    completedJobs: 1456,
+    rating: 4.9,
+    responseTime: '< 6 min',
+    isVerified: true,
+    isPremium: true,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'matteo.romano@bemyrider.test',
+    password: 'MotoMatteo2024!',
+    fullName: 'Matteo Romano',
+    role: 'rider',
+    bio: 'Rider affidabile con Aprilia Scarabeo. Perfetto per consegne pesanti fino a 20kg. Disponibile anche la sera.',
+    hourlyRate: 13.5,
+    vehicleType: 'scooter',
+    activeLocation: 'Torino',
     experienceYears: 7,
-    specializations: ['Consegne pesanti', 'Weekend', 'Extra-urbane'],
+    specializations: ['Consegne pesanti', 'Serale', 'Carichi fino 20kg'],
     completedJobs: 2156,
+    rating: 4.6,
+    responseTime: '< 8 min',
+    isVerified: true,
+    isPremium: false,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'giorgia.lombardi@bemyrider.test',
+    password: 'MotoGiorgia2024!',
+    fullName: 'Giorgia Lombardi',
+    role: 'rider',
+    bio: 'Pilota dinamica con Kymco Agility. Specializzata in consegne farmaceutiche e prodotti sanitari. Massima affidabilità.',
+    hourlyRate: 13.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Roma',
+    experienceYears: 4,
+    specializations: ['Farmaceutici', 'Prodotti sanitari', 'Consegne urgenti'],
+    completedJobs: 987,
+    rating: 4.8,
+    responseTime: '< 5 min',
+    isVerified: true,
+    isPremium: true,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'davide.marini@bemyrider.test',
+    password: 'MotoDavide2024!',
+    fullName: 'Davide Marini',
+    role: 'rider',
+    bio: 'Rider esperto con Gilera Runner. Perfetto per consegne in zone residenziali. Conosco ogni strada di Roma.',
+    hourlyRate: 11.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Roma',
+    experienceYears: 8,
+    specializations: ['Zone residenziali', 'Consegne locali', 'Servizio clienti'],
+    completedJobs: 2456,
     rating: 4.7,
+    responseTime: '< 7 min',
+    isVerified: true,
+    isPremium: false,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'chiara.bellini@bemyrider.test',
+    password: 'MotoChiara2024!',
+    fullName: 'Chiara Bellini',
+    role: 'rider',
+    bio: 'Pilota giovane con Peugeot Tweet. Specializzata in consegne sostenibili e prodotti bio. Amo la natura!',
+    hourlyRate: 12.5,
+    vehicleType: 'scooter',
+    activeLocation: 'Firenze',
+    experienceYears: 3,
+    specializations: ['Prodotti bio', 'Consegne sostenibili', 'Centro storico'],
+    completedJobs: 678,
+    rating: 4.9,
+    responseTime: '< 4 min',
+    isVerified: true,
+    isPremium: false,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'andrea.villa@bemyrider.test',
+    password: 'MotoAndrea2024!',
+    fullName: 'Andrea Villa',
+    role: 'rider',
+    bio: 'Rider affidabile con Moto Guzzi V7. Specializzato in consegne di grandi dimensioni. Trasporto tutto con sicurezza.',
+    hourlyRate: 15.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Bologna',
+    experienceYears: 6,
+    specializations: ['Consegne grandi', 'Trasporti sicuri', 'Articoli delicati'],
+    completedJobs: 1789,
+    rating: 4.5,
     responseTime: '< 10 min',
+    isVerified: true,
+    isPremium: true,
+    profilePictureUrl: null,
+  },
+  {
+    email: 'elena.ricci@bemyrider.test',
+    password: 'MotoElena2024!',
+    fullName: 'Elena Ricci',
+    role: 'rider',
+    bio: 'Pilota esperta con BMW C 400 X. Perfetta per consegne business e documenti importanti. Sempre professionale.',
+    hourlyRate: 16.0,
+    vehicleType: 'scooter',
+    activeLocation: 'Genova',
+    experienceYears: 9,
+    specializations: ['Business', 'Documenti importanti', 'Consegne executive'],
+    completedJobs: 2876,
+    rating: 4.9,
+    responseTime: '< 3 min',
     isVerified: true,
     isPremium: true,
     profilePictureUrl: null,
@@ -97,7 +224,9 @@ async function createMockRider(riderData) {
 
     if (authError) {
       if (authError.message.includes('already registered')) {
-        console.log(`⚠️  Rider ${riderData.fullName} (${riderData.email}) già esiste`);
+        console.log(
+          `⚠️  Rider ${riderData.fullName} (${riderData.email}) già esiste`
+        );
         return { success: true, existed: true };
       }
       throw authError;
@@ -124,25 +253,23 @@ async function createMockRider(riderData) {
     }
 
     // 3. Crea il record dettagliato in riders_details
-    const { error: riderError } = await supabase
-      .from('riders_details')
-      .upsert({
-        profile_id: authData.user.id,
-        bio: riderData.bio,
-        hourly_rate: riderData.hourlyRate,
-        vehicle_type: riderData.vehicleType,
-        profile_picture_url: riderData.profilePictureUrl,
-        active_location: riderData.activeLocation,
-        experience_years: riderData.experienceYears,
-        specializations: riderData.specializations,
-        completed_jobs: riderData.completedJobs,
-        rating: riderData.rating,
-        response_time: riderData.responseTime,
-        is_verified: riderData.isVerified,
-        is_premium: riderData.isPremium,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+    const { error: riderError } = await supabase.from('riders_details').upsert({
+      profile_id: authData.user.id,
+      bio: riderData.bio,
+      hourly_rate: riderData.hourlyRate,
+      vehicle_type: riderData.vehicleType,
+      profile_picture_url: riderData.profilePictureUrl,
+      active_location: riderData.activeLocation,
+      experience_years: riderData.experienceYears,
+      specializations: riderData.specializations,
+      completed_jobs: riderData.completedJobs,
+      rating: riderData.rating,
+      response_time: riderData.responseTime,
+      is_verified: riderData.isVerified,
+      is_premium: riderData.isPremium,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
 
     if (riderError) {
       console.log(`⚠️  Errore dettagli rider: ${riderError.message}`);
@@ -159,13 +286,17 @@ async function createMockRider(riderData) {
 
 async function createAllMockRiders() {
   console.log('🚀 Iniziando creazione rider fantocci...\n');
-  console.log('📋 Verranno creati 3 rider con dati realistici per il testing:\n');
+  console.log(
+    '📋 Verranno creati 10 rider professionisti in moto per il testing:\n'
+  );
 
   // Mostra i rider che verranno creati
   MOCK_RIDERS.forEach((rider, index) => {
     console.log(`${index + 1}. ${rider.fullName}`);
     console.log(`   📧 ${rider.email}`);
-    console.log(`   🚗 ${rider.vehicleType.replace('_', '-')} - €${rider.hourlyRate}/h`);
+    console.log(
+      `   🚗 ${rider.vehicleType.replace('_', '-')} - €${rider.hourlyRate}/h`
+    );
     console.log(`   📍 ${rider.activeLocation}`);
     console.log(`   ⭐ ${rider.rating}/5 (${rider.completedJobs} consegne)`);
     console.log(`   💼 ${rider.experienceYears} anni esperienza`);
@@ -189,14 +320,18 @@ async function createAllMockRiders() {
         ? '🟡 Esisteva già'
         : '🟢 Creato'
       : '🔴 Errore';
-    console.log(`${index + 1}. ${status} - ${result.fullName} (${result.email})`);
+    console.log(
+      `${index + 1}. ${status} - ${result.fullName} (${result.email})`
+    );
     if (result.success && !result.existed) {
-      console.log(`   🚗 ${result.vehicleType.replace('_', '-')} | 📍 ${result.activeLocation} | ⭐ ${result.rating}/5 (${result.completedJobs} jobs)`);
+      console.log(
+        `   🚗 ${result.vehicleType.replace('_', '-')} | 📍 ${result.activeLocation} | ⭐ ${result.rating}/5 (${result.completedJobs} jobs)`
+      );
     }
   });
 
   const successful = results.filter(r => r.success).length;
-  console.log(`\n✅ ${successful}/${results.length} rider fantocci pronti!`);
+  console.log(`\n✅ ${successful}/${results.length} rider professionisti in moto pronti!`);
 
   if (successful > 0) {
     console.log('\n🎯 Credenziali per accesso:');
@@ -213,7 +348,10 @@ async function createAllMockRiders() {
       });
 
     console.log('\n💡 I rider fantocci sono ora visibili nella pagina /riders');
-    console.log('🔗 Puoi accedere ai loro profili individuali tramite /riders/[id]');
+    console.log(
+      '🔗 Puoi accedere ai loro profili individuali tramite /riders/[id]'
+    );
+    console.log('🏍️  Tutti i rider utilizzano scooter/moto per consegne veloci e affidabili');
   }
 }
 

@@ -51,5 +51,24 @@
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
-  }
+  },
+
+  // Disable spelling/typos checking for Italian content
+  "cSpell.enabled": false,
+  "cSpell.language": "en,it",
+  "cSpell.words": [
+    "bemyrider",
+    "Preferenze",
+    "integrato",
+    "completi",
+    "Fase",
+    "Importante",
+    "stati",
+    "comando",
+    "Comando",
+    "visibile",
+    "Limite",
+    "Ignora",
+    "Impossibile"
+  ]
 }

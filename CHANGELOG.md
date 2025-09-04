@@ -5,6 +5,44 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2025-09-04
+
+### 🎨 Aggiornamento - Redesign Pagina Riders Mobile-First
+
+#### ✨ Nuove Funzionalità
+
+##### 📱 **UI Mobile-First Completa**
+- **Redesign completo** della pagina `/riders` ottimizzata per dispositivi mobili
+- **Top navigation fissa** con barra ricerca integrata e filtro località
+- **Bottom navigation** con 5 icone: ricerca, preferiti, bemyrider, messaggi, profilo
+- **Layout responsive** che si adatta perfettamente a schermi piccoli
+
+##### 🚗 **Sistema Filtri Veicoli**
+- **Tabs interattive** per filtrare per tipo veicolo: e-bike, moto, auto
+- **Colore brand applicato** (#333366) a tutti i pulsanti e elementi principali
+- **Logica esclusiva bici** rimossa dai filtri come richiesto
+
+##### 👤 **Gestione Profilo Avanzata**
+- **Dropdown profilo completo** con opzioni dashboard, impostazioni, logout
+- **Logica role-based** per merchant e rider con funzionalità differenziate
+- **Sistema preferiti** riservato agli esercenti con controlli appropriati
+
+##### 🎨 **Design e User Experience**
+- **Card rider orizzontali** con informazioni essenziali: foto, nome, rating, città, tariffa
+- **Logo bemyrider elegante** al posto del pulsante "Mostra tutti i rider"
+- **Transizioni fluide** e effetti hover con colore brand
+- **Ottimizzazioni mobile** con touch targets appropriati
+
+##### 🛠️ **Utility CSS e Componenti**
+- **Nuovo componente Dialog** creato in `components/ui/dialog.tsx`
+- **Utility CSS aggiunte** per mobile optimization in `globals.css`
+- **Correzione import duplicati** e ottimizzazioni codice
+
+#### 🐛 Correzioni
+- **Errore import duplicato** di `Image` risolto
+- **Build process** ottimizzato e funzionante
+- **Compatibilità mobile** migliorata su tutti i dispositivi
+
 ## [0.4.1] - 2025-09-04
 
 ### 🔧 Aggiornamento - Gestione Richieste e Configurazione Drizzle

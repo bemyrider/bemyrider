@@ -184,9 +184,7 @@
         "occasional_performance_receipts_prenotazione_id_unique": {
           "name": "occasional_performance_receipts_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "prenotazione_id"
-          ]
+          "columns": ["prenotazione_id"]
         }
       },
       "policies": {},
@@ -390,9 +388,7 @@
         "recensioni_prenotazione_id_unique": {
           "name": "recensioni_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "prenotazione_id"
-          ]
+          "columns": ["prenotazione_id"]
         }
       },
       "policies": {},
@@ -627,34 +623,17 @@
     "public.DayOfWeek": {
       "name": "DayOfWeek",
       "schema": "public",
-      "values": [
-        "Lun",
-        "Mar",
-        "Mer",
-        "Gio",
-        "Ven",
-        "Sab",
-        "Dom"
-      ]
+      "values": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
     },
     "public.PaymentStatus": {
       "name": "PaymentStatus",
       "schema": "public",
-      "values": [
-        "in_attesa",
-        "pagato",
-        "rimborsato"
-      ]
+      "values": ["in_attesa", "pagato", "rimborsato"]
     },
     "public.ServiceRequestStatus": {
       "name": "ServiceRequestStatus",
       "schema": "public",
-      "values": [
-        "pending",
-        "accepted",
-        "rejected",
-        "expired"
-      ]
+      "values": ["pending", "accepted", "rejected", "expired"]
     },
     "public.Status": {
       "name": "Status",
@@ -670,12 +649,7 @@
     "public.VehicleType": {
       "name": "VehicleType",
       "schema": "public",
-      "values": [
-        "bici",
-        "e_bike",
-        "scooter",
-        "auto"
-      ]
+      "values": ["bici", "e_bike", "scooter", "auto"]
     }
   },
   "schemas": {},

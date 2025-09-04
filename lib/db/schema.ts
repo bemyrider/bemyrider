@@ -1,12 +1,51 @@
-import { pgTable, uuid, varchar, text, timestamp, decimal, boolean, integer, time, pgEnum } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  varchar,
+  text,
+  timestamp,
+  decimal,
+  boolean,
+  integer,
+  time,
+  pgEnum,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
-export const vehicleTypeEnum = pgEnum('VehicleType', ['bici', 'e_bike', 'scooter', 'auto']);
-export const dayOfWeekEnum = pgEnum('DayOfWeek', ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']);
-export const statusEnum = pgEnum('Status', ['in_attesa', 'confermata', 'in_corso', 'completata', 'annullata']);
-export const paymentStatusEnum = pgEnum('PaymentStatus', ['in_attesa', 'pagato', 'rimborsato']);
-export const serviceRequestStatusEnum = pgEnum('ServiceRequestStatus', ['pending', 'accepted', 'rejected', 'expired']);
+export const vehicleTypeEnum = pgEnum('VehicleType', [
+  'bici',
+  'e_bike',
+  'scooter',
+  'auto',
+]);
+export const dayOfWeekEnum = pgEnum('DayOfWeek', [
+  'Lun',
+  'Mar',
+  'Mer',
+  'Gio',
+  'Ven',
+  'Sab',
+  'Dom',
+]);
+export const statusEnum = pgEnum('Status', [
+  'in_attesa',
+  'confermata',
+  'in_corso',
+  'completata',
+  'annullata',
+]);
+export const paymentStatusEnum = pgEnum('PaymentStatus', [
+  'in_attesa',
+  'pagato',
+  'rimborsato',
+]);
+export const serviceRequestStatusEnum = pgEnum('ServiceRequestStatus', [
+  'pending',
+  'accepted',
+  'rejected',
+  'expired',
+]);
 
 // Profile table (compatible with existing Supabase schema)
 export const profiles = pgTable('profiles', {
@@ -36,11 +75,19 @@ export const ridersDetails = pgTable('riders_details', {
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
   hourlyRate: decimal('hourly_rate', { precision: 10, scale: 2 }).notNull(),
-  activeLocation: varchar('active_location', { length: 100 }).notNull().default('Non specificata'), // Località dove il rider è attivo
+  activeLocation: varchar('active_location', { length: 100 })
+    .notNull()
+    .default('Non specificata'), // Località dove il rider è attivo
   stripeAccountId: text('stripe_account_id'),
-  stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(false),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(
+    false
+  ),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 // Disponibilita Riders table (ora punta a profiles)
@@ -59,13 +106,21 @@ export const prenotazioni = pgTable('prenotazioni', {
   riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
   startTime: timestamp('start_time', { withTimezone: true }).notNull(),
   endTime: timestamp('end_time', { withTimezone: true }).notNull(),
-  serviceDurationHours: decimal('service_duration_hours', { precision: 5, scale: 2 }).notNull(),
+  serviceDurationHours: decimal('service_duration_hours', {
+    precision: 5,
+    scale: 2,
+  }).notNull(),
   grossAmount: decimal('gross_amount', { precision: 10, scale: 2 }).notNull(),
-  taxWithholdingAmount: decimal('tax_withholding_amount', { precision: 10, scale: 2 }),
+  taxWithholdingAmount: decimal('tax_withholding_amount', {
+    precision: 10,
+    scale: 2,
+  }),
   netAmount: decimal('net_amount', { precision: 10, scale: 2 }).notNull(),
   status: statusEnum('status').notNull(),
   paymentStatus: paymentStatusEnum('payment_status').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 // Service Requests table (richieste di servizio prima della prenotazione)
@@ -75,13 +130,20 @@ export const serviceRequests = pgTable('service_requests', {
   riderId: uuid('rider_id').notNull(),
   requestedDate: timestamp('requested_date', { mode: 'date' }).notNull(),
   startTime: time('start_time').notNull(),
-  durationHours: decimal('duration_hours', { precision: 5, scale: 2 }).notNull(),
+  durationHours: decimal('duration_hours', {
+    precision: 5,
+    scale: 2,
+  }).notNull(),
   description: text('description'),
   merchantAddress: text('merchant_address').notNull(),
   status: serviceRequestStatusEnum('status').notNull().default('pending'),
   riderResponse: text('rider_response'), // Motivazione accettazione/rifiuto
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 // Recensioni table (ora rider_id punta a profiles)
@@ -92,7 +154,9 @@ export const recensioni = pgTable('recensioni', {
   riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
   rating: integer('rating').notNull(),
   comment: text('comment'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 // Rider Tax Details table (ora include first_name e last_name)
@@ -117,12 +181,15 @@ export const esercenteTaxDetails = pgTable('esercente_tax_details', {
 });
 
 // Occasional Performance Receipts table
-export const occasionalPerformanceReceipts = pgTable('occasional_performance_receipts', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  prenotazioneId: uuid('prenotazione_id').notNull().unique(),
-  receiptNumber: integer('receipt_number').notNull(),
-  receiptDate: timestamp('receipt_date', { mode: 'date' }).notNull(),
-});
+export const occasionalPerformanceReceipts = pgTable(
+  'occasional_performance_receipts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    prenotazioneId: uuid('prenotazione_id').notNull().unique(),
+    receiptNumber: integer('receipt_number').notNull(),
+    receiptDate: timestamp('receipt_date', { mode: 'date' }).notNull(),
+  }
+);
 
 // Relations
 export const profilesRelations = relations(profiles, ({ one, many }) => ({
@@ -162,12 +229,15 @@ export const ridersDetailsRelations = relations(ridersDetails, ({ one }) => ({
   }),
 }));
 
-export const disponibilitaRidersRelations = relations(disponibilitaRiders, ({ one }) => ({
-  profile: one(profiles, {
-    fields: [disponibilitaRiders.riderId],
-    references: [profiles.id],
-  }),
-}));
+export const disponibilitaRidersRelations = relations(
+  disponibilitaRiders,
+  ({ one }) => ({
+    profile: one(profiles, {
+      fields: [disponibilitaRiders.riderId],
+      references: [profiles.id],
+    }),
+  })
+);
 
 export const prenotazioniRelations = relations(prenotazioni, ({ one }) => ({
   esercente: one(esercenti, {
@@ -188,16 +258,19 @@ export const prenotazioniRelations = relations(prenotazioni, ({ one }) => ({
   }),
 }));
 
-export const serviceRequestsRelations = relations(serviceRequests, ({ one }) => ({
-  merchant: one(profiles, {
-    fields: [serviceRequests.merchantId],
-    references: [profiles.id],
-  }),
-  rider: one(profiles, {
-    fields: [serviceRequests.riderId],
-    references: [profiles.id],
-  }),
-}));
+export const serviceRequestsRelations = relations(
+  serviceRequests,
+  ({ one }) => ({
+    merchant: one(profiles, {
+      fields: [serviceRequests.merchantId],
+      references: [profiles.id],
+    }),
+    rider: one(profiles, {
+      fields: [serviceRequests.riderId],
+      references: [profiles.id],
+    }),
+  })
+);
 
 export const recensioniRelations = relations(recensioni, ({ one }) => ({
   prenotazione: one(prenotazioni, {
@@ -214,23 +287,32 @@ export const recensioniRelations = relations(recensioni, ({ one }) => ({
   }),
 }));
 
-export const riderTaxDetailsRelations = relations(riderTaxDetails, ({ one }) => ({
-  profile: one(profiles, {
-    fields: [riderTaxDetails.riderId],
-    references: [profiles.id],
-  }),
-}));
+export const riderTaxDetailsRelations = relations(
+  riderTaxDetails,
+  ({ one }) => ({
+    profile: one(profiles, {
+      fields: [riderTaxDetails.riderId],
+      references: [profiles.id],
+    }),
+  })
+);
 
-export const esercenteTaxDetailsRelations = relations(esercenteTaxDetails, ({ one }) => ({
-  esercente: one(esercenti, {
-    fields: [esercenteTaxDetails.esercenteId],
-    references: [esercenti.id],
-  }),
-}));
+export const esercenteTaxDetailsRelations = relations(
+  esercenteTaxDetails,
+  ({ one }) => ({
+    esercente: one(esercenti, {
+      fields: [esercenteTaxDetails.esercenteId],
+      references: [esercenti.id],
+    }),
+  })
+);
 
-export const occasionalPerformanceReceiptsRelations = relations(occasionalPerformanceReceipts, ({ one }) => ({
-  prenotazione: one(prenotazioni, {
-    fields: [occasionalPerformanceReceipts.prenotazioneId],
-    references: [prenotazioni.id],
-  }),
-}));
+export const occasionalPerformanceReceiptsRelations = relations(
+  occasionalPerformanceReceipts,
+  ({ one }) => ({
+    prenotazione: one(prenotazioni, {
+      fields: [occasionalPerformanceReceipts.prenotazioneId],
+      references: [prenotazioni.id],
+    }),
+  })
+);

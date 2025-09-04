@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 // import { adaptBooking } from '@/lib/adapters' // TODO: Update to Drizzle
 
 export async function GET(
@@ -7,10 +7,10 @@ export async function GET(
   { params }: { params: { merchantId: string } }
 ) {
   try {
-    const merchantId = params.merchantId
+    const merchantId = params.merchantId;
 
     // TODO: Convert to Drizzle query
-    // Fetch bookings for merchant  
+    // Fetch bookings for merchant
     /*const bookings = await prisma.prenotazione.findMany({
       where: { esercente_id: merchantId },
       include: {
@@ -43,13 +43,12 @@ export async function GET(
     }))*/
 
     // Temporary: return empty array
-    return NextResponse.json([])
-
+    return NextResponse.json([]);
   } catch (error: any) {
-    console.error('Error fetching bookings:', error)
+    console.error('Error fetching bookings:', error);
     return NextResponse.json(
-      { error: 'Internal server error' }, 
+      { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }

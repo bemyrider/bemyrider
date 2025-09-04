@@ -32,9 +32,5 @@ export function AvailabilityBadge({ status }: AvailabilityBadgeProps) {
     }
   };
 
-  return (
-    <Badge variant={getVariant(status)}>
-      {getStatusText(status)}
-    </Badge>
-  );
+  return <Badge variant={getVariant(status)}>{getStatusText(status)}</Badge>;
 }

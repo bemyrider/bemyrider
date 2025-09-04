@@ -1,26 +1,26 @@
 /**
  * Script per creare account di test per bemyrider
- * 
+ *
  * Uso: node scripts/create-test-accounts.js
- * 
+ *
  * Crea account di test con credenziali predefinite per facilitare il testing
  */
 
-const { createClient } = require('@supabase/supabase-js')
-require('dotenv').config({ path: '.env.local' })
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config({ path: '.env.local' });
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ Variabili di ambiente mancanti:')
-  console.error('   NEXT_PUBLIC_SUPABASE_URL:', !!supabaseUrl)
-  console.error('   SUPABASE_SERVICE_ROLE_KEY:', !!supabaseServiceKey)
-  process.exit(1)
+  console.error('❌ Variabili di ambiente mancanti:');
+  console.error('   NEXT_PUBLIC_SUPABASE_URL:', !!supabaseUrl);
+  console.error('   SUPABASE_SERVICE_ROLE_KEY:', !!supabaseServiceKey);
+  process.exit(1);
 }
 
 // Client Supabase con privilegi di admin
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const TEST_ACCOUNTS = {
   rider: {
@@ -29,82 +29,86 @@ const TEST_ACCOUNTS = {
     full_name: 'Marco Rossi',
     role: 'rider',
     vehicle_type: 'bici',
-    hourly_rate: 8.50,
-    bio: 'Rider di test per bemyrider. Esperienza nelle consegne urbane.'
+    hourly_rate: 8.5,
+    bio: 'Rider di test per bemyrider. Esperienza nelle consegne urbane.',
   },
   merchant: {
-    email: 'test.merchant@bemyrider.test', 
+    email: 'test.merchant@bemyrider.test',
     password: 'TestMerchant2024!',
     full_name: 'Pizzeria Da Mario',
-    role: 'merchant'
-  }
-}
+    role: 'merchant',
+  },
+};
 
 async function deleteExistingTestAccounts() {
-  console.log('🗑️ Eliminazione account di test esistenti...')
-  
+  console.log('🗑️ Eliminazione account di test esistenti...');
+
   for (const [role, account] of Object.entries(TEST_ACCOUNTS)) {
     try {
       // Trova l'utente esistente
-      const { data: existingUsers } = await supabase.auth.admin.listUsers()
-      const existingUser = existingUsers.users.find(u => u.email === account.email)
-      
+      const { data: existingUsers } = await supabase.auth.admin.listUsers();
+      const existingUser = existingUsers.users.find(
+        u => u.email === account.email
+      );
+
       if (existingUser) {
-        console.log(`   Eliminazione ${role}: ${account.email}`)
-        
+        console.log(`   Eliminazione ${role}: ${account.email}`);
+
         // Elimina prima i dati del profilo
-        await supabase.from('profiles').delete().eq('id', existingUser.id)
-        await supabase.from('riders_details').delete().eq('profile_id', existingUser.id)
-        
+        await supabase.from('profiles').delete().eq('id', existingUser.id);
+        await supabase
+          .from('riders_details')
+          .delete()
+          .eq('profile_id', existingUser.id);
+
         // Poi elimina l'utente auth
-        await supabase.auth.admin.deleteUser(existingUser.id)
-        
-        console.log(`   ✅ ${role} eliminato`)
+        await supabase.auth.admin.deleteUser(existingUser.id);
+
+        console.log(`   ✅ ${role} eliminato`);
       }
     } catch (error) {
-      console.warn(`   ⚠️ Errore eliminazione ${role}:`, error.message)
+      console.warn(`   ⚠️ Errore eliminazione ${role}:`, error.message);
     }
   }
 }
 
 async function createTestAccount(role, accountData) {
-  console.log(`👤 Creazione account ${role}: ${accountData.email}`)
-  
+  console.log(`👤 Creazione account ${role}: ${accountData.email}`);
+
   try {
     // 1. Crea l'utente auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: accountData.email,
-      password: accountData.password,
-      email_confirm: true, // Bypassa la conferma email
-      user_metadata: {
-        full_name: accountData.full_name,
-        role: accountData.role
-      }
-    })
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email: accountData.email,
+        password: accountData.password,
+        email_confirm: true, // Bypassa la conferma email
+        user_metadata: {
+          full_name: accountData.full_name,
+          role: accountData.role,
+        },
+      });
 
     if (authError) {
-      throw new Error(`Auth creation failed: ${authError.message}`)
+      throw new Error(`Auth creation failed: ${authError.message}`);
     }
 
-    const userId = authData.user.id
-    console.log(`   ✅ User auth creato: ${userId}`)
+    const userId = authData.user.id;
+    console.log(`   ✅ User auth creato: ${userId}`);
 
     // 2. Crea il profilo
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        id: userId,
-        full_name: accountData.full_name,
-        role: accountData.role,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: userId,
+      full_name: accountData.full_name,
+      role: accountData.role,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
 
     if (profileError) {
-      throw new Error(`Profile creation failed: ${profileError.message}`)
+      throw new Error(`Profile creation failed: ${profileError.message}`);
     }
 
-    console.log(`   ✅ Profilo creato`)
+    console.log(`   ✅ Profilo creato`);
 
     // 3. Se è un rider, crea anche riders_details
     if (accountData.role === 'rider') {
@@ -117,14 +121,14 @@ async function createTestAccount(role, accountData) {
           hourly_rate: accountData.hourly_rate,
           stripe_onboarding_complete: false,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
+          updated_at: new Date().toISOString(),
+        });
 
       if (riderError) {
-        throw new Error(`Rider details creation failed: ${riderError.message}`)
+        throw new Error(`Rider details creation failed: ${riderError.message}`);
       }
 
-      console.log(`   ✅ Dettagli rider creati`)
+      console.log(`   ✅ Dettagli rider creati`);
     }
 
     return {
@@ -132,67 +136,74 @@ async function createTestAccount(role, accountData) {
       userId,
       email: accountData.email,
       password: accountData.password,
-      role: accountData.role
-    }
-
+      role: accountData.role,
+    };
   } catch (error) {
-    console.error(`   ❌ Errore creazione ${role}:`, error.message)
+    console.error(`   ❌ Errore creazione ${role}:`, error.message);
     return {
       success: false,
-      error: error.message
-    }
+      error: error.message,
+    };
   }
 }
 
 async function main() {
-  console.log('🚀 Creazione account di test per bemyrider')
-  console.log('=========================================')
-  
+  console.log('🚀 Creazione account di test per bemyrider');
+  console.log('=========================================');
+
   try {
     // Elimina account esistenti
-    await deleteExistingTestAccounts()
-    
-    console.log('\n📝 Creazione nuovi account...')
-    
-    const results = []
-    
+    await deleteExistingTestAccounts();
+
+    console.log('\n📝 Creazione nuovi account...');
+
+    const results = [];
+
     // Crea account rider
-    const riderResult = await createTestAccount('rider', TEST_ACCOUNTS.rider)
-    results.push(riderResult)
-    
-    // Crea account merchant  
-    const merchantResult = await createTestAccount('merchant', TEST_ACCOUNTS.merchant)
-    results.push(merchantResult)
-    
+    const riderResult = await createTestAccount('rider', TEST_ACCOUNTS.rider);
+    results.push(riderResult);
+
+    // Crea account merchant
+    const merchantResult = await createTestAccount(
+      'merchant',
+      TEST_ACCOUNTS.merchant
+    );
+    results.push(merchantResult);
+
     // Riepilogo
-    console.log('\n📊 Riepilogo creazione account:')
-    console.log('================================')
-    
+    console.log('\n📊 Riepilogo creazione account:');
+    console.log('================================');
+
     results.forEach(result => {
       if (result.success) {
-        console.log(`✅ ${result.role.toUpperCase()}:`)
-        console.log(`   Email: ${result.email}`)
-        console.log(`   Password: ${result.password}`)
-        console.log(`   User ID: ${result.userId}`)
+        console.log(`✅ ${result.role.toUpperCase()}:`);
+        console.log(`   Email: ${result.email}`);
+        console.log(`   Password: ${result.password}`);
+        console.log(`   User ID: ${result.userId}`);
       } else {
-        console.log(`❌ ${result.role?.toUpperCase() || 'UNKNOWN'}: ${result.error}`)
+        console.log(
+          `❌ ${result.role?.toUpperCase() || 'UNKNOWN'}: ${result.error}`
+        );
       }
-    })
-    
-    const successCount = results.filter(r => r.success).length
-    console.log(`\n🎯 Account creati con successo: ${successCount}/${results.length}`)
-    
+    });
+
+    const successCount = results.filter(r => r.success).length;
+    console.log(
+      `\n🎯 Account creati con successo: ${successCount}/${results.length}`
+    );
+
     if (successCount > 0) {
-      console.log('\n💡 Credenziali per testing:')
-      console.log('============================')
-      results.filter(r => r.success).forEach(result => {
-        console.log(`${result.role}: ${result.email} / ${result.password}`)
-      })
+      console.log('\n💡 Credenziali per testing:');
+      console.log('============================');
+      results
+        .filter(r => r.success)
+        .forEach(result => {
+          console.log(`${result.role}: ${result.email} / ${result.password}`);
+        });
     }
-    
   } catch (error) {
-    console.error('💥 Errore generale:', error.message)
-    process.exit(1)
+    console.error('💥 Errore generale:', error.message);
+    process.exit(1);
   }
 }
 
@@ -200,13 +211,13 @@ async function main() {
 if (require.main === module) {
   main()
     .then(() => {
-      console.log('\n✅ Script completato')
-      process.exit(0)
+      console.log('\n✅ Script completato');
+      process.exit(0);
     })
     .catch(error => {
-      console.error('❌ Script fallito:', error)
-      process.exit(1)
-    })
+      console.error('❌ Script fallito:', error);
+      process.exit(1);
+    });
 }
 
-module.exports = { createTestAccount, TEST_ACCOUNTS }
+module.exports = { createTestAccount, TEST_ACCOUNTS };

@@ -52,7 +52,11 @@ const MOCK_RIDERS = [
     vehicleType: 'scooter',
     activeLocation: 'Milano',
     experienceYears: 4,
-    specializations: ['Prodotti di lusso', 'Consegne delicate', 'Eventi speciali'],
+    specializations: [
+      'Prodotti di lusso',
+      'Consegne delicate',
+      'Eventi speciali',
+    ],
     completedJobs: 1245,
     rating: 4.8,
     responseTime: '< 5 min',
@@ -88,7 +92,11 @@ const MOCK_RIDERS = [
     vehicleType: 'scooter',
     activeLocation: 'Torino',
     experienceYears: 5,
-    specializations: ['Prodotti artistici', 'Consegne creative', 'Piccole imprese'],
+    specializations: [
+      'Prodotti artistici',
+      'Consegne creative',
+      'Piccole imprese',
+    ],
     completedJobs: 1456,
     rating: 4.9,
     responseTime: '< 6 min',
@@ -142,7 +150,11 @@ const MOCK_RIDERS = [
     vehicleType: 'scooter',
     activeLocation: 'Roma',
     experienceYears: 8,
-    specializations: ['Zone residenziali', 'Consegne locali', 'Servizio clienti'],
+    specializations: [
+      'Zone residenziali',
+      'Consegne locali',
+      'Servizio clienti',
+    ],
     completedJobs: 2456,
     rating: 4.7,
     responseTime: '< 7 min',
@@ -178,7 +190,11 @@ const MOCK_RIDERS = [
     vehicleType: 'scooter',
     activeLocation: 'Bologna',
     experienceYears: 6,
-    specializations: ['Consegne grandi', 'Trasporti sicuri', 'Articoli delicati'],
+    specializations: [
+      'Consegne grandi',
+      'Trasporti sicuri',
+      'Articoli delicati',
+    ],
     completedJobs: 1789,
     rating: 4.5,
     responseTime: '< 10 min',
@@ -331,7 +347,9 @@ async function createAllMockRiders() {
   });
 
   const successful = results.filter(r => r.success).length;
-  console.log(`\n✅ ${successful}/${results.length} rider professionisti in moto pronti!`);
+  console.log(
+    `\n✅ ${successful}/${results.length} rider professionisti in moto pronti!`
+  );
 
   if (successful > 0) {
     console.log('\n🎯 Credenziali per accesso:');
@@ -351,7 +369,9 @@ async function createAllMockRiders() {
     console.log(
       '🔗 Puoi accedere ai loro profili individuali tramite /riders/[id]'
     );
-    console.log('🏍️  Tutti i rider utilizzano scooter/moto per consegne veloci e affidabili');
+    console.log(
+      '🏍️  Tutti i rider utilizzano scooter/moto per consegne veloci e affidabili'
+    );
   }
 }
 

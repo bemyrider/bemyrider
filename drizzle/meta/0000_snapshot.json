@@ -1,6 +1,6 @@
 {
-  "id": "c57abc7e-7494-42da-9459-be3ef42c508c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "b45029fd-83e7-4958-9ed6-f970d8bf72ed",
+  "prevId": "6ed949fa-9464-4541-a828-db00a041f300",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -184,7 +184,9 @@
         "occasional_performance_receipts_prenotazione_id_unique": {
           "name": "occasional_performance_receipts_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["prenotazione_id"]
+          "columns": [
+            "prenotazione_id"
+          ]
         }
       },
       "policies": {},
@@ -293,13 +295,13 @@
         },
         "full_name": {
           "name": "full_name",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "avatar_url": {
           "name": "avatar_url",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -311,14 +313,14 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -388,7 +390,9 @@
         "recensioni_prenotazione_id_unique": {
           "name": "recensioni_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["prenotazione_id"]
+          "columns": [
+            "prenotazione_id"
+          ]
         }
       },
       "policies": {},
@@ -404,6 +408,18 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
         },
         "fiscal_code": {
           "name": "fiscal_code",
@@ -444,50 +460,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.riders": {
-      "name": "riders",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "vehicle_type": {
-          "name": "vehicle_type",
-          "type": "VehicleType",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "profile_picture_url": {
-          "name": "profile_picture_url",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.riders_details": {
       "name": "riders_details",
       "schema": "",
@@ -497,6 +469,19 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true
+        },
+        "vehicle_type": {
+          "name": "vehicle_type",
+          "type": "VehicleType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_picture_url": {
+          "name": "profile_picture_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         },
         "bio": {
           "name": "bio",
@@ -510,12 +495,57 @@
           "primaryKey": false,
           "notNull": true
         },
-        "avg_rating": {
-          "name": "avg_rating",
-          "type": "numeric(3, 2)",
+        "active_location": {
+          "name": "active_location",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'0.00'"
+          "default": "'Non specificata'"
+        },
+        "experience_years": {
+          "name": "experience_years",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "specializations": {
+          "name": "specializations",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_jobs": {
+          "name": "completed_jobs",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "rating": {
+          "name": "rating",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "response_time": {
+          "name": "response_time",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "is_premium": {
+          "name": "is_premium",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "stripe_account_id": {
           "name": "stripe_account_id",
@@ -552,18 +582,130 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.service_requests": {
+      "name": "service_requests",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rider_id": {
+          "name": "rider_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requested_date": {
+          "name": "requested_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration_hours": {
+          "name": "duration_hours",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "merchant_address": {
+          "name": "merchant_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "ServiceRequestStatus",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "rider_response": {
+          "name": "rider_response",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
     "public.DayOfWeek": {
       "name": "DayOfWeek",
       "schema": "public",
-      "values": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
+      "values": [
+        "Lun",
+        "Mar",
+        "Mer",
+        "Gio",
+        "Ven",
+        "Sab",
+        "Dom"
+      ]
     },
     "public.PaymentStatus": {
       "name": "PaymentStatus",
       "schema": "public",
-      "values": ["in_attesa", "pagato", "rimborsato"]
+      "values": [
+        "in_attesa",
+        "pagato",
+        "rimborsato"
+      ]
+    },
+    "public.ServiceRequestStatus": {
+      "name": "ServiceRequestStatus",
+      "schema": "public",
+      "values": [
+        "pending",
+        "accepted",
+        "rejected",
+        "expired"
+      ]
     },
     "public.Status": {
       "name": "Status",
@@ -579,7 +721,12 @@
     "public.VehicleType": {
       "name": "VehicleType",
       "schema": "public",
-      "values": ["bici", "e_bike", "scooter", "auto"]
+      "values": [
+        "bici",
+        "e_bike",
+        "scooter",
+        "auto"
+      ]
     }
   },
   "schemas": {},

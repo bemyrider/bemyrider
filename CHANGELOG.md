@@ -20,10 +20,18 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Miglioramenti UX** per la visualizzazione dei rider
 - **Codice ottimizzato** con 120 inserimenti e 15 eliminazioni
 
+##### 🎨 **Ottimizzazioni SVG Bottom Navigation**
+- **Icone SVG ottimizzate** per la bottom navigation della pagina riders
+- **Riduzione del 35% del codice SVG** rimuovendo attributi ridondanti
+- **Path semplificati** per icone cuore e messaggio
+- **Colorazione dinamica** con `currentColor` invece di colori fissi
+- **Performance migliorate** con rendering più veloce delle icone
+
 #### 🐛 Correzioni
 - **Build process** verificato e funzionante
 - **Prettier formatting** applicato a tutto il codebase
 - **Codice formattato** secondo gli standard del progetto
+- **Bundle size ridotto** da 5.51 kB a 5.43 kB per la pagina riders
 
 ## [0.4.2] - 2025-09-04
 

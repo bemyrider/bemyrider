@@ -35,6 +35,7 @@ import EditMerchantProfileModal from '@/components/EditMerchantProfileModal';
 import FiscalDataMerchantModal from '@/components/FiscalDataMerchantModal';
 import TopNavBar from '@/components/TopNavBar';
 import { MerchantDashboardSkeleton } from '@/components/ui/skeleton-loaders';
+import { notifications, notificationMessages } from '@/lib/notifications';
 
 type MerchantProfile = {
   id: string;
@@ -112,7 +113,6 @@ export default function MerchantDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loggingOut, setLoggingOut] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -171,7 +171,7 @@ export default function MerchantDashboard() {
               '❌ Error creating merchant profile:',
               createProfileError
             );
-            setError('Errore nella creazione del profilo merchant');
+            notifications.error('Errore nella creazione del profilo merchant');
             return;
           }
 
@@ -213,7 +213,7 @@ export default function MerchantDashboard() {
       setProfile(profileData);
     } catch (error: any) {
       console.error('Error fetching profile:', error);
-      setError('Errore nel caricamento del profilo');
+      notifications.error(notificationMessages.serverError);
     }
   }, [router]);
 
@@ -287,7 +287,7 @@ export default function MerchantDashboard() {
       setRiders(transformedRiders);
     } catch (error: any) {
       console.error('Error fetching riders:', error);
-      setError('Errore nel caricamento dei rider');
+      notifications.error('Errore nel caricamento dei rider');
       // In caso di errore, mostra comunque qualcosa
       setRiders([]);
     }
@@ -387,7 +387,7 @@ export default function MerchantDashboard() {
       setServiceRequests(transformedRequests);
     } catch (error: any) {
       console.error('Error fetching service requests:', error);
-      setError('Errore nel caricamento delle richieste di servizio');
+      notifications.error('Errore nel caricamento delle richieste di servizio');
       setServiceRequests([]);
     }
   }, [profile]);
@@ -436,10 +436,11 @@ export default function MerchantDashboard() {
       console.log('🚪 Logging out merchant...');
       await supabase.auth.signOut();
       console.log('✅ Logout successful, redirecting to home');
+      notifications.success(notificationMessages.logoutSuccess);
       router.push('/');
     } catch (error) {
       console.error('❌ Error during logout:', error);
-      setError('Errore durante il logout');
+      notifications.error('Errore durante il logout');
       setLoggingOut(false);
     }
   };
@@ -447,11 +448,13 @@ export default function MerchantDashboard() {
   const handleProfileUpdated = (updatedProfile: MerchantBusinessData) => {
     setMerchantBusinessData(updatedProfile);
     console.log('✅ Profilo business aggiornato:', updatedProfile);
+    notifications.success(notificationMessages.profileUpdated);
   };
 
   const handleFiscalDataUpdated = (updatedFiscalData: MerchantFiscalData) => {
     setMerchantFiscalData(updatedFiscalData);
     console.log('✅ Dati fiscali aggiornati:', updatedFiscalData);
+    notifications.success('Dati fiscali aggiornati con successo!');
   };
 
   if (loading && !profile) {
@@ -494,12 +497,6 @@ export default function MerchantDashboard() {
             </Button>
           </div>
         </div>
-
-        {error && (
-          <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700'>
-            {error}
-          </div>
-        )}
 
         {/* Profile Section */}
         <div className='mb-8'>
@@ -780,7 +777,9 @@ export default function MerchantDashboard() {
                           {rider.riders_details.active_location && (
                             <p className='text-xs text-blue-600 flex items-center'>
                               <MapPin className='h-3 w-3 mr-1' />
-                              <span className='truncate'>{rider.riders_details.active_location}</span>
+                              <span className='truncate'>
+                                {rider.riders_details.active_location}
+                              </span>
                             </p>
                           )}
                         </div>

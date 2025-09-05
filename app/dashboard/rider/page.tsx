@@ -601,7 +601,7 @@ function RiderDashboardContent() {
           </div>
         )}
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6'>
           {/* Profile Card - Stile Rover.com */}
           <Card className='relative overflow-hidden'>
             <CardContent className='relative px-6 pt-6 pb-6'>
@@ -703,7 +703,7 @@ function RiderDashboardContent() {
               )}
 
               {/* Informazioni chiave in stile Rover */}
-              <div className='grid grid-cols-2 gap-4 mb-4'>
+              <div className='grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 mb-4'>
                 <div className='text-center p-3 bg-gray-50 rounded-lg'>
                   <div className='text-lg font-bold text-gray-900'>
                     €{riderDetails?.hourly_rate || 0}
@@ -948,7 +948,7 @@ function RiderDashboardContent() {
               ) : (
                 <div className='space-y-3'>
                   {/* Stats */}
-                  <div className='grid grid-cols-3 gap-2 mb-4'>
+                  <div className='grid grid-cols-3 gap-1 sm:gap-2 mb-4'>
                     <div className='text-center p-2 bg-yellow-50 rounded-lg'>
                       <p className='text-lg font-bold text-yellow-600'>
                         {
@@ -983,7 +983,7 @@ function RiderDashboardContent() {
                     {serviceRequests.slice(0, 3).map(request => (
                       <div
                         key={request.id}
-                        className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'
+                        className='flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-gray-50 rounded-lg gap-2 sm:gap-0'
                       >
                         <div className='flex-1 min-w-0'>
                           <p className='font-medium text-sm truncate'>
@@ -994,22 +994,22 @@ function RiderDashboardContent() {
                             {new Date(
                               request.requested_date
                             ).toLocaleDateString('it-IT')}{' '}
-                            •{request.start_time.substring(0, 5)} •
+                            • {request.start_time.substring(0, 5)} •
                             {request.duration_hours}h
                           </p>
                         </div>
-                        <div className='flex items-center space-x-2'>
+                        <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2'>
                           {request.status === 'pending' ? (
                             <Button
                               size='sm'
                               onClick={() => handleOpenRespondModal(request)}
-                              className='bg-blue-600 hover:bg-blue-700'
+                              className='bg-blue-600 hover:bg-blue-700 w-full sm:w-auto'
                             >
                               Rispondi
                             </Button>
                           ) : (
                             <span
-                              className={`px-2 py-1 text-xs rounded-full ${
+                              className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
                                 request.status === 'accepted'
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-red-100 text-red-800'

@@ -475,19 +475,19 @@ export default function MerchantDashboard() {
       <div className='container mx-auto px-4 py-8'>
         {/* Welcome Section */}
         <div className='mb-8'>
-          <div className='flex items-center justify-between'>
+          <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-4'>
             <div>
-              <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+              <h1 className='text-2xl sm:text-3xl font-bold text-gray-900 mb-2'>
                 Benvenuto, {profile.full_name}! 🏪
               </h1>
-              <p className='text-gray-600'>
+              <p className='text-gray-600 text-sm sm:text-base'>
                 Trova rider qualificati per le tue consegne e gestisci le
                 prenotazioni
               </p>
             </div>
             <Button
               onClick={() => router.push('/riders')}
-              className='bg-blue-600 hover:bg-blue-700'
+              className='bg-blue-600 hover:bg-blue-700 w-full sm:w-auto'
             >
               <Search className='h-4 w-4 mr-2' />
               Trova Rider
@@ -651,7 +651,7 @@ export default function MerchantDashboard() {
 
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Quick Stats */}
-          <div className='lg:col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'>
+          <div className='lg:col-span-3 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6'>
             <Card>
               <CardContent className='p-6'>
                 <div className='flex items-center'>
@@ -748,10 +748,10 @@ export default function MerchantDashboard() {
                   {filteredRiders.slice(0, 5).map(rider => (
                     <div
                       key={rider.id}
-                      className='flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50'
+                      className='flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-gray-50 gap-3 sm:gap-0'
                     >
                       <div className='flex items-center space-x-3'>
-                        <div className='w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center'>
+                        <div className='w-12 h-12 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0'>
                           {rider.avatar_url ? (
                             <Image
                               src={rider.avatar_url}
@@ -761,7 +761,7 @@ export default function MerchantDashboard() {
                               className='w-full h-full object-cover'
                             />
                           ) : (
-                            <div className='w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold'>
+                            <div className='w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold text-sm sm:text-xs'>
                               {rider.full_name
                                 .split(' ')
                                 .map(n => n[0])
@@ -769,8 +769,8 @@ export default function MerchantDashboard() {
                             </div>
                           )}
                         </div>
-                        <div>
-                          <p className='font-medium text-gray-900'>
+                        <div className='flex-1 min-w-0'>
+                          <p className='font-medium text-gray-900 truncate'>
                             {rider.full_name}
                           </p>
                           <p className='text-sm text-gray-500'>
@@ -780,13 +780,14 @@ export default function MerchantDashboard() {
                           {rider.riders_details.active_location && (
                             <p className='text-xs text-blue-600 flex items-center'>
                               <MapPin className='h-3 w-3 mr-1' />
-                              {rider.riders_details.active_location}
+                              <span className='truncate'>{rider.riders_details.active_location}</span>
                             </p>
                           )}
                         </div>
                       </div>
                       <Button
                         size='sm'
+                        className='w-full sm:w-auto'
                         onClick={() => router.push(`/riders/${rider.id}`)}
                       >
                         <Clock className='h-4 w-4 mr-1' />
@@ -884,9 +885,9 @@ export default function MerchantDashboard() {
                       key={request.id}
                       className='p-3 border rounded-lg hover:bg-gray-50'
                     >
-                      <div className='flex items-center justify-between mb-2'>
+                      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-2'>
                         <div className='flex items-center gap-3'>
-                          <div className='w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center'>
+                          <div className='w-10 h-10 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0'>
                             {request.rider.avatar_url ? (
                               <Image
                                 src={request.rider.avatar_url}
@@ -904,8 +905,8 @@ export default function MerchantDashboard() {
                               </div>
                             )}
                           </div>
-                          <div>
-                            <p className='font-medium text-gray-900'>
+                          <div className='flex-1 min-w-0'>
+                            <p className='font-medium text-gray-900 truncate'>
                               {request.rider.full_name}
                             </p>
                             <p className='text-sm text-gray-600'>
@@ -917,7 +918,7 @@ export default function MerchantDashboard() {
                           </div>
                         </div>
                         <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                             request.status === 'pending'
                               ? 'bg-yellow-100 text-yellow-800'
                               : request.status === 'accepted'
@@ -943,7 +944,7 @@ export default function MerchantDashboard() {
                       <div className='text-sm text-gray-600'>
                         <p>{request.duration_hours}h di servizio</p>
                         {request.description && (
-                          <p className='text-xs text-gray-500 truncate'>
+                          <p className='text-xs text-gray-500 line-clamp-2'>
                             {request.description}
                           </p>
                         )}

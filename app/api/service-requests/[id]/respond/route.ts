@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { serviceRequests } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
-import { createClient } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function PUT(
   request: NextRequest,
@@ -14,20 +15,41 @@ export async function PUT(
 
     const body = await request.json();
     const { status, riderResponse, userId } = body;
-    console.log('📦 Request body:', { status, riderResponse: riderResponse ? 'present' : 'null', userId });
+    console.log('📦 Request body:', {
+      status,
+      riderResponse: riderResponse ? 'present' : 'null',
+      userId,
+    });
 
     // Verify authentication
     console.log('🔐 Verifying authentication...');
-    const supabase = createClient();
-    const authHeader = request.headers.get('authorization');
-    console.log('🔑 Auth header present:', !!authHeader);
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookies().getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookies().set(name, value, options);
+            });
+          },
+        },
+      }
+    );
 
-    if (authHeader) {
-      const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error } = await supabase.auth.getUser(token);
-      console.log('👤 Auth user:', user ? { id: user.id, email: user.email } : 'null');
-      if (error) console.log('❌ Auth error:', error);
-    }
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    console.log(
+      '👤 Auth user:',
+      user ? { id: user.id, email: user.email } : 'null'
+    );
+    if (authError) console.log('❌ Auth error:', authError);
 
     // Test database connection
     console.log('🔌 Testing database connection...');
@@ -37,7 +59,11 @@ export async function PUT(
     } catch (dbError) {
       console.error('❌ Database connection failed:', dbError);
       return NextResponse.json(
-        { error: 'Database connection error', details: dbError instanceof Error ? dbError.message : 'Unknown DB error' },
+        {
+          error: 'Database connection error',
+          details:
+            dbError instanceof Error ? dbError.message : 'Unknown DB error',
+        },
         { status: 500 }
       );
     }
@@ -74,7 +100,10 @@ export async function PUT(
       )
       .limit(1);
 
-    console.log('📋 Existing request result:', existingRequest ? 'found' : 'not found');
+    console.log(
+      '📋 Existing request result:',
+      existingRequest ? 'found' : 'not found'
+    );
 
     if (!existingRequest) {
       console.log('❌ Service request not found or unauthorized');
@@ -87,7 +116,10 @@ export async function PUT(
     }
 
     if (existingRequest.status !== 'pending') {
-      console.log('❌ Request already responded, status:', existingRequest.status);
+      console.log(
+        '❌ Request already responded, status:',
+        existingRequest.status
+      );
       return NextResponse.json(
         {
           error: 'Service request has already been responded to',
@@ -118,9 +150,15 @@ export async function PUT(
     });
   } catch (error) {
     console.error('❌ Error responding to service request:', error);
-    console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error(
+      '❌ Error stack:',
+      error instanceof Error ? error.stack : 'No stack trace'
+    );
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

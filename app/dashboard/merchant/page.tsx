@@ -490,9 +490,10 @@ export default function MerchantDashboard() {
             </div>
             <Button
               onClick={() => router.push('/riders')}
-              className='bg-blue-600 hover:bg-blue-700 w-full sm:w-auto'
+              className='bg-blue-600 hover:bg-blue-700 w-full sm:w-auto min-h-[44px] touch-manipulation'
+              size='lg'
             >
-              <Search className='h-4 w-4 mr-2' />
+              <Search className='h-5 w-5 mr-2' />
               Trova Rider
             </Button>
           </div>
@@ -956,8 +957,12 @@ export default function MerchantDashboard() {
                     <p className='text-gray-500 mb-4'>
                       Nessuna richiesta di servizio ancora inviata
                     </p>
-                    <Button onClick={() => router.push('/riders')}>
-                      <Plus className='h-4 w-4 mr-2' />
+                    <Button
+                      onClick={() => router.push('/riders')}
+                      className='min-h-[44px] touch-manipulation'
+                      size='lg'
+                    >
+                      <Plus className='h-5 w-5 mr-2' />
                       Invia Prima Richiesta
                     </Button>
                   </div>

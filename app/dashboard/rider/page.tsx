@@ -1027,7 +1027,11 @@ function RiderDashboardContent() {
                   </div>
 
                   {serviceRequests.length > 3 && (
-                    <Button variant='outline' className='w-full' size='sm'>
+                    <Button
+                      variant='outline'
+                      className='w-full min-h-[44px] touch-manipulation'
+                      size='lg'
+                    >
                       Visualizza Tutte ({serviceRequests.length})
                     </Button>
                   )}

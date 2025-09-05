@@ -35,6 +35,13 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Login page**: Campi email e password ottimizzati con design system
 - **Design consistency**: Migliorata uniformità visuale dell'interfaccia
 
+#### 🦴 **FASE 2.1 - UX/UI & POLISHING - Task 2 COMPLETATO**
+- **Skeleton Loaders**: Implementati skeleton loader professionali
+- **MerchantDashboardSkeleton**: Preview struttura dashboard merchant
+- **RiderDashboardSkeleton**: Preview struttura dashboard rider
+- **Componente Skeleton**: Riutilizzabile per altri contesti
+- **Loading Experience**: Da spinner semplice a preview realistica
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

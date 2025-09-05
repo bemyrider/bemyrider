@@ -69,6 +69,31 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **🔧 Build Fix**: Risolti errori di compilazione Vercel
 - **Compatibilità**: Sistema funzionante sia localmente che in produzione
 
+#### 🎯 **FASE 2.1 - UX/UI & POLISHING - Task 6 COMPLETATO**
+- **Menu Hamburger Mobile**: Drawer laterale con Sheet component
+- **Navigazione Touch-Friendly**: Pulsanti ottimizzati per dispositivi mobili
+- **Menu Dedicati**: Navigazione separata per merchant e rider
+- **Sidebar Responsive**: Menu nascosto su desktop, visibile su mobile
+- **Icone e Layout**: Design moderno con icone Lucide React
+- **Touch Targets**: Pulsanti min-h-[44px] per migliore usabilità
+- **CSS Touch-Manipulation**: Risposta touch ottimizzata
+- **Chiusura Automatica**: Menu si chiude dopo la navigazione
+- **Profilo Integrato**: Sezione profilo nel menu mobile
+
+## [0.4.6] - 2025-01-11
+
+### 🚀 **FASE 2.1 COMPLETATA - UX/UI & POLISHING FINISHED!** 🎉
+
+**FASE 2.1 - UX/UI & POLISHING** completamente terminata con successo!
+- ✅ **Task 1**: Sostituiti input HTML con shadcn/ui
+- ✅ **Task 2**: Implementati skeleton loaders
+- ✅ **Task 3**: Migliorato responsive design
+- ✅ **Task 4**: Aggiunta validazione real-time
+- ✅ **Task 5**: Sistema notifiche centralizzato
+- ✅ **Task 6**: Navigazione mobile ottimizzata
+
+**Risultato**: Applicazione completamente ottimizzata per UX/UI eccellente! 🎨✨
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

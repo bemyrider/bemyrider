@@ -14,9 +14,13 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Test connessione DB**: Verifica connessione database in produzione
 - **Logging autenticazione**: Controllo autenticazione Supabase in produzione
 - **Error reporting migliorato**: Messaggi di errore più dettagliati per diagnosi
+- **Fix build Vercel**: Corretto import Supabase client per produzione
+- **Server client corretto**: Uso `createServerClient` invece del browser client negli API routes
 
 #### 📋 **Problemi Risolti**
 - **Errore 500 produzione**: Risolto errore HTTP 500 nell'accettazione/rifiuto richieste servizio
+- **Build fallita**: Risolto errore di compilazione su Vercel
+- **Import errato**: Corretto import client Supabase per API routes
 - **Logging mancante**: Aggiunto logging completo per troubleshooting produzione
 - **Diagnosi migliorata**: Possibilità di identificare la causa degli errori in produzione
 

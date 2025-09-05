@@ -21,6 +21,23 @@ export async function PUT(
       userId,
     });
 
+    // Test database connection first
+    console.log('🔌 Testing database connection...');
+    try {
+      await db.execute('SELECT 1');
+      console.log('✅ Database connection successful');
+    } catch (dbError) {
+      console.error('❌ Database connection failed:', dbError);
+      return NextResponse.json(
+        {
+          error: 'Database connection error',
+          details:
+            dbError instanceof Error ? dbError.message : 'Unknown DB error',
+        },
+        { status: 500 }
+      );
+    }
+
     // Verify authentication
     console.log('🔐 Verifying authentication...');
     const supabase = createServerClient(
@@ -50,23 +67,6 @@ export async function PUT(
       user ? { id: user.id, email: user.email } : 'null'
     );
     if (authError) console.log('❌ Auth error:', authError);
-
-    // Test database connection
-    console.log('🔌 Testing database connection...');
-    try {
-      await db.execute('SELECT 1');
-      console.log('✅ Database connection successful');
-    } catch (dbError) {
-      console.error('❌ Database connection failed:', dbError);
-      return NextResponse.json(
-        {
-          error: 'Database connection error',
-          details:
-            dbError instanceof Error ? dbError.message : 'Unknown DB error',
-        },
-        { status: 500 }
-      );
-    }
 
     // Verifica che userId sia presente
     if (!userId) {

@@ -26,6 +26,11 @@ import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import { useToast } from '@/components/ui/use-toast';
 import { formatCurrency } from '@/lib/formatters';
+import {
+  SYSTEM_CONSTANTS,
+  validateBookingHours,
+  ERROR_MESSAGES,
+} from '@/lib/constants';
 
 type RiderProfile = {
   id: string;
@@ -223,6 +228,18 @@ export default function RiderBookingPage() {
         title: 'Errore',
         description:
           'Compila tutti i campi obbligatori. Le istruzioni devono contenere almeno 2 caratteri.',
+      });
+      return;
+    }
+
+    const durationNum = parseFloat(duration);
+
+    // Validazione ore massime
+    if (!validateBookingHours(durationNum)) {
+      console.log('❌ Validation failed - invalid booking hours');
+      toast({
+        title: 'Errore',
+        description: ERROR_MESSAGES.INVALID_BOOKING_HOURS,
       });
       return;
     }
@@ -503,7 +520,9 @@ export default function RiderBookingPage() {
 
                 {/* Durata */}
                 <div>
-                  <Label htmlFor='duration'>Durata *</Label>
+                  <Label htmlFor='duration'>
+                    Durata (max {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore) *
+                  </Label>
                   <select
                     id='duration'
                     value={duration}
@@ -515,6 +534,10 @@ export default function RiderBookingPage() {
                     <option value='1'>1 ora</option>
                     <option value='2'>2 ore</option>
                   </select>
+                  <p className='text-xs text-gray-500 mt-1'>
+                    Massimo {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore per
+                    prenotazione
+                  </p>
                 </div>
 
                 {/* Indirizzo di Servizio */}

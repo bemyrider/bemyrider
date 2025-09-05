@@ -14,6 +14,163 @@ Tutti gli endpoints API utilizzano l'autenticazione Supabase JWT. Il token deve 
 Authorization: Bearer <supabase-jwt-token>
 ```
 
+## Endpoints Richieste di Servizio
+
+### POST /api/service-requests
+
+Crea una nuova richiesta di servizio da un esercente a un rider.
+
+**Richiesta:**
+```http
+POST /api/service-requests
+Content-Type: application/json
+Authorization: Bearer <jwt-token>
+```
+
+**Body:**
+```json
+{
+  "riderId": "uuid-del-rider",
+  "startDate": "2024-12-25",
+  "startTime": "14:00",
+  "duration": 2,
+  "description": "Consegna urgente ristorante",
+  "merchantAddress": "Via Roma 123, Milano"
+}
+```
+
+**Risposta di successo (201):**
+```json
+{
+  "success": true,
+  "request": {
+    "id": "uuid-richiesta",
+    "riderId": "uuid-rider",
+    "merchantId": "uuid-merchant",
+    "requestedDate": "2024-12-25T14:00:00.000Z",
+    "durationHours": 2,
+    "description": "Consegna urgente ristorante",
+    "status": "pending",
+    "createdAt": "2024-12-20T10:00:00.000Z"
+  }
+}
+```
+
+**Errori:**
+- `400 Bad Request`: Parametri mancanti o durata non valida (1-2 ore)
+- `401 Unauthorized`: Token mancante o non valido
+- `500 Internal Server Error`: Errore nella creazione richiesta
+
+### GET /api/service-requests
+
+Recupera le richieste di servizio per l'utente corrente (diverso per merchant e rider).
+
+**Per Merchant:**
+```http
+GET /api/service-requests
+Authorization: Bearer <jwt-token>
+```
+
+**Risposta (200):**
+```json
+{
+  "success": true,
+  "requests": [
+    {
+      "id": "uuid-richiesta",
+      "riderId": "uuid-rider",
+      "requestedDate": "2024-12-25T14:00:00.000Z",
+      "durationHours": 2,
+      "description": "Consegna urgente ristorante",
+      "status": "pending|accepted|rejected",
+      "riderResponse": null,
+      "createdAt": "2024-12-20T10:00:00.000Z",
+      "rider": {
+        "id": "uuid-rider",
+        "fullName": "Mario Rossi",
+        "hourlyRate": 8.50
+      }
+    }
+  ]
+}
+```
+
+**Per Rider:**
+```http
+GET /api/service-requests
+Authorization: Bearer <jwt-token>
+```
+
+**Risposta (200):**
+```json
+{
+  "success": true,
+  "requests": [
+    {
+      "id": "uuid-richiesta",
+      "merchantId": "uuid-merchant",
+      "requestedDate": "2024-12-25T14:00:00.000Z",
+      "durationHours": 2,
+      "description": "Consegna urgente ristorante",
+      "status": "pending|accepted|rejected",
+      "riderResponse": null,
+      "createdAt": "2024-12-20T10:00:00.000Z",
+      "merchant": {
+        "id": "uuid-merchant",
+        "fullName": "Pizzeria Italia",
+        "businessName": "Pizzeria Italia Bella"
+      }
+    }
+  ]
+}
+```
+
+### PUT /api/service-requests/[id]/respond
+
+Permette a un rider di rispondere a una richiesta di servizio.
+
+**Richiesta:**
+```http
+PUT /api/service-requests/uuid-richiesta/respond
+Content-Type: application/json
+Authorization: Bearer <jwt-token>
+```
+
+**Body:**
+```json
+{
+  "status": "accepted|rejected",
+  "riderResponse": "Messaggio opzionale del rider"
+}
+```
+
+**Risposta di successo (200):**
+```json
+{
+  "success": true,
+  "request": {
+    "id": "uuid-richiesta",
+    "status": "accepted|rejected",
+    "riderResponse": "Messaggio del rider",
+    "updatedAt": "2024-12-20T10:30:00.000Z"
+  }
+}
+```
+
+**Errori:**
+- `400 Bad Request`: Status non valido o richiesta già risposta
+- `401 Unauthorized`: Token mancante o non valido
+- `404 Not Found`: Richiesta non trovata
+- `500 Internal Server Error`: Errore nell'aggiornamento
+
+## Autenticazione
+
+Tutti gli endpoints API utilizzano l'autenticazione Supabase JWT. Il token deve essere incluso nell'header `Authorization`:
+
+```
+Authorization: Bearer <supabase-jwt-token>
+```
+
 ## Endpoints Stripe
 
 ### POST /api/stripe/onboarding
@@ -221,7 +378,7 @@ const startOnboarding = async () => {
       'Content-Type': 'application/json'
     }
   });
-  
+
   const data = await response.json();
   if (data.url) {
     window.location.href = data.url;
@@ -235,7 +392,7 @@ const checkStatus = async () => {
       'Authorization': `Bearer ${supabaseToken}`
     }
   });
-  
+
   return await response.json();
 };
 ```

@@ -13,6 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Euro, Save, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import {
+  SYSTEM_CONSTANTS,
+  validateRiderHourlyRate,
+  ERROR_MESSAGES,
+} from '@/lib/constants';
 
 interface UpdateRateModalProps {
   riderId: string;
@@ -53,10 +58,8 @@ export default function UpdateRateModal({
         throw new Error('⚠️ Inserisci una tariffa valida maggiore di €0,01');
       }
 
-      if (rate > 12.5) {
-        throw new Error(
-          '⚠️ La tariffa non può superare €12,50/ora per rispettare i limiti fiscali (soglia €25,82)'
-        );
+      if (!validateRiderHourlyRate(rate)) {
+        throw new Error(ERROR_MESSAGES.INVALID_RIDER_RATE);
       }
 
       console.log('🔄 Updating rider rate...', { riderId, rate });

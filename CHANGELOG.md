@@ -24,6 +24,11 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Logging mancante**: Aggiunto logging completo per troubleshooting produzione
 - **Diagnosi migliorata**: Possibilità di identificare la causa degli errori in produzione
 
+#### 📚 **Documentazione**
+- **Roadmap sviluppo**: Creato file `docs/ROADMAP.md` con piano di sviluppo dettagliato
+- **Pianificazione fasi**: Strutturato sviluppo in 5 fasi progressive
+- **Timeline realistiche**: Stimate tempistiche per ogni fase di sviluppo
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

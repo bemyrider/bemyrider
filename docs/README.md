@@ -6,6 +6,7 @@ Qui troverai tutte le informazioni tecniche e funzionali per comprendere, utiliz
 
 ## Indice
 
+- [Roadmap Sviluppo](./ROADMAP.md) 🚀
 - [Architettura](./architettura.md)
 - [API Reference](./api.md)
 - [Flussi Utente](./flussi-utente.md)

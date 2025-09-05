@@ -66,7 +66,6 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    setError('');
 
     try {
       // Check if Supabase is properly configured
@@ -74,7 +73,7 @@ export default function LoginPage() {
         process.env.NEXT_PUBLIC_SUPABASE_URL ===
         'https://placeholder.supabase.co'
       ) {
-        setError(
+        notifications.warning(
           "⚠️ Modalità demo: Configura Supabase per testare l'autenticazione"
         );
         setLoading(false);
@@ -162,7 +161,6 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className='space-y-4'>
-
             <ValidatedInput
               id='email'
               label='Email'

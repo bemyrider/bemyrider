@@ -58,6 +58,16 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Help Text**: Suggerimenti contestuali per gli utenti
 - **Form State Management**: Disabilitazione intelligente del pulsante submit
 
+#### 🔔 **FASE 2.1 - UX/UI & POLISHING - Task 5 COMPLETATO**
+- **Sistema Notifiche Centralizzato**: NotificationManager avanzato
+- **Tipi di Notifica**: Success, Error, Warning, Info, Loading
+- **Toast Interattivi**: Supporto per azioni nei toast
+- **Messaggi Predefiniti**: Libreria di messaggi comuni
+- **Form Login**: Notifiche al posto degli alert tradizionali
+- **Dashboard Merchant**: Notifiche per errori e successi
+- **Sistema Errori Sostituito**: Rimosso vecchio sistema state-based
+- **Feedback Immediato**: Notifiche contestuali per ogni azione
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

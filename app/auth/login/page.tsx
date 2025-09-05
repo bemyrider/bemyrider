@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ValidatedInput } from '@/components/ui/validated-input';
 import Image from 'next/image';
 import {
   Card,
@@ -15,16 +16,48 @@ import {
 } from '@/components/ui/card';
 import { Bike, Store } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { validationRules } from '@/lib/hooks/use-form-validation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
+  const [isFormValid, setIsFormValid] = useState(false);
   const router = useRouter();
+
+  // Update form validity in real-time
+  useEffect(() => {
+    const emailValid = emailRules.every(rule => rule.validate(email));
+    const passwordValid = passwordRules.every(rule => rule.validate(password));
+    const hasValues = email.trim() !== '' && password.trim() !== '';
+
+    setIsFormValid(emailValid && passwordValid && hasValues);
+  }, [email, password]);
+
+  // Validation rules
+  const emailRules = [validationRules.required(), validationRules.email()];
+  const passwordRules = [validationRules.required(), validationRules.minLength(6)];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form before submission
+    const emailErrors = emailRules.filter(rule => !rule.validate(email)).map(rule => rule.message);
+    const passwordErrors = passwordRules.filter(rule => !rule.validate(password)).map(rule => rule.message);
+
+    const newFormErrors = {
+      email: emailErrors,
+      password: passwordErrors,
+    };
+
+    setFormErrors(newFormErrors);
+
+    if (emailErrors.length > 0 || passwordErrors.length > 0) {
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -124,44 +157,35 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div>
-              <label
-                htmlFor='email'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
-                Email
-              </label>
-              <Input
-                id='email'
-                type='email'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                placeholder='la-tua-email@example.com'
-              />
-            </div>
+            <ValidatedInput
+              id='email'
+              label='Email'
+              type='email'
+              value={email}
+              onChange={setEmail}
+              validationRules={emailRules}
+              placeholder='la-tua-email@example.com'
+              required
+              helpText='Inserisci il tuo indirizzo email'
+            />
 
-            <div>
-              <label
-                htmlFor='password'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
-                Password
-              </label>
-              <Input
-                id='password'
-                type='password'
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                placeholder='••••••••'
-              />
-            </div>
+            <ValidatedInput
+              id='password'
+              label='Password'
+              type='password'
+              value={password}
+              onChange={setPassword}
+              validationRules={passwordRules}
+              placeholder='••••••••'
+              required
+              password
+              helpText='Almeno 6 caratteri'
+            />
 
             <Button
               type='submit'
               className='w-full bg-blue-600 hover:bg-blue-700'
-              disabled={loading}
+              disabled={loading || !isFormValid}
             >
               {loading ? 'Accesso in corso...' : 'Accedi'}
             </Button>

@@ -34,6 +34,7 @@ import DeleteAccountModal from '@/components/DeleteAccountModal';
 import EditMerchantProfileModal from '@/components/EditMerchantProfileModal';
 import FiscalDataMerchantModal from '@/components/FiscalDataMerchantModal';
 import TopNavBar from '@/components/TopNavBar';
+import { MerchantDashboardSkeleton } from '@/components/ui/skeleton-loaders';
 
 type MerchantProfile = {
   id: string;
@@ -326,11 +327,11 @@ export default function MerchantDashboard() {
       // Trasforma i dati per assicurarsi che rider sia un oggetto
       const transformedBookings = (bookingsData || []).map(booking => ({
         ...booking,
-        rider: Array.isArray(booking.rider) 
-          ? booking.rider[0] 
+        rider: Array.isArray(booking.rider)
+          ? booking.rider[0]
           : booking.rider
       })).filter(booking => booking.rider) // Filtra booking senza rider
-      
+
       setBookings(transformedBookings)*/
     } catch (error: any) {
       console.error('Error fetching bookings:', error);
@@ -454,14 +455,7 @@ export default function MerchantDashboard() {
   };
 
   if (loading && !profile) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto'></div>
-          <p className='mt-4 text-gray-600'>Caricamento dashboard...</p>
-        </div>
-      </div>
-    );
+    return <MerchantDashboardSkeleton />;
   }
 
   if (!profile) {

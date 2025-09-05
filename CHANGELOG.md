@@ -29,6 +29,12 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Pianificazione fasi**: Strutturato sviluppo in 5 fasi progressive
 - **Timeline realistiche**: Stimate tempistiche per ogni fase di sviluppo
 
+#### ✨ **FASE 2.1 - UX/UI & POLISHING - Task 1 COMPLETATO**
+- **Input shadcn/ui**: Sostituiti tutti input HTML con componenti design system
+- **Dashboard merchant**: Campo ricerca ora usa componente Input consistente
+- **Login page**: Campi email e password ottimizzati con design system
+- **Design consistency**: Migliorata uniformità visuale dell'interfaccia
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

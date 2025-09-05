@@ -40,6 +40,7 @@ Questo documento contiene il piano di sviluppo dettagliato per bemyrider, organi
 - **Feedback**: Toast notifications e messaggi di conferma
 
 **📋 Task specifici:**
+- [x] **Sostituire input HTML con componenti shadcn/ui** ✅ COMPLETATO
 - [ ] Implementare loading skeletons per tutte le pagine
 - [ ] Migliorare responsive design per dispositivi mobili
 - [ ] Aggiungere validazione real-time ai form

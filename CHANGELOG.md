@@ -42,6 +42,14 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Componente Skeleton**: Riutilizzabile per altri contesti
 - **Loading Experience**: Da spinner semplice a preview realistica
 
+#### 📱 **FASE 2.1 - UX/UI & POLISHING - Task 3 COMPLETATO**
+- **Mobile-First Design**: Layout ottimizzati per dispositivi mobili
+- **Dashboard Merchant**: Liste responsive con mobile layout
+- **Dashboard Rider**: Componenti adattivi per schermi piccoli
+- **Flex Responsive**: Layout che si adatta automaticamente
+- **Touch-Friendly**: Bottoni e elementi ottimizzati per touch
+- **Breakpoint Optimization**: xl:grid-cols-3 per schermi molto grandi
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

@@ -17,12 +17,12 @@ import {
 import { Bike, Store } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { validationRules } from '@/lib/hooks/use-form-validation';
+import { notifications, notificationMessages } from '@/lib/notifications';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
   const [isFormValid, setIsFormValid] = useState(false);
   const router = useRouter();
@@ -38,14 +38,21 @@ export default function LoginPage() {
 
   // Validation rules
   const emailRules = [validationRules.required(), validationRules.email()];
-  const passwordRules = [validationRules.required(), validationRules.minLength(6)];
+  const passwordRules = [
+    validationRules.required(),
+    validationRules.minLength(6),
+  ];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate form before submission
-    const emailErrors = emailRules.filter(rule => !rule.validate(email)).map(rule => rule.message);
-    const passwordErrors = passwordRules.filter(rule => !rule.validate(password)).map(rule => rule.message);
+    const emailErrors = emailRules
+      .filter(rule => !rule.validate(email))
+      .map(rule => rule.message);
+    const passwordErrors = passwordRules
+      .filter(rule => !rule.validate(password))
+      .map(rule => rule.message);
 
     const newFormErrors = {
       email: emailErrors,
@@ -80,7 +87,7 @@ export default function LoginPage() {
       });
 
       if (error) {
-        setError(error.message);
+        notifications.error(notificationMessages.loginError);
         setLoading(false);
         return;
       }
@@ -97,13 +104,16 @@ export default function LoginPage() {
 
         if (profileError) {
           console.error('❌ Error fetching profile:', profileError);
-          setError('Errore nel caricamento del profilo');
+          notifications.error(notificationMessages.serverError);
           setLoading(false);
           return;
         }
 
         if (profileData) {
           console.log('👤 User profile found:', profileData.role);
+
+          // Mostra notifica di successo
+          notifications.success(notificationMessages.loginSuccess);
 
           // Redirect basato sul ruolo
           if (profileData.role === 'merchant') {
@@ -122,7 +132,8 @@ export default function LoginPage() {
         }
       }
     } catch (error) {
-      setError('An unexpected error occurred during login.');
+      console.error('Login error:', error);
+      notifications.error(notificationMessages.networkError);
     } finally {
       setLoading(false);
     }
@@ -151,11 +162,6 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className='space-y-4'>
-            {error && (
-              <div className='p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm'>
-                {error}
-              </div>
-            )}
 
             <ValidatedInput
               id='email'

@@ -38,6 +38,7 @@ import FiscalDataModal from '@/components/FiscalDataModal';
 import EditProfileModal from '@/components/EditProfileModal';
 import RespondServiceRequestModal from '@/components/RespondServiceRequestModal';
 import { RiderDashboardSkeleton } from '@/components/ui/skeleton-loaders';
+import { notifications, notificationMessages } from '@/lib/notifications';
 
 type RiderProfile = {
   id: string;

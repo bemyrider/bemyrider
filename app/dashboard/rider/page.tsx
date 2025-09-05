@@ -37,6 +37,7 @@ import UpdateRateModal from '@/components/UpdateRateModal';
 import FiscalDataModal from '@/components/FiscalDataModal';
 import EditProfileModal from '@/components/EditProfileModal';
 import RespondServiceRequestModal from '@/components/RespondServiceRequestModal';
+import { RiderDashboardSkeleton } from '@/components/ui/skeleton-loaders';
 
 type RiderProfile = {
   id: string;
@@ -557,17 +558,7 @@ function RiderDashboardContent() {
   };
 
   if (loading && !profile) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center'>
-          <div
-            className='animate-spin rounded-full h-32 w-32 border-b-2 mx-auto'
-            style={{ borderBottomColor: '#333366' }}
-          ></div>
-          <p className='mt-4 text-gray-600'>Caricamento dashboard...</p>
-        </div>
-      </div>
-    );
+    return <RiderDashboardSkeleton />;
   }
 
   if (error) {

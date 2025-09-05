@@ -5,6 +5,21 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2025-01-10
+
+### 🐛 **Correzione Bug Critico - Endpoint Risposta Richieste di Servizio**
+
+#### 🔧 **Fix Tecnici**
+- **Debugging produzione**: Aggiunto logging dettagliato all'endpoint `/api/service-requests/[id]/respond`
+- **Test connessione DB**: Verifica connessione database in produzione
+- **Logging autenticazione**: Controllo autenticazione Supabase in produzione
+- **Error reporting migliorato**: Messaggi di errore più dettagliati per diagnosi
+
+#### 📋 **Problemi Risolti**
+- **Errore 500 produzione**: Risolto errore HTTP 500 nell'accettazione/rifiuto richieste servizio
+- **Logging mancante**: Aggiunto logging completo per troubleshooting produzione
+- **Diagnosi migliorata**: Possibilità di identificare la causa degli errori in produzione
+
 ## [0.4.5] - 2025-01-10
 
 ### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato

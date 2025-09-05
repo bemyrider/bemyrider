@@ -43,7 +43,7 @@ Questo documento contiene il piano di sviluppo dettagliato per bemyrider, organi
 - [x] **Sostituire input HTML con componenti shadcn/ui** ✅ COMPLETATO
 - [x] **Implementare loading skeletons per tutte le pagine** ✅ COMPLETATO
 - [x] **Migliorare responsive design per dispositivi mobili** ✅ COMPLETATO
-- [ ] Aggiungere validazione real-time ai form
+- [x] **Aggiungere validazione real-time ai form** ✅ COMPLETATO
 - [ ] Implementare sistema notifiche centralizzato
 - [ ] Ottimizzare navigazione mobile
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import {
   Card,
@@ -130,13 +131,12 @@ export default function LoginPage() {
               >
                 Email
               </label>
-              <input
+              <Input
                 id='email'
                 type='email'
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 placeholder='la-tua-email@example.com'
               />
             </div>
@@ -148,13 +148,12 @@ export default function LoginPage() {
               >
                 Password
               </label>
-              <input
+              <Input
                 id='password'
                 type='password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 placeholder='••••••••'
               />
             </div>

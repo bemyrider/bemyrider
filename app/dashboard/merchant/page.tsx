@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
@@ -737,12 +738,12 @@ export default function MerchantDashboard() {
             <CardContent>
               <div className='space-y-4'>
                 <div className='flex gap-2'>
-                  <input
+                  <Input
                     type='text'
                     placeholder='Cerca rider per nome...'
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className='flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='flex-1'
                   />
                   <Button onClick={() => router.push('/riders')}>
                     Visualizza Tutti

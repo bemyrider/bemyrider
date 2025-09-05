@@ -297,7 +297,7 @@ export default function RidersPage() {
   return (
     <div className='min-h-screen bg-gray-50 flex flex-col'>
       {/* Top Navigation Bar - Fixed */}
-      <div className='fixed top-0 left-0 right-0 z-40 bg-gray-50 border-b border-gray-200 shadow-sm'>
+      <div className='fixed top-0 left-0 right-0 z-40 bg-gray-100 border-b border-gray-200 shadow-sm'>
         {/* Search Bar */}
         <div className='px-4 py-3'>
           <div className='relative'>
@@ -316,7 +316,7 @@ export default function RidersPage() {
               placeholder='Cerca rider a Milano...'
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className='w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 shadow-sm'
+              className='w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 shadow-md'
             />
           </div>
         </div>
@@ -407,7 +407,7 @@ export default function RidersPage() {
                 <div className='space-y-4'>
                   {displayedRiders.map(rider => (
                     <Link key={rider.id} href={`/riders/${rider.id}`}>
-                      <div className='bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95'>
+                      <div className='bg-white rounded-xl shadow-sm border border-[#ff9900] p-4 hover:shadow-lg hover:shadow-[#ff9900]/20 transition-all duration-200 cursor-pointer active:scale-95 my-1'>
                         <div className='flex items-center space-x-4'>
                           {/* Profile Picture */}
                           <div className='relative'>
@@ -569,14 +569,14 @@ export default function RidersPage() {
       </div>
 
       {/* Bottom Navigation Bar - Fixed */}
-      <div className='fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg'>
-        <div className='flex items-center justify-center px-4 py-1'>
+      <div className='fixed bottom-0 left-0 right-0 z-40 bg-gray-100 border-t border-gray-200 shadow-sm'>
+        <div className='flex items-center justify-center px-4 py-2'>
           <div className='flex items-center justify-around w-full max-w-md'>
             {/* Ricerca */}
             <button
               onClick={() => setActiveTab('riders')}
-              className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
-                activeTab === 'riders' ? 'text-blue-600' : 'text-gray-400'
+              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+                activeTab === 'riders' ? 'text-[#333366]' : 'text-gray-400'
               }`}
             >
               <svg
@@ -598,24 +598,16 @@ export default function RidersPage() {
                   setActiveTab('favorites');
                 }
               }}
-              className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
+              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
                 activeTab === 'favorites'
-                  ? 'text-red-500'
+                  ? 'text-[#333366]'
                   : userProfile?.role === 'merchant'
                     ? 'text-gray-400 hover:text-gray-600'
                     : 'text-gray-300 cursor-not-allowed'
               }`}
               disabled={userProfile?.role !== 'merchant'}
             >
-              <svg
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                className='h-5 w-5'
-              >
-                <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
-              </svg>
+              <HeartHandshake className='h-5 w-5' />
             </button>
 
             {/* BeMyRider */}
@@ -653,7 +645,7 @@ export default function RidersPage() {
               onClick={() => {
                 /* Messaggi non ancora implementati */
               }}
-              className='flex flex-col items-center p-1.5 rounded-lg transition-colors text-gray-300 cursor-not-allowed'
+              className='flex flex-col items-center p-2 rounded-lg transition-colors text-gray-300 cursor-not-allowed'
               disabled
             >
               <svg
@@ -671,9 +663,9 @@ export default function RidersPage() {
             <div className='relative' ref={profileDropdownRef}>
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
+                className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
                   showProfileDropdown
-                    ? 'text-blue-600'
+                    ? 'text-[#333366]'
                     : 'text-gray-400 hover:text-gray-600'
                 }`}
               >

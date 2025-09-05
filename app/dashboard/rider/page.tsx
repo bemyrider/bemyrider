@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, useCallback } from 'react';
+import { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +26,7 @@ import {
   BookOpenCheck,
   Trash2,
   FileText,
+  Mail,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
@@ -35,6 +36,7 @@ import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import UpdateRateModal from '@/components/UpdateRateModal';
 import FiscalDataModal from '@/components/FiscalDataModal';
 import EditProfileModal from '@/components/EditProfileModal';
+import RespondServiceRequestModal from '@/components/RespondServiceRequestModal';
 
 type RiderProfile = {
   id: string;
@@ -59,6 +61,28 @@ type RiderProfile = {
   } | null;
 };
 
+type ServiceRequest = {
+  id: string;
+  requested_date: string;
+  start_time: string;
+  duration_hours: number;
+  merchant_address: string;
+  description: string;
+  status: 'pending' | 'accepted' | 'rejected' | 'expired';
+  rider_response: string | null;
+  created_at: string;
+  updated_at: string;
+  merchant: {
+    id: string;
+    full_name: string;
+    esercenti: {
+      business_name: string | null;
+      address: string | null;
+      city: string | null;
+    } | null;
+  };
+};
+
 function RiderDashboardContent() {
   const [profile, setProfile] = useState<RiderProfile | null>(null);
   const [showAvailabilityCalendar, setShowAvailabilityCalendar] =
@@ -72,65 +96,15 @@ function RiderDashboardContent() {
   const [checkingOnboarding, setCheckingOnboarding] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
+  const [showRespondModal, setShowRespondModal] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(
+    null
+  );
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Funzione per verificare e aggiornare lo stato di onboarding
-  const checkOnboardingStatus = async () => {
-    if (!profile?.riders_details?.stripe_account_id) return false;
-
-    setCheckingOnboarding(true);
-    try {
-      const response = await fetch('/api/stripe/onboarding', {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('🔄 Onboarding status check result:', data);
-
-        // Se lo stato è cambiato, aggiorna il profilo
-        if (
-          data.stripe_onboarding_complete !==
-          profile.riders_details?.stripe_onboarding_complete
-        ) {
-          console.log('✅ Onboarding status changed, updating profile...');
-          await fetchProfile(); // Ricarica il profilo
-          return data.stripe_onboarding_complete;
-        }
-
-        return data.stripe_onboarding_complete;
-      }
-    } catch (error) {
-      console.error('Error checking onboarding status:', error);
-    } finally {
-      setCheckingOnboarding(false);
-    }
-
-    return profile.riders_details?.stripe_onboarding_complete || false;
-  };
-
-  // ✅ NUOVO useEffect SEMPLIFICATO per gestire onboarding_complete
-  useEffect(() => {
-    const onboardingComplete = searchParams.get('onboarding_complete');
-
-    if (onboardingComplete === 'true') {
-      // 1. Log di successo
-      console.log('✅ Onboarding Stripe completato con successo!');
-
-      // 2. Rimuovi il parametro dall'URL (pulisce l'URL)
-      window.history.replaceState({}, '', '/dashboard/rider');
-
-      // 3. Ricarica il profilo per mostrare lo stato aggiornato
-      fetchProfile();
-    } else {
-      // Se non stiamo tornando dall'onboarding, carica il profilo normalmente
-      fetchProfile();
-    }
-  }, [searchParams]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       // Get current user from Supabase
       const {
@@ -285,6 +259,9 @@ function RiderDashboardContent() {
             ? profileData.rider_tax_details[0] || null
             : profileData.rider_tax_details || null,
         });
+
+        // Fetch service requests after profile is loaded
+        fetchServiceRequests();
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -292,7 +269,62 @@ function RiderDashboardContent() {
     } finally {
       setLoading(false);
     }
+  }, [router]);
+
+  // Funzione per verificare e aggiornare lo stato di onboarding
+  const checkOnboardingStatus = async () => {
+    if (!profile?.riders_details?.stripe_account_id) return false;
+
+    setCheckingOnboarding(true);
+    try {
+      const response = await fetch('/api/stripe/onboarding', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('🔄 Onboarding status check result:', data);
+
+        // Se lo stato è cambiato, aggiorna il profilo
+        if (
+          data.stripe_onboarding_complete !==
+          profile.riders_details?.stripe_onboarding_complete
+        ) {
+          console.log('✅ Onboarding status changed, updating profile...');
+          await fetchProfile(); // Ricarica il profilo
+          return data.stripe_onboarding_complete;
+        }
+
+        return data.stripe_onboarding_complete;
+      }
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+    } finally {
+      setCheckingOnboarding(false);
+    }
+
+    return profile.riders_details?.stripe_onboarding_complete || false;
   };
+
+  // ✅ NUOVO useEffect SEMPLIFICATO per gestire onboarding_complete
+  useEffect(() => {
+    const onboardingComplete = searchParams.get('onboarding_complete');
+
+    if (onboardingComplete === 'true') {
+      // 1. Log di successo
+      console.log('✅ Onboarding Stripe completato con successo!');
+
+      // 2. Rimuovi il parametro dall'URL (pulisce l'URL)
+      window.history.replaceState({}, '', '/dashboard/rider');
+
+      // 3. Ricarica il profilo per mostrare lo stato aggiornato
+      fetchProfile();
+    } else {
+      // Se non stiamo tornando dall'onboarding, carica il profilo normalmente
+      fetchProfile();
+    }
+  }, [searchParams, fetchProfile]);
 
   const handleStripeOnboarding = async () => {
     setLoading(true);
@@ -369,6 +401,145 @@ function RiderDashboardContent() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchServiceRequests = useCallback(async () => {
+    if (!profile) {
+      console.log('🚫 No profile available, skipping fetchServiceRequests');
+      return;
+    }
+
+    try {
+      console.log('🔍 Fetching service requests for rider ID:', profile.id);
+
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('service_requests')
+        .select(
+          `
+          id,
+          requested_date,
+          start_time,
+          duration_hours,
+          merchant_address,
+          description,
+          status,
+          rider_response,
+          created_at,
+          updated_at,
+          merchant:profiles!merchant_id (
+            id,
+            full_name,
+            esercenti (
+              business_name,
+              address,
+              city
+            )
+          )
+        `
+        )
+        .eq('rider_id', profile.id)
+        .order('created_at', { ascending: false });
+
+      if (requestsError) {
+        console.error('❌ Error fetching service requests:', requestsError);
+        throw requestsError;
+      }
+
+      console.log('📊 Raw data from DB:', requestsData);
+
+      // Transform data to ensure merchant is an object
+      const transformedRequests = (requestsData || [])
+        .map(request => {
+          const merchant = Array.isArray(request.merchant)
+            ? request.merchant[0]
+            : request.merchant;
+          return {
+            ...request,
+            merchant: {
+              ...merchant,
+              esercenti: Array.isArray(merchant?.esercenti)
+                ? merchant.esercenti[0]
+                : merchant?.esercenti,
+            },
+          };
+        })
+        .filter(request => request.merchant); // Filter out requests without merchant
+
+      console.log('🔄 Transformed requests:', transformedRequests);
+      console.log(
+        '✅ Service requests fetched successfully:',
+        transformedRequests.length,
+        'requests'
+      );
+
+      setServiceRequests(transformedRequests);
+    } catch (error: any) {
+      console.error('❌ Error fetching service requests:', error);
+      setError('Errore nel caricamento delle richieste di servizio');
+    }
+  }, [profile]);
+
+  // Assicuriamoci che fetchServiceRequests venga chiamata quando il profilo è disponibile
+  useEffect(() => {
+    if (profile) {
+      console.log('👤 Profile available, fetching service requests...');
+      fetchServiceRequests();
+    }
+  }, [profile, fetchServiceRequests]);
+
+  const handleRespondToRequest = async (
+    requestId: string,
+    status: 'accepted' | 'rejected',
+    response?: string
+  ) => {
+    try {
+      console.log('📤 Responding to service request:', requestId, status);
+
+      const fetchResponse = await fetch(
+        '/api/service-requests/' + requestId + '/respond',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status,
+            riderResponse: response,
+            userId: profile?.id,
+          }),
+        }
+      );
+
+      // Prima controlla se la risposta HTTP è ok
+      if (!fetchResponse.ok) {
+        throw new Error(`HTTP error! status: ${fetchResponse.status}`);
+      }
+
+      const responseData = await fetchResponse.json();
+
+      // L'API restituisce direttamente {success: true, ...} non {data: {success: true, ...}}
+      if (!responseData.success) {
+        throw new Error(responseData.error || 'Failed to respond to request');
+      }
+
+      console.log('✅ Response sent successfully');
+
+      // Refresh service requests
+      fetchServiceRequests();
+    } catch (error: any) {
+      console.error('❌ Error responding to request:', error);
+      throw error;
+    }
+  };
+
+  const handleOpenRespondModal = (request: ServiceRequest) => {
+    setSelectedRequest(request);
+    setShowRespondModal(true);
+  };
+
+  const handleCloseRespondModal = () => {
+    setShowRespondModal(false);
+    setSelectedRequest(null);
   };
 
   const handleLogout = async () => {
@@ -761,6 +932,117 @@ function RiderDashboardContent() {
               )}
             </CardContent>
           </Card>
+
+          {/* Service Requests Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <Mail className='h-5 w-5' /> Richieste di Servizio
+              </CardTitle>
+              <CardDescription>
+                Gestisci le richieste di servizio ricevute
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {serviceRequests.length === 0 ? (
+                <div className='text-center py-8'>
+                  <Mail className='h-12 w-12 text-gray-400 mx-auto mb-4' />
+                  <p className='text-gray-500 mb-2'>
+                    Nessuna richiesta ricevuta
+                  </p>
+                  <p className='text-sm text-gray-400'>
+                    Le nuove richieste appariranno qui
+                  </p>
+                </div>
+              ) : (
+                <div className='space-y-3'>
+                  {/* Stats */}
+                  <div className='grid grid-cols-3 gap-2 mb-4'>
+                    <div className='text-center p-2 bg-yellow-50 rounded-lg'>
+                      <p className='text-lg font-bold text-yellow-600'>
+                        {
+                          serviceRequests.filter(r => r.status === 'pending')
+                            .length
+                        }
+                      </p>
+                      <p className='text-xs text-yellow-700'>In Attesa</p>
+                    </div>
+                    <div className='text-center p-2 bg-green-50 rounded-lg'>
+                      <p className='text-lg font-bold text-green-600'>
+                        {
+                          serviceRequests.filter(r => r.status === 'accepted')
+                            .length
+                        }
+                      </p>
+                      <p className='text-xs text-green-700'>Accettate</p>
+                    </div>
+                    <div className='text-center p-2 bg-red-50 rounded-lg'>
+                      <p className='text-lg font-bold text-red-600'>
+                        {
+                          serviceRequests.filter(r => r.status === 'rejected')
+                            .length
+                        }
+                      </p>
+                      <p className='text-xs text-red-700'>Rifiutate</p>
+                    </div>
+                  </div>
+
+                  {/* Recent Requests */}
+                  <div className='space-y-2 max-h-60 overflow-y-auto'>
+                    {serviceRequests.slice(0, 3).map(request => (
+                      <div
+                        key={request.id}
+                        className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'
+                      >
+                        <div className='flex-1 min-w-0'>
+                          <p className='font-medium text-sm truncate'>
+                            {request.merchant.esercenti?.business_name ||
+                              request.merchant.full_name}
+                          </p>
+                          <p className='text-xs text-gray-500'>
+                            {new Date(
+                              request.requested_date
+                            ).toLocaleDateString('it-IT')}{' '}
+                            •{request.start_time.substring(0, 5)} •
+                            {request.duration_hours}h
+                          </p>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          {request.status === 'pending' ? (
+                            <Button
+                              size='sm'
+                              onClick={() => handleOpenRespondModal(request)}
+                              className='bg-blue-600 hover:bg-blue-700'
+                            >
+                              Rispondi
+                            </Button>
+                          ) : (
+                            <span
+                              className={`px-2 py-1 text-xs rounded-full ${
+                                request.status === 'accepted'
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {request.status === 'accepted'
+                                ? 'Accettata'
+                                : 'Rifiutata'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {serviceRequests.length > 3 && (
+                    <Button variant='outline' className='w-full' size='sm'>
+                      Visualizza Tutte ({serviceRequests.length})
+                    </Button>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -806,6 +1088,15 @@ function RiderDashboardContent() {
           onProfileUpdate={fetchProfile}
         />
       )}
+
+      {/* Respond Service Request Modal */}
+      <RespondServiceRequestModal
+        isOpen={showRespondModal}
+        onClose={handleCloseRespondModal}
+        request={selectedRequest}
+        riderHourlyRate={profile?.riders_details?.hourly_rate || null}
+        onRespond={handleRespondToRequest}
+      />
     </div>
   );
 }

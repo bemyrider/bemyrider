@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { serviceRequests } from '@/lib/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
+import { SYSTEM_CONSTANTS, validateBookingHours } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,13 +41,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validazione ore massime
+    if (!validateBookingHours(duration)) {
+      return NextResponse.json(
+        {
+          error: `Invalid booking hours: must be between ${SYSTEM_CONSTANTS.MIN_BOOKING_HOURS} and ${SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} hours`,
+        },
+        { status: 400 }
+      );
+    }
+
     // Crea la service request nel database
+    // Fix timezone: assicuriamoci che la data sia interpretata correttamente
+    const requestDate = new Date(startDate + 'T00:00:00');
+
+    console.log('📅 Creating service request with date:', {
+      originalStartDate: startDate,
+      parsedRequestDate: requestDate,
+      riderId: riderId,
+      merchantId: userId,
+    });
+
     const [newRequest] = await db
       .insert(serviceRequests)
       .values({
         merchantId: userId,
         riderId: riderId,
-        requestedDate: new Date(startDate),
+        requestedDate: requestDate,
         startTime: startTime,
         durationHours: duration.toString(),
         description: description || '',
@@ -54,6 +75,8 @@ export async function POST(request: NextRequest) {
         status: 'pending',
       })
       .returning();
+
+    console.log('✅ Service request created:', newRequest);
 
     return NextResponse.json({
       success: true,

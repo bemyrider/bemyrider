@@ -1,4 +1,105 @@
-# Release Notes v0.4.0 🚀
+# Release Notes v0.4.5 🚀
+
+## bemyrider v0.4.5 - Sistema Richieste di Servizio Completato
+
+**Data di Release**: 10 Gennaio 2025
+
+---
+
+### 🎉 **Highlights di questa Release**
+
+Questa release introduce il **Sistema Richieste di Servizio completo**, trasformando bemyrider in una piattaforma end-to-end per la connessione tra esercenti e rider professionisti.
+
+#### 🏆 **Risultati Principali**
+- ✅ **Flusso completo merchant → rider** per richieste di servizio
+- ✅ **Sistema toast funzionante** con notifiche immediate
+- ✅ **Test E2E completi** per validazione funzionale
+- ✅ **Documentazione completa** API e flussi utente
+- ✅ **Build production-ready** con performance ottimizzate
+
+---
+
+### 🚀 **Cosa C'è di Nuovo**
+
+#### 1. 📨 **Sistema Richieste di Servizio End-to-End**
+Nuova funzionalità completa per la gestione delle richieste:
+- **Merchant invia richiesta** con dettagli completi (data, ora, durata, descrizione)
+- **Rider riceve notifica** nella propria dashboard
+- **Rider risponde** con modal interattivo (accetta/rifiuta + messaggio)
+- **Merchant riceve risposta** con aggiornamento real-time
+- **Stati gestiti** completamente (pending, accepted, rejected)
+
+#### 2. 🍞 **Toast Notification System**
+Sistema di notifiche completamente funzionante:
+- **Toast integrati** in tutto l'applicazione
+- **Feedback immediato** per tutte le azioni utente
+- **Design coerente** con il brand (#333366, #ff9900)
+- **Animazioni smooth** per esperienza professionale
+
+#### 3. 🧪 **Testing End-to-End Completo**
+Suite di test completa per validazione:
+- **Test Playwright** per flusso completo
+- **Copertura merchant e rider** con scenari reali
+- **Debug avanzato** con logging e screenshot
+- **Configurazione sicura** per credenziali test
+
+#### 4. 🔧 **Miglioramenti UX/UI**
+Esperienza utente ottimizzata:
+- **Modal responsive** per risposte richieste
+- **Validazione form** robusta client/server
+- **Feedback visivo** immediato per azioni
+- **Gestione errori** user-friendly
+
+---
+
+### 🔧 **Miglioramenti Tecnici**
+
+#### 🗄️ **API Endpoints Completati**
+```http
+POST /api/service-requests          # Creazione richiesta
+GET  /api/service-requests          # Lista richieste
+PUT  /api/service-requests/[id]/respond  # Risposta rider
+```
+
+#### 🎨 **Sistema Design Coerente**
+- **Toast system integrato** in tutto l'app
+- **Colori brand applicati** correttamente
+- **Transizioni fluide** e animazioni
+- **Responsività mobile** ottimizzata
+
+#### 📚 **Documentazione Completa**
+- **Flussi utente aggiornati** con nuovo sistema
+- **API documentation estesa** con esempi
+- **CHANGELOG dettagliato** per traceability
+
+---
+
+### 🎯 **Impatto Utente**
+
+#### 🚀 **Esperienza Completata**
+- **Flusso end-to-end funzionante** merchant ↔ rider
+- **Feedback immediato** con toast notifiche
+- **Interfaccia intuitiva** per gestione richieste
+- **Validazione robusta** per prevenire errori
+
+#### 🔒 **Sicurezza e Affidabilità**
+- **Validazione input completa** client/server
+- **Gestione errori user-friendly**
+- **Stato richieste consistente**
+- **Autorizzazioni controllate**
+
+---
+
+### 📊 **Statistiche Release**
+
+- **Nuove funzionalità**: 4 principali
+- **File modificati**: 15+
+- **Test aggiunti**: 3 suite E2E
+- **Documentazione**: Completamente aggiornata
+- **Build status**: ✅ Success
+- **Performance**: Ottimizzate
+
+---
 
 ## bemyrider v0.4.0 - Ottimizzazione Build e Pulizia Repository
 

@@ -6,6 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -129,13 +130,24 @@ export {
 };
 
 export function Toaster() {
-  const [toasts, setToasts] = React.useState<ToastProps[]>([]);
+  const { toasts } = useToast();
 
   return (
     <ToastProvider>
-      {toasts.map(toast => (
-        <Toast key={toast.id} {...toast} />
-      ))}
+      {toasts.map(function ({ id, title, description, action, ...props }) {
+        return (
+          <Toast key={id} {...props}>
+            <div className='grid gap-1'>
+              {title && <ToastTitle>{title}</ToastTitle>}
+              {description && (
+                <ToastDescription>{description}</ToastDescription>
+              )}
+            </div>
+            {action}
+            <ToastClose />
+          </Toast>
+        );
+      })}
       <ToastViewport />
     </ToastProvider>
   );

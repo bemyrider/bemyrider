@@ -5,6 +5,123 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.5] - 2025-01-10
+
+### 🚀 Aggiornamento Maggiore - Sistema Richieste di Servizio Completato
+
+#### ✨ Nuove Funzionalità Principali
+
+##### 📨 **Sistema Richieste di Servizio End-to-End**
+- **Flusso completo merchant → rider** per richieste di servizio
+- **Modal interattivo** per rispondere alle richieste (accetta/rifiuta)
+- **Validazione temporale** con controlli disponibilità rider
+- **Sistema notifiche toast** funzionante e integrato
+- **Aggiornamento real-time** delle dashboard dopo risposte
+- **Gestione stati** completa (pending, accepted, rejected)
+
+##### 🎨 **Toast Notification System**
+- **Componente Toaster corretto** per visualizzare notifiche
+- **Hook useToast integrato** con sistema globale di stato
+- **Feedback immediato** per tutte le azioni utente
+- **Design coerente** con il resto dell'applicazione
+- **Animazioni smooth** per esperienza professionale
+
+##### 🧪 **Testing End-to-End Completo**
+- **Test Playwright** per flusso completo richieste di servizio
+- **Copertura funzionale** merchant e rider
+- **Debug avanzato** con logging dettagliato
+- **Screenshot automatici** per troubleshooting
+- **Configurazione sicura** credenziali test
+
+##### 🔧 **Miglioramenti UX/UI**
+- **Modal responsive** per risposte richieste
+- **Validazione form** lato client e server
+- **Feedback visivo** immediato per azioni
+- **Gestione errori** robusta con messaggi chiari
+- **Animazioni loading** durante operazioni
+
+#### 🛠️ **Miglioramenti Tecnici**
+
+##### 🗄️ **API Endpoints Richieste di Servizio**
+- **POST /api/service-requests** - Creazione richieste
+- **GET /api/service-requests** - Lista richieste (merchant/rider)
+- **PUT /api/service-requests/[id]/respond** - Risposta rider
+- **Validazione completa** input e autorizzazioni
+- **Gestione errori** strutturata e informativa
+
+##### 🎨 **Sistema Design Coerente**
+- **Toast system integrato** in tutto l'app
+- **Colori brand applicati** (#333366, #ff9900)
+- **Transizioni fluide** e animazioni professionali
+- **Responsività mobile** ottimizzata
+- **Accessibilità** migliorata
+
+##### 🧪 **Testing Infrastructure**
+- **Test E2E Playwright** configurato e funzionante
+- **Screenshot di debug** automatici
+- **Logging avanzato** per troubleshooting
+- **Configurazione sicura** credenziali test
+
+#### 📚 **Documentazione Aggiornata**
+
+##### 📖 **Flussi Utente Completati**
+- **Flusso rider aggiornato** con ricezione e risposta richieste
+- **Flusso esercente aggiornato** con invio e monitoraggio richieste
+- **Documentazione completa** del nuovo sistema
+
+##### 🔌 **API Documentation Estesa**
+- **Endpoint richieste di servizio** completamente documentati
+- **Esempi di utilizzo** per tutti gli endpoint
+- **Codici errore** e gestione casi limite
+- **Esempi cURL e JavaScript** per integrazione
+
+#### 🐛 **Correzioni e Fix**
+
+##### 🎯 **Toast System Funzionante**
+- **Componente Toaster corretto** per mostrare notifiche
+- **Hook useToast integrato** correttamente
+- **Stato globale** per gestione toast
+- **Fix import** e configurazione corretta
+
+##### 🔧 **Build e Performance**
+- **Build Next.js riuscito** senza errori
+- **Bundle ottimizzato** per produzione
+- **TypeScript** validazione completa
+- **Performance** migliorate
+
+#### 📁 **File Creati/Aggiornati**
+
+##### 🆕 **Nuovi File**
+- `tests/service-requests.spec.ts` - Test E2E flusso richieste
+- `tests/test-config.json` - Configurazione sicura test
+- `components/RespondServiceRequestModal.tsx` - Modal risposte
+- `lib/constants.ts` - Costanti sistema (tariffe, durata)
+
+##### 🔄 **File Aggiornati**
+- `docs/flussi-utente.md` - Flussi aggiornati con richieste
+- `docs/API.md` - Documentazione API completa
+- `CHANGELOG.md` - Questa voce
+- `package.json` - Script test aggiunti
+- `components/ui/toaster.tsx` - Sistema toast corretto
+- `app/dashboard/rider/page.tsx` - Integrazione richieste
+- `app/dashboard/merchant/requests/page.tsx` - Lista richieste
+
+#### 🎯 **Impatto Utente**
+
+##### 🚀 **Esperienza Completa**
+- **Flusso end-to-end** funzionante merchant ↔ rider
+- **Feedback immediato** con toast notifiche
+- **Interfaccia intuitiva** per gestione richieste
+- **Validazione robusta** per prevenire errori
+
+##### 🔒 **Sicurezza e Affidabilità**
+- **Validazione input** completa client/server
+- **Gestione errori** user-friendly
+- **Stato richieste** sempre consistente
+- **Autorizzazioni** controllate per ogni operazione
+
+---
+
 ## [0.4.4] - 2025-01-09
 
 ### 🎨 Design System e UI/UX - Ottimizzazione Completa

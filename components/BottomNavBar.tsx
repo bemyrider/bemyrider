@@ -64,7 +64,7 @@ export function BottomNavBar({
             }`}
             disabled={userRole !== 'merchant'}
           >
-            <HeartHandshake className='h-5 w-5' />
+            <HeartHandshake className='h-7 w-7' />
           </button>
 
           {/* BeMyRider */}
@@ -74,13 +74,13 @@ export function BottomNavBar({
             }
           >
             <button className='flex flex-col items-center p-1.5 rounded-xl text-gray-700 shadow-lg transition-colors'>
-              <div className='flex items-center justify-center w-7 h-7 bg-gray-300 bg-opacity-30 rounded-full'>
+              <div className='flex items-center justify-center w-9 h-9 bg-gray-300 bg-opacity-30 rounded-full'>
                 <Image
                   src='/bemyrider_logo.svg'
                   alt='bemyrider'
                   width={20}
                   height={20}
-                  className='w-5 h-5'
+                  className='w-7 h-7'
                 />
               </div>
             </button>

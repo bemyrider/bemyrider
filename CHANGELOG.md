@@ -32,6 +32,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Schema colori brand**: Top nav bar blu (#333366) e tabs attivi arancioni (#ff9900)
 - **Bordo cards**: Spessore aumentato da 1px a 2px per migliore definizione visiva
 - **Tabs veicolo**: Affinamento schema colori con sfondo grigio chiaro per tabs non selezionate e testo bianco per tabs selezionate
+- **Icone tabs veicolo**: Sostituzione emoji con icone SVG personalizzate (Zap, bici, auto) quando selezionate
 - **Emoji tabs**: Correzione colore emoji per tabs selezionate (ora bianche)
 
 ## [0.4.6] - 2025-01-10

@@ -32,7 +32,7 @@ export function BottomNavBar({
           {/* Ricerca */}
           <button
             onClick={() => onTabChange('riders')}
-            className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
               activeTab === 'riders' ? 'text-[#333366]' : 'text-gray-400'
             }`}
           >
@@ -41,7 +41,7 @@ export function BottomNavBar({
               fill='none'
               stroke='currentColor'
               strokeWidth='2'
-              className='h-5 w-5'
+              className='h-7 w-7'
             >
               <path d='m21 21-4.34-4.34' />
               <circle cx='11' cy='11' r='8' />
@@ -55,7 +55,7 @@ export function BottomNavBar({
                 onTabChange('favorites');
               }
             }}
-            className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
               activeTab === 'favorites'
                 ? 'text-[#333366]'
                 : userRole === 'merchant'
@@ -73,7 +73,7 @@ export function BottomNavBar({
               userRole === 'rider' ? '/dashboard/rider' : '/dashboard/merchant'
             }
           >
-            <button className='flex flex-col items-center p-2 rounded-xl text-gray-700 shadow-lg transition-colors'>
+            <button className='flex flex-col items-center p-1.5 rounded-xl text-gray-700 shadow-lg transition-colors'>
               <div className='flex items-center justify-center w-7 h-7 bg-gray-300 bg-opacity-30 rounded-full'>
                 <Image
                   src='/bemyrider_logo.svg'
@@ -96,7 +96,7 @@ export function BottomNavBar({
               fill='none'
               stroke='currentColor'
               strokeWidth='2'
-              className='h-5 w-5'
+              className='h-7 w-7'
             >
               <path d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z' />
             </svg>
@@ -106,7 +106,7 @@ export function BottomNavBar({
           <div className='relative'>
             <button
               onClick={onProfileDropdownToggle}
-              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+              className={`flex flex-col items-center p-1.5 rounded-lg transition-colors ${
                 showProfileDropdown
                   ? 'text-[#333366]'
                   : 'text-gray-400 hover:text-gray-600'
@@ -117,7 +117,7 @@ export function BottomNavBar({
                 fill='none'
                 stroke='currentColor'
                 strokeWidth='2'
-                className='h-5 w-5'
+                className='h-7 w-7'
               >
                 <path d='M3 6h18' />
                 <path d='M3 12h18' />

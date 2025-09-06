@@ -55,7 +55,7 @@ export function RidersList({ riders, loading }: RidersListProps) {
     <div className='space-y-4'>
       {riders.map(rider => (
         <Link key={rider.id} href={`/riders/${rider.id}`}>
-          <div className='bg-white rounded-xl shadow-sm border-2 border-[#ff9900] p-4 hover:shadow-lg hover:shadow-[#ff9900]/20 transition-all duration-200 cursor-pointer active:scale-95 my-1'>
+          <div className='bg-white rounded-xl shadow-sm border-2 border-[#333366] p-4 hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-95 my-1'>
             <div className='flex items-center space-x-4'>
               {/* Profile Picture */}
               <div>

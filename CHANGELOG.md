@@ -29,6 +29,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Contrasto visivo**: Migliorata distinzione tra navigazione e controlli
 - **Design professionale**: Interfaccia più pulita e moderna
 - **Manutenibilità**: Codice più modulare e riutilizzabile
+- **Schema colori brand**: Top nav bar blu (#333366) e tabs attivi arancioni (#ff9900)
 
 ## [0.4.6] - 2025-01-10
 

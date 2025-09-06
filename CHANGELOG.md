@@ -36,6 +36,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Tabs veicolo**: Affinamento schema colori con sfondo grigio chiaro per tabs non selezionate e testo bianco per tabs selezionate
 - **Icone tabs veicolo**: Sostituzione emoji con icone SVG personalizzate (Zap, bici, auto) quando selezionate
 - **Bottom nav bar**: Icone ingrandite da 20px a 28px per migliore visibilità, padding ottimizzato
+- **Logo BeMyRider**: Dimensione aumentata da 20px a 28px per maggiore prominenza visiva
 - **Emoji tabs**: Correzione colore emoji per tabs selezionate (ora bianche)
 
 ## [0.4.6] - 2025-01-10

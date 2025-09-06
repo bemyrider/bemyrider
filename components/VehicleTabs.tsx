@@ -14,8 +14,8 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('ebike')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'ebike'
-              ? 'text-black'
-              : 'bg-white text-gray-600 hover:bg-gray-200'
+              ? 'text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
           style={
             selectedVehicle === 'ebike' ? { backgroundColor: '#ff9900' } : {}
@@ -27,8 +27,8 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('scooter')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'scooter'
-              ? 'text-black'
-              : 'bg-white text-gray-600 hover:bg-gray-200'
+              ? 'text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
           style={
             selectedVehicle === 'scooter' ? { backgroundColor: '#ff9900' } : {}
@@ -40,8 +40,8 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('auto')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'auto'
-              ? 'text-black'
-              : 'bg-white text-gray-600 hover:bg-gray-200'
+              ? 'text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
           style={
             selectedVehicle === 'auto' ? { backgroundColor: '#ff9900' } : {}

@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,22 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Bike,
-  Clock,
-  Euro,
-  Search,
-  Filter,
-  MapPin,
-  Grid,
-  Map,
-  Star,
-  MessageCircle,
-  Eye,
-  X,
-  HeartHandshake,
-  User,
-} from 'lucide-react';
+import { Search, HeartHandshake, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -35,6 +18,9 @@ import {
 } from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabase';
 import { UserNav } from '@/components/UserNav';
+import { RidersList } from '@/components/RidersList';
+import { VehicleTabs } from '@/components/VehicleTabs';
+import { BottomNavBar } from '@/components/BottomNavBar';
 
 interface Rider {
   id: string;
@@ -45,80 +31,15 @@ interface Rider {
   vehicle_type: string | null;
   profile_picture_url: string | null;
   active_location: string | null;
-  // Nuove proprietà per design professionale
-  experience_years?: number;
-  specializations?: string[];
   completed_jobs?: number;
   rating?: number;
-  response_time?: string;
   is_verified?: boolean;
-  is_premium?: boolean;
 }
-
-// Mock data for demonstration with professional features
-const mockRiders: Rider[] = [
-  {
-    id: '1',
-    full_name: 'Marco Rossi',
-    avatar_url: null,
-    bio: 'Rider professionista con 5 anni di esperienza nelle consegne urbane. Specializzato in consegne rapide e affidabili nel centro città.',
-    hourly_rate: 8.5,
-    vehicle_type: 'bici',
-    profile_picture_url: null,
-    active_location: 'Milano',
-    experience_years: 5,
-    specializations: [
-      'Consegne rapide',
-      'Centro città',
-      'Documenti importanti',
-    ],
-    completed_jobs: 1247,
-    rating: 4.8,
-    response_time: '< 5 min',
-    is_verified: true,
-    is_premium: true,
-  },
-  {
-    id: '2',
-    full_name: 'Giulia Bianchi',
-    avatar_url: null,
-    bio: 'Specializzata in consegne di prodotti freschi e farmaceutici. Sempre puntuale e professionale.',
-    hourly_rate: 12,
-    vehicle_type: 'scooter',
-    profile_picture_url: null,
-    active_location: 'Milano',
-    experience_years: 3,
-    specializations: ['Prodotti freschi', 'Farmaceutici', 'Consegne urgenti'],
-    completed_jobs: 856,
-    rating: 4.9,
-    response_time: '< 3 min',
-    is_verified: true,
-    is_premium: false,
-  },
-  {
-    id: '3',
-    full_name: 'Luca Verdi',
-    avatar_url: null,
-    bio: 'Rider affidabile per consegne pesanti e di grandi dimensioni. Disponibile anche nei weekend.',
-    hourly_rate: 10,
-    vehicle_type: 'auto',
-    profile_picture_url: null,
-    active_location: 'Torino',
-    experience_years: 7,
-    specializations: ['Consegne pesanti', 'Weekend', 'Extra-urbane'],
-    completed_jobs: 2156,
-    rating: 4.7,
-    response_time: '< 10 min',
-    is_verified: true,
-    is_premium: false,
-  },
-];
 
 export default function RidersPage() {
   const [riders, setRiders] = useState<Rider[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [locationFilter, setLocationFilter] = useState('');
   const [error, setError] = useState('');
   const [selectedVehicle, setSelectedVehicle] = useState<
     'ebike' | 'scooter' | 'auto'
@@ -140,7 +61,6 @@ export default function RidersPage() {
     fetchUserProfile();
   }, []);
 
-  // Click outside handler per il dropdown profilo
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -187,7 +107,6 @@ export default function RidersPage() {
       await supabase.auth.signOut();
       setShowProfileDropdown(false);
       setUserProfile(null);
-      // Redirect alla home page
       window.location.href = '/';
     } catch (error) {
       console.error('Error logging out:', error);
@@ -215,18 +134,6 @@ export default function RidersPage() {
 
   const fetchRiders = async () => {
     try {
-      // Check if Supabase is properly configured
-      if (
-        process.env.NEXT_PUBLIC_SUPABASE_URL ===
-        'https://placeholder.supabase.co'
-      ) {
-        // Use mock data for demonstration
-        setRiders(mockRiders);
-        setLoading(false);
-        return;
-      }
-
-      // Usa query separata più robusta invece di LEFT JOIN che può causare problemi
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, full_name, avatar_url')
@@ -235,11 +142,10 @@ export default function RidersPage() {
       if (profilesError) {
         console.error('Error fetching profiles:', profilesError);
         setError('Errore nel caricamento dei rider');
-        setRiders(mockRiders);
+        setRiders([]);
         return;
       }
 
-      // Fetch rider details separatamente per ogni rider
       const ridersWithDetails = [];
       for (const profile of profilesData || []) {
         const { data: detailsData } = await supabase
@@ -264,24 +170,21 @@ export default function RidersPage() {
 
       setRiders(ridersWithDetails);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching riders:', error);
       setError('Errore nel caricamento dei rider');
-      // Fallback to mock data
-      setRiders(mockRiders);
+      setRiders([]);
     } finally {
       setLoading(false);
     }
   };
 
   const filteredRiders = riders.filter(rider => {
-    // Filtro ricerca (nome + località)
     const searchFilter =
       searchTerm === '' ||
       rider.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (rider.active_location &&
         rider.active_location.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    // Filtro veicolo
     const vehicleFilter = getVehicleFilter(selectedVehicle).includes(
       rider.vehicle_type || ''
     );
@@ -300,199 +203,47 @@ export default function RidersPage() {
       <div className='fixed top-0 left-0 right-0 z-40 bg-gray-100 border-b border-gray-200 shadow-sm'>
         {/* Search Bar */}
         <div className='px-4 py-3'>
-          <div className='relative'>
-            <svg
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5'
-            >
-              <path d='m21 21-4.34-4.34' />
-              <circle cx='11' cy='11' r='8' />
-            </svg>
-            <input
-              type='text'
-              placeholder='Cerca rider a Milano...'
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className='w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 shadow-md'
-            />
+          <div className='flex gap-2'>
+            <div className='relative flex-1'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+              <input
+                type='text'
+                placeholder='Cerca per nome o per località...'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className='w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 shadow-md'
+              />
+            </div>
+            {searchTerm && (
+              <Button
+                onClick={() => setSearchTerm('')}
+                variant='outline'
+                size='icon'
+                className='h-12 w-12 rounded-xl border-gray-200 hover:bg-gray-50'
+              >
+                <X className='h-4 w-4' />
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Vehicle Tabs */}
-        <div className='px-4 pb-3'>
-          <div className='flex space-x-2'>
-            <button
-              onClick={() => setSelectedVehicle('ebike')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-                selectedVehicle === 'ebike'
-                  ? 'text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              style={
-                selectedVehicle === 'ebike'
-                  ? { backgroundColor: '#333366' }
-                  : {}
-              }
-            >
-              ⚡ E-bike
-            </button>
-            <button
-              onClick={() => setSelectedVehicle('scooter')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-                selectedVehicle === 'scooter'
-                  ? 'text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              style={
-                selectedVehicle === 'scooter'
-                  ? { backgroundColor: '#333366' }
-                  : {}
-              }
-            >
-              🛵 Moto
-            </button>
-            <button
-              onClick={() => setSelectedVehicle('auto')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-                selectedVehicle === 'auto'
-                  ? 'text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              style={
-                selectedVehicle === 'auto' ? { backgroundColor: '#333366' } : {}
-              }
-            >
-              🚗 Auto
-            </button>
-          </div>
-        </div>
+        <VehicleTabs
+          selectedVehicle={selectedVehicle}
+          onVehicleChange={setSelectedVehicle}
+        />
       </div>
 
       {/* Main Content */}
       <div className='flex-1 pt-32 pb-20'>
         <div className='px-4'>
-          {/* Content based on active tab */}
           {activeTab === 'riders' && (
-            <>
-              {/* Riders List */}
-              {loading ? (
-                <div className='flex justify-center items-center py-12'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
-                </div>
-              ) : displayedRiders.length === 0 ? (
-                <div className='text-center py-12'>
-                  <div className='text-6xl mb-4'>🔍</div>
-                  <h3 className='text-xl font-bold text-gray-900 mb-2'>
-                    Nessun rider trovato
-                  </h3>
-                  <p className='text-gray-600 mb-6'>
-                    Prova a cercare in un'altra città
-                  </p>
-                  <div className='flex justify-center'>
-                    <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center'>
-                      <Image
-                        src='/bemyrider_logo.svg'
-                        alt='bemyrider'
-                        width={40}
-                        height={40}
-                        className='w-10 h-10'
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className='space-y-4'>
-                  {displayedRiders.map(rider => (
-                    <Link key={rider.id} href={`/riders/${rider.id}`}>
-                      <div className='bg-white rounded-xl shadow-sm border border-[#ff9900] p-4 hover:shadow-lg hover:shadow-[#ff9900]/20 transition-all duration-200 cursor-pointer active:scale-95 my-1'>
-                        <div className='flex items-center space-x-4'>
-                          {/* Profile Picture */}
-                          <div className='relative'>
-                            {rider.profile_picture_url || rider.avatar_url ? (
-                              <Image
-                                src={
-                                  rider.profile_picture_url ||
-                                  rider.avatar_url ||
-                                  ''
-                                }
-                                alt={rider.full_name}
-                                width={60}
-                                height={60}
-                                className='w-15 h-15 rounded-full object-cover'
-                              />
-                            ) : (
-                              <div className='w-15 h-15 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center'>
-                                <span className='text-lg font-bold text-white'>
-                                  {rider.full_name.charAt(0).toUpperCase()}
-                                </span>
-                              </div>
-                            )}
-                            {/* Online Status */}
-                            <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full'></div>
-                          </div>
-
-                          {/* Rider Info */}
-                          <div className='flex-1 min-w-0'>
-                            <div className='flex items-center gap-2 mb-1'>
-                              <h3 className='text-lg font-bold text-gray-900 truncate'>
-                                {rider.full_name}
-                              </h3>
-                              {rider.is_verified && (
-                                <span className='inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'>
-                                  ✓
-                                </span>
-                              )}
-                            </div>
-
-                            <div className='flex items-center gap-1 mb-1'>
-                              <Star className='h-4 w-4 text-yellow-400 fill-current' />
-                              <span className='text-sm font-medium text-gray-900'>
-                                {rider.rating || 4.5}
-                              </span>
-                              <span className='text-sm text-gray-500'>
-                                ({rider.completed_jobs || 0})
-                              </span>
-                            </div>
-
-                            <div className='flex items-center gap-1 text-sm text-gray-600'>
-                              <MapPin className='h-3 w-3' />
-                              <span className='truncate'>
-                                {rider.active_location || 'Milano'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Price */}
-                          <div className='text-right'>
-                            <div className='text-xl font-bold text-gray-900'>
-                              €{rider.hourly_rate}
-                            </div>
-                            <div className='text-xs text-gray-600'>/ora</div>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </>
+            <RidersList riders={displayedRiders} loading={loading} />
           )}
 
           {activeTab === 'favorites' && userProfile?.role === 'merchant' && (
             <div className='text-center py-12'>
               <div className='text-6xl mb-4'>
-                <svg
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  className='w-16 h-16 mx-auto'
-                >
-                  <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
-                </svg>
+                <HeartHandshake className='w-16 h-16 mx-auto' />
               </div>
               <h3 className='text-xl font-bold text-gray-900 mb-2'>
                 Rider Preferiti
@@ -569,175 +320,17 @@ export default function RidersPage() {
       </div>
 
       {/* Bottom Navigation Bar - Fixed */}
-      <div className='fixed bottom-0 left-0 right-0 z-40 bg-gray-100 border-t border-gray-200 shadow-sm'>
-        <div className='flex items-center justify-center px-4 py-2'>
-          <div className='flex items-center justify-around w-full max-w-md'>
-            {/* Ricerca */}
-            <button
-              onClick={() => setActiveTab('riders')}
-              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                activeTab === 'riders' ? 'text-[#333366]' : 'text-gray-400'
-              }`}
-            >
-              <svg
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                className='h-5 w-5'
-              >
-                <path d='m21 21-4.34-4.34' />
-                <circle cx='11' cy='11' r='8' />
-              </svg>
-            </button>
-
-            {/* Preferiti */}
-            <button
-              onClick={() => {
-                if (userProfile?.role === 'merchant') {
-                  setActiveTab('favorites');
-                }
-              }}
-              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                activeTab === 'favorites'
-                  ? 'text-[#333366]'
-                  : userProfile?.role === 'merchant'
-                    ? 'text-gray-400 hover:text-gray-600'
-                    : 'text-gray-300 cursor-not-allowed'
-              }`}
-              disabled={userProfile?.role !== 'merchant'}
-            >
-              <HeartHandshake className='h-5 w-5' />
-            </button>
-
-            {/* BeMyRider */}
-            <Link
-              href={
-                userProfile?.role === 'rider'
-                  ? '/dashboard/rider'
-                  : '/dashboard/merchant'
-              }
-            >
-              <button
-                className='flex flex-col items-center p-2 rounded-xl text-gray-700 shadow-lg transition-colors'
-                style={{ backgroundColor: '#f5f5f5' }}
-                onMouseEnter={e =>
-                  (e.currentTarget.style.backgroundColor = '#e5e5e5')
-                }
-                onMouseLeave={e =>
-                  (e.currentTarget.style.backgroundColor = '#f5f5f5')
-                }
-              >
-                <div className='flex items-center justify-center w-7 h-7 bg-gray-300 bg-opacity-30 rounded-full'>
-                  <Image
-                    src='/bemyrider_logo.svg'
-                    alt='bemyrider'
-                    width={20}
-                    height={20}
-                    className='w-5 h-5'
-                  />
-                </div>
-              </button>
-            </Link>
-
-            {/* Messaggi - Disabilitato per ora */}
-            <button
-              onClick={() => {
-                /* Messaggi non ancora implementati */
-              }}
-              className='flex flex-col items-center p-2 rounded-lg transition-colors text-gray-300 cursor-not-allowed'
-              disabled
-            >
-              <svg
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                className='h-5 w-5'
-              >
-                <path d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z' />
-              </svg>
-            </button>
-
-            {/* Profilo con dropdown */}
-            <div className='relative' ref={profileDropdownRef}>
-              <button
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                  showProfileDropdown
-                    ? 'text-[#333366]'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <svg
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  className='h-5 w-5'
-                >
-                  <path d='M3 6h18' />
-                  <path d='M3 12h18' />
-                  <path d='M3 18h18' />
-                </svg>
-              </button>
-
-              {showProfileDropdown && (
-                <div className='absolute bottom-full right-0 mb-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50'>
-                  <div className='py-2'>
-                    <div className='px-4 py-2 text-sm text-gray-700 border-b border-gray-100'>
-                      <p className='font-medium'>
-                        {userProfile?.full_name || 'Utente'}
-                      </p>
-                      <p className='text-xs text-gray-500 capitalize'>
-                        {userProfile?.role || 'Ospite'}
-                      </p>
-                    </div>
-
-                    {userProfile?.role === 'merchant' && (
-                      <Link href='/dashboard/merchant'>
-                        <button
-                          className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                          onClick={() => setShowProfileDropdown(false)}
-                        >
-                          Dashboard
-                        </button>
-                      </Link>
-                    )}
-
-                    {userProfile?.role === 'rider' && (
-                      <Link href='/dashboard/rider'>
-                        <button
-                          className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                          onClick={() => setShowProfileDropdown(false)}
-                        >
-                          Dashboard Rider
-                        </button>
-                      </Link>
-                    )}
-
-                    <Link href='/profile'>
-                      <button
-                        className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                        onClick={() => setShowProfileDropdown(false)}
-                      >
-                        Impostazioni
-                      </button>
-                    </Link>
-
-                    <button
-                      onClick={handleLogout}
-                      className='w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <BottomNavBar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        userRole={userProfile?.role || null}
+        showProfileDropdown={showProfileDropdown}
+        onProfileDropdownToggle={() =>
+          setShowProfileDropdown(!showProfileDropdown)
+        }
+        userProfile={userProfile}
+        onLogout={handleLogout}
+      />
     </div>
   );
 }

@@ -5,6 +5,31 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.7] - 2025-01-10
+
+### 🎨 **Refactoring Completo Pagina Riders - Miglioramenti UI/UX**
+
+#### 🔧 **Refactoring Architetturale**
+- **Estrazione componenti**: Creati `RidersList`, `VehicleTabs`, e `BottomNavBar` per modularità
+- **Pulizia codice**: Rimosso tutto il codice mock e dati di test
+- **Ottimizzazione struttura**: Ridotto file principale da 744 a ~340 righe (-55%)
+
+#### 🎨 **Miglioramenti Interfaccia Utente**
+- **Cornice foto profilo**: Cambiata da circolare a rettangolare con angoli arrotondati
+- **Tabs veicolo**: Nuovo schema colori bianco/grigio per migliore gerarchia visiva
+- **Icona preferiti**: Sostituita icona cuore generica con `HeartHandshake` professionale
+- **Rimozione stato online**: Eliminato indicatore presenza per design più pulito
+
+#### 🔍 **Miglioramenti Funzionalità Ricerca**
+- **Placeholder migliorato**: Da "Cerca rider a Milano" a "Cerca per nome o per località"
+- **Pulsante reset**: Aggiunto pulsante X condizionale per azzeramento ricerca
+- **Icona ricerca**: Sostituita SVG inline con componente `Search` di Lucide React
+
+#### 📱 **Ottimizzazioni UX**
+- **Contrasto visivo**: Migliorata distinzione tra navigazione e controlli
+- **Design professionale**: Interfaccia più pulita e moderna
+- **Manutenibilità**: Codice più modulare e riutilizzabile
+
 ## [0.4.6] - 2025-01-10
 
 ### 🐛 **Correzione Bug Critico - Endpoint Risposta Richieste di Servizio**

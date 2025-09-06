@@ -200,12 +200,12 @@ export default function RidersPage() {
   return (
     <div className='min-h-screen bg-gray-50 flex flex-col'>
       {/* Top Navigation Bar - Fixed */}
-      <div className='fixed top-0 left-0 right-0 z-40 bg-gray-100 border-b border-gray-200 shadow-sm'>
+      <div className='fixed top-0 left-0 right-0 z-40 bg-[#333366] border-b border-[#4a4a7a] shadow-md'>
         {/* Search Bar */}
         <div className='px-4 py-3'>
           <div className='flex gap-2'>
             <div className='relative flex-1'>
-              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-300' />
               <input
                 type='text'
                 placeholder='Cerca per nome o per località...'
@@ -219,7 +219,7 @@ export default function RidersPage() {
                 onClick={() => setSearchTerm('')}
                 variant='outline'
                 size='icon'
-                className='h-12 w-12 rounded-xl border-gray-200 hover:bg-gray-50'
+                className='h-12 w-12 rounded-xl border-gray-300 hover:bg-gray-100'
               >
                 <X className='h-4 w-4' />
               </Button>

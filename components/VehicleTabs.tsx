@@ -14,11 +14,11 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('ebike')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'ebike'
-              ? 'text-white'
+              ? 'text-black'
               : 'bg-white text-gray-600 hover:bg-gray-200'
           }`}
           style={
-            selectedVehicle === 'ebike' ? { backgroundColor: '#333366' } : {}
+            selectedVehicle === 'ebike' ? { backgroundColor: '#ff9900' } : {}
           }
         >
           ⚡ E-bike
@@ -27,11 +27,11 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('scooter')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'scooter'
-              ? 'text-white'
+              ? 'text-black'
               : 'bg-white text-gray-600 hover:bg-gray-200'
           }`}
           style={
-            selectedVehicle === 'scooter' ? { backgroundColor: '#333366' } : {}
+            selectedVehicle === 'scooter' ? { backgroundColor: '#ff9900' } : {}
           }
         >
           🛵 Moto
@@ -40,11 +40,11 @@ export function VehicleTabs({
           onClick={() => onVehicleChange('auto')}
           className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
             selectedVehicle === 'auto'
-              ? 'text-white'
+              ? 'text-black'
               : 'bg-white text-gray-600 hover:bg-gray-200'
           }`}
           style={
-            selectedVehicle === 'auto' ? { backgroundColor: '#333366' } : {}
+            selectedVehicle === 'auto' ? { backgroundColor: '#ff9900' } : {}
           }
         >
           🚗 Auto

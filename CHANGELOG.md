@@ -30,6 +30,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Design professionale**: Interfaccia più pulita e moderna
 - **Manutenibilità**: Codice più modulare e riutilizzabile
 - **Schema colori brand**: Top nav bar blu (#333366) e tabs attivi arancioni (#ff9900)
+- **Bordo cards**: Spessore aumentato da 1px a 2px per migliore definizione visiva
 
 ## [0.4.6] - 2025-01-10
 

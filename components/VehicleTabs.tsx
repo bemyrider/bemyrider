@@ -21,7 +21,7 @@ export function VehicleTabs({
             selectedVehicle === 'ebike' ? { backgroundColor: '#ff9900' } : {}
           }
         >
-          ⚡ E-bike
+          <span className={selectedVehicle === 'ebike' ? 'text-white' : ''}>⚡</span> E-bike
         </button>
         <button
           onClick={() => onVehicleChange('scooter')}
@@ -34,7 +34,7 @@ export function VehicleTabs({
             selectedVehicle === 'scooter' ? { backgroundColor: '#ff9900' } : {}
           }
         >
-          🛵 Moto
+          <span className={selectedVehicle === 'scooter' ? 'text-white' : ''}>🛵</span> Moto
         </button>
         <button
           onClick={() => onVehicleChange('auto')}
@@ -47,7 +47,7 @@ export function VehicleTabs({
             selectedVehicle === 'auto' ? { backgroundColor: '#ff9900' } : {}
           }
         >
-          🚗 Auto
+          <span className={selectedVehicle === 'auto' ? 'text-white' : ''}>🚗</span> Auto
         </button>
       </div>
     </div>

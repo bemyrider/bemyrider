@@ -1,6 +1,6 @@
 {
-  "id": "b45029fd-83e7-4958-9ed6-f970d8bf72ed",
-  "prevId": "6ed949fa-9464-4541-a828-db00a041f300",
+  "id": "ee1c797c-8d9e-476c-ba46-243ddfad516e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -147,6 +147,45 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.merchant_favorites": {
+      "name": "merchant_favorites",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rider_id": {
+          "name": "rider_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.occasional_performance_receipts": {
       "name": "occasional_performance_receipts",
       "schema": "",
@@ -184,7 +223,9 @@
         "occasional_performance_receipts_prenotazione_id_unique": {
           "name": "occasional_performance_receipts_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["prenotazione_id"]
+          "columns": [
+            "prenotazione_id"
+          ]
         }
       },
       "policies": {},
@@ -388,7 +429,9 @@
         "recensioni_prenotazione_id_unique": {
           "name": "recensioni_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["prenotazione_id"]
+          "columns": [
+            "prenotazione_id"
+          ]
         }
       },
       "policies": {},
@@ -674,17 +717,34 @@
     "public.DayOfWeek": {
       "name": "DayOfWeek",
       "schema": "public",
-      "values": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
+      "values": [
+        "Lun",
+        "Mar",
+        "Mer",
+        "Gio",
+        "Ven",
+        "Sab",
+        "Dom"
+      ]
     },
     "public.PaymentStatus": {
       "name": "PaymentStatus",
       "schema": "public",
-      "values": ["in_attesa", "pagato", "rimborsato"]
+      "values": [
+        "in_attesa",
+        "pagato",
+        "rimborsato"
+      ]
     },
     "public.ServiceRequestStatus": {
       "name": "ServiceRequestStatus",
       "schema": "public",
-      "values": ["pending", "accepted", "rejected", "expired"]
+      "values": [
+        "pending",
+        "accepted",
+        "rejected",
+        "expired"
+      ]
     },
     "public.Status": {
       "name": "Status",
@@ -700,7 +760,12 @@
     "public.VehicleType": {
       "name": "VehicleType",
       "schema": "public",
-      "values": ["bici", "e_bike", "scooter", "auto"]
+      "values": [
+        "bici",
+        "e_bike",
+        "scooter",
+        "auto"
+      ]
     }
   },
   "schemas": {},

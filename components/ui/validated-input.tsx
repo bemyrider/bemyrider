@@ -47,7 +47,9 @@ export function ValidatedInput({
     });
 
     setErrors(newErrors);
-    const valid = newErrors.length === 0 && (!validationRules.length || value.trim() !== '');
+    const valid =
+      newErrors.length === 0 &&
+      (!validationRules.length || value.trim() !== '');
     setIsValid(valid);
 
     onValidationChange?.(valid, newErrors);
@@ -69,22 +71,22 @@ export function ValidatedInput({
   const showSuccess = isValid && touched && showValidationIcon;
 
   return (
-    <div className="space-y-2">
+    <div className='space-y-2'>
       {label && (
         <Label
           htmlFor={inputId}
           className={cn(
-            "text-sm font-medium",
-            hasErrors && "text-red-600",
-            isValid && touched && "text-green-600"
+            'text-sm font-medium',
+            hasErrors && 'text-red-600',
+            isValid && touched && 'text-green-600'
           )}
         >
           {label}
-          {props.required && <span className="text-red-500 ml-1">*</span>}
+          {props.required && <span className='text-red-500 ml-1'>*</span>}
         </Label>
       )}
 
-      <div className="relative">
+      <div className='relative'>
         <Input
           id={inputId}
           type={password && !showPassword ? 'password' : 'text'}
@@ -93,8 +95,10 @@ export function ValidatedInput({
           onBlur={handleBlur}
           className={cn(
             className,
-            hasErrors && "border-red-500 focus:border-red-500 focus:ring-red-500",
-            showSuccess && "border-green-500 focus:border-green-500 focus:ring-green-500"
+            hasErrors &&
+              'border-red-500 focus:border-red-500 focus:ring-red-500',
+            showSuccess &&
+              'border-green-500 focus:border-green-500 focus:ring-green-500'
           )}
           {...props}
         />
@@ -102,38 +106,40 @@ export function ValidatedInput({
         {/* Password toggle */}
         {password && (
           <button
-            type="button"
+            type='button'
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700'
           >
             {showPassword ? (
-              <EyeOff className="h-4 w-4" />
+              <EyeOff className='h-4 w-4' />
             ) : (
-              <Eye className="h-4 w-4" />
+              <Eye className='h-4 w-4' />
             )}
           </button>
         )}
 
         {/* Validation icons */}
         {showValidationIcon && touched && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            {hasErrors && <AlertCircle className="h-4 w-4 text-red-500" />}
-            {showSuccess && !hasErrors && <CheckCircle className="h-4 w-4 text-green-500" />}
+          <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
+            {hasErrors && <AlertCircle className='h-4 w-4 text-red-500' />}
+            {showSuccess && !hasErrors && (
+              <CheckCircle className='h-4 w-4 text-green-500' />
+            )}
           </div>
         )}
       </div>
 
       {/* Help text */}
       {helpText && !hasErrors && (
-        <p className="text-xs text-gray-500">{helpText}</p>
+        <p className='text-xs text-gray-500'>{helpText}</p>
       )}
 
       {/* Error messages */}
       {hasErrors && (
-        <div className="space-y-1">
+        <div className='space-y-1'>
           {errors.map((error, index) => (
-            <p key={index} className="text-xs text-red-600 flex items-center">
-              <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+            <p key={index} className='text-xs text-red-600 flex items-center'>
+              <AlertCircle className='h-3 w-3 mr-1 flex-shrink-0' />
               {error}
             </p>
           ))}

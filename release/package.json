@@ -1,6 +1,6 @@
 {
   "name": "bemyrider",
-  "version": "1.4.0",
+  "version": "0.4.8",
   "private": true,
   "scripts": {
     "dev": "next dev",

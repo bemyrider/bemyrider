@@ -50,18 +50,27 @@ export default function TopNavBar({
     setIsMobileMenuOpen(false);
   };
 
-  const navigationItems = userRole === 'merchant'
-    ? [
-        { icon: Home, label: 'Dashboard', path: '/dashboard/merchant' },
-        { icon: Users, label: 'Trova Rider', path: '/dashboard/merchant' },
-        { icon: Calendar, label: 'Prenotazioni', path: '/dashboard/merchant/bookings' },
-        { icon: BarChart3, label: 'Richieste', path: '/dashboard/merchant/requests' },
-      ]
-    : [
-        { icon: Home, label: 'Dashboard', path: '/dashboard/rider' },
-        { icon: Calendar, label: 'Disponibilità', path: '/dashboard/rider' },
-        { icon: BarChart3, label: 'Richieste', path: '/dashboard/rider' },
-      ];
+  const navigationItems =
+    userRole === 'merchant'
+      ? [
+          { icon: Home, label: 'Dashboard', path: '/dashboard/merchant' },
+          { icon: Users, label: 'Trova Rider', path: '/dashboard/merchant' },
+          {
+            icon: Calendar,
+            label: 'Prenotazioni',
+            path: '/dashboard/merchant/bookings',
+          },
+          {
+            icon: BarChart3,
+            label: 'Richieste',
+            path: '/dashboard/merchant/requests',
+          },
+        ]
+      : [
+          { icon: Home, label: 'Dashboard', path: '/dashboard/rider' },
+          { icon: Calendar, label: 'Disponibilità', path: '/dashboard/rider' },
+          { icon: BarChart3, label: 'Richieste', path: '/dashboard/rider' },
+        ];
 
   return (
     <div className='bg-white shadow-sm border-b border-gray-200'>
@@ -94,7 +103,8 @@ export default function TopNavBar({
                     <span className='logo-font'>bemyrider</span>
                   </SheetTitle>
                   <SheetDescription>
-                    Navigazione {userRole === 'merchant' ? 'Esercente' : 'Rider'}
+                    Navigazione{' '}
+                    {userRole === 'merchant' ? 'Esercente' : 'Rider'}
                   </SheetDescription>
                 </SheetHeader>
 

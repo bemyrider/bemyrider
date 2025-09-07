@@ -1,0 +1,6 @@
+{
+  "/riders/page": "app/riders/page.js",
+  "/riders/[id]/page": "app/riders/[id]/page.js",
+  "/dashboard/merchant/page": "app/dashboard/merchant/page.js",
+  "/dashboard/merchant/requests/page": "app/dashboard/merchant/requests/page.js"
+}

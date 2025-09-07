@@ -47,8 +47,10 @@ export default function RidersPage() {
   const [activeTab, setActiveTab] = useState<
     'riders' | 'favorites' | 'messages'
   >('riders');
-  const [favorites, setFavorites] = useState<string[]>([]);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [favoriteRiders, setFavoriteRiders] = useState<Rider[]>([]);
+  const [loadingFavorites, setLoadingFavorites] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [userProfile, setUserProfile] = useState<{
     id: string;
     role: 'merchant' | 'rider' | null;
@@ -60,6 +62,13 @@ export default function RidersPage() {
     fetchRiders();
     fetchUserProfile();
   }, []);
+
+  // Carica i preferiti quando il profilo utente è disponibile
+  useEffect(() => {
+    if (userProfile?.role === 'merchant') {
+      loadFavorites();
+    }
+  }, [userProfile]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -113,12 +122,72 @@ export default function RidersPage() {
     }
   };
 
-  const toggleFavorite = (riderId: string) => {
-    setFavorites(prev =>
-      prev.includes(riderId)
-        ? prev.filter(id => id !== riderId)
-        : [...prev, riderId]
-    );
+  const loadFavorites = async () => {
+    try {
+      const response = await fetch('/api/favorites');
+      if (response.ok) {
+        const data = await response.json();
+        const favoriteIds = data.favorites || [];
+        setFavorites(favoriteIds);
+
+        // Se ci sono preferiti, recupera i dettagli completi dei rider
+        if (favoriteIds.length > 0) {
+          await loadFavoriteRiders(favoriteIds);
+        } else {
+          setFavoriteRiders([]);
+        }
+      }
+    } catch (error) {
+      console.error('Errore nel caricamento dei preferiti:', error);
+    }
+  };
+
+  const loadFavoriteRiders = async (favoriteIds: string[]) => {
+    setLoadingFavorites(true);
+    try {
+      // Recupera tutti i rider con i loro dettagli
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .eq('role', 'rider')
+        .in('id', favoriteIds);
+
+      if (profilesError) {
+        console.error('Error fetching favorite profiles:', profilesError);
+        return;
+      }
+
+      const favoriteRidersWithDetails = [];
+      for (const profile of profilesData || []) {
+        const { data: detailsData } = await supabase
+          .from('riders_details')
+          .select(
+            'bio, hourly_rate, vehicle_type, profile_picture_url, active_location'
+          )
+          .eq('profile_id', profile.id)
+          .single();
+
+        favoriteRidersWithDetails.push({
+          id: profile.id,
+          full_name: profile.full_name || 'Rider',
+          avatar_url: profile.avatar_url,
+          bio: detailsData?.bio || null,
+          hourly_rate: detailsData?.hourly_rate || 15,
+          vehicle_type: detailsData?.vehicle_type || 'Veicolo',
+          profile_picture_url: detailsData?.profile_picture_url || null,
+          active_location: detailsData?.active_location || null,
+        });
+      }
+
+      setFavoriteRiders(favoriteRidersWithDetails);
+    } catch (error) {
+      console.error(
+        'Errore nel caricamento dei dettagli dei rider preferiti:',
+        error
+      );
+    } finally {
+      setLoadingFavorites(false);
+    }
   };
 
   const getVehicleFilter = (vehicle: 'ebike' | 'scooter' | 'auto') => {
@@ -192,10 +261,14 @@ export default function RidersPage() {
     return searchFilter && vehicleFilter;
   });
 
-  const displayedRiders =
-    activeTab === 'favorites'
-      ? filteredRiders.filter(rider => favorites.includes(rider.id))
-      : filteredRiders;
+  const displayedRiders = filteredRiders;
+
+  // Funzione per aggiornare i preferiti (chiamata dalla pagina profilo)
+  const refreshFavorites = () => {
+    if (userProfile?.role === 'merchant') {
+      loadFavorites();
+    }
+  };
 
   return (
     <div className='min-h-screen bg-gray-50 flex flex-col'>
@@ -241,30 +314,49 @@ export default function RidersPage() {
           )}
 
           {activeTab === 'favorites' && userProfile?.role === 'merchant' && (
-            <div className='text-center py-12'>
-              <div className='text-6xl mb-4'>
-                <HeartHandshake className='w-16 h-16 mx-auto' />
-              </div>
-              <h3 className='text-xl font-bold text-gray-900 mb-2'>
-                Rider Preferiti
-              </h3>
-              <p className='text-gray-600 mb-6'>
-                I tuoi rider preferiti appariranno qui
-              </p>
-              <Button
-                onClick={() => setActiveTab('riders')}
-                className='text-white'
-                style={{ backgroundColor: '#333366' }}
-                onMouseEnter={e =>
-                  (e.currentTarget.style.backgroundColor = '#4a4a7a')
-                }
-                onMouseLeave={e =>
-                  (e.currentTarget.style.backgroundColor = '#333366')
-                }
-              >
-                Scopri nuovi rider
-              </Button>
-            </div>
+            <>
+              {loadingFavorites ? (
+                <div className='flex justify-center items-center py-12'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
+                </div>
+              ) : favoriteRiders.length > 0 ? (
+                <div>
+                  <div className='mb-4'>
+                    <h3 className='text-xl font-bold text-gray-900'>
+                      Rider Preferiti ({favoriteRiders.length})
+                    </h3>
+                    <p className='text-gray-600'>
+                      I tuoi rider fidati per future collaborazioni
+                    </p>
+                  </div>
+                  <RidersList riders={favoriteRiders} loading={false} />
+                </div>
+              ) : (
+                <div className='text-center py-12'>
+                  <div className='text-6xl mb-4'>❤️</div>
+                  <h3 className='text-xl font-bold text-gray-900 mb-2'>
+                    Rider Preferiti
+                  </h3>
+                  <p className='text-gray-600 mb-6'>
+                    Clicca sul pulsante cuore nella pagina profilo di un rider
+                    per aggiungerlo ai tuoi preferiti
+                  </p>
+                  <Button
+                    onClick={() => setActiveTab('riders')}
+                    className='text-white'
+                    style={{ backgroundColor: '#333366' }}
+                    onMouseEnter={e =>
+                      (e.currentTarget.style.backgroundColor = '#4a4a7a')
+                    }
+                    onMouseLeave={e =>
+                      (e.currentTarget.style.backgroundColor = '#333366')
+                    }
+                  >
+                    Scopri nuovi rider
+                  </Button>
+                </div>
+              )}
+            </>
           )}
 
           {activeTab === 'favorites' && userProfile?.role !== 'merchant' && (

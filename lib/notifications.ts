@@ -1,7 +1,12 @@
 import { toast } from '@/components/ui/use-toast';
 import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info' | 'loading';
+export type NotificationType =
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'loading';
 
 export interface NotificationOptions {
   title?: string;
@@ -54,7 +59,11 @@ class NotificationManager {
   private loadingToasts = new Map<string, string>();
 
   // Generic notification method
-  notify(type: NotificationType, message: string, options: NotificationOptions = {}) {
+  notify(
+    type: NotificationType,
+    message: string,
+    options: NotificationOptions = {}
+  ) {
     const config = notificationConfigs[type];
     const IconComponent = config.icon;
 
@@ -122,10 +131,14 @@ export const notifications = new NotificationManager();
 
 // Export individual functions for convenience
 export const notify = {
-  success: (message: string, options?: NotificationOptions) => notifications.success(message, options),
-  error: (message: string, options?: NotificationOptions) => notifications.error(message, options),
-  warning: (message: string, options?: NotificationOptions) => notifications.warning(message, options),
-  info: (message: string, options?: NotificationOptions) => notifications.info(message, options),
+  success: (message: string, options?: NotificationOptions) =>
+    notifications.success(message, options),
+  error: (message: string, options?: NotificationOptions) =>
+    notifications.error(message, options),
+  warning: (message: string, options?: NotificationOptions) =>
+    notifications.warning(message, options),
+  info: (message: string, options?: NotificationOptions) =>
+    notifications.info(message, options),
   loading: (message: string, id?: string) => notifications.loading(message, id),
 };
 
@@ -141,11 +154,11 @@ export const notificationMessages = {
   requestAccepted: 'Richiesta accettata con successo!',
   requestRejected: 'Richiesta rifiutata.',
   requestCreated: 'Richiesta inviata con successo!',
-  requestError: 'Errore nell\'invio della richiesta.',
+  requestError: "Errore nell'invio della richiesta.",
 
   // Profile
   profileUpdated: 'Profilo aggiornato con successo!',
-  profileUpdateError: 'Errore nell\'aggiornamento del profilo.',
+  profileUpdateError: "Errore nell'aggiornamento del profilo.",
   passwordChanged: 'Password cambiata con successo!',
 
   // Bookings
@@ -164,5 +177,5 @@ export const notificationMessages = {
   validationError: 'Controlla i dati inseriti e riprova.',
   saveSuccess: 'Dati salvati con successo!',
   deleteSuccess: 'Elemento eliminato con successo.',
-  deleteError: 'Errore nell\'eliminazione dell\'elemento.',
+  deleteError: "Errore nell'eliminazione dell'elemento.",
 };

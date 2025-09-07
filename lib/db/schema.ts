@@ -199,6 +199,16 @@ export const occasionalPerformanceReceipts = pgTable(
   }
 );
 
+// Merchant Favorites table
+export const merchantFavorites = pgTable('merchant_favorites', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  merchantId: uuid('merchant_id').notNull(),
+  riderId: uuid('rider_id').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // Relations
 export const profilesRelations = relations(profiles, ({ one, many }) => ({
   esercente: one(esercenti, {
@@ -321,6 +331,20 @@ export const occasionalPerformanceReceiptsRelations = relations(
     prenotazione: one(prenotazioni, {
       fields: [occasionalPerformanceReceipts.prenotazioneId],
       references: [prenotazioni.id],
+    }),
+  })
+);
+
+export const merchantFavoritesRelations = relations(
+  merchantFavorites,
+  ({ one }) => ({
+    merchant: one(profiles, {
+      fields: [merchantFavorites.merchantId],
+      references: [profiles.id],
+    }),
+    rider: one(profiles, {
+      fields: [merchantFavorites.riderId],
+      references: [profiles.id],
     }),
   })
 );

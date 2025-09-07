@@ -21,6 +21,7 @@ import {
   MapPin,
   User,
   Bike,
+  Heart,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
@@ -58,6 +59,8 @@ export default function RiderBookingPage() {
   const [error, setError] = useState<string | null>(null);
   const [availability, setAvailability] = useState<any[]>([]);
   const [merchant, setMerchant] = useState<any>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   // Booking form state
   const [startDate, setStartDate] = useState('');
@@ -72,6 +75,13 @@ export default function RiderBookingPage() {
   useEffect(() => {
     fetchRiderProfile();
   }, [riderId]);
+
+  // Carica lo stato dei preferiti quando il rider è caricato
+  useEffect(() => {
+    if (rider) {
+      checkFavoriteStatus();
+    }
+  }, [rider]);
 
   // Validazione disponibilità in tempo reale
   useEffect(() => {
@@ -204,6 +214,84 @@ export default function RiderBookingPage() {
     }
 
     return { isValid: true, message: '' };
+  };
+
+  const checkFavoriteStatus = async () => {
+    try {
+      const response = await fetch('/api/favorites');
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.favorites?.includes(riderId) || false);
+      }
+    } catch (error) {
+      console.error('Errore nel controllo dello stato dei preferiti:', error);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    if (!rider) return;
+
+    setFavoriteLoading(true);
+    const wasFavorite = isFavorite;
+
+    // Aggiorna UI immediatamente per feedback istantaneo
+    setIsFavorite(!wasFavorite);
+
+    try {
+      if (wasFavorite) {
+        // Rimuovi dai preferiti
+        const response = await fetch(`/api/favorites/${riderId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          // Ripristina lo stato precedente se l'API fallisce
+          setIsFavorite(true);
+          toast({
+            title: 'Errore',
+            description: 'Impossibile rimuovere dai preferiti',
+          });
+        } else {
+          toast({
+            title: 'Rimosso dai preferiti',
+            description: `${rider.full_name} è stato rimosso dai tuoi preferiti`,
+          });
+        }
+      } else {
+        // Aggiungi ai preferiti
+        const response = await fetch('/api/favorites', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ riderId }),
+        });
+
+        if (!response.ok) {
+          // Ripristina lo stato precedente se l'API fallisce
+          setIsFavorite(false);
+          toast({
+            title: 'Errore',
+            description: 'Impossibile aggiungere ai preferiti',
+          });
+        } else {
+          toast({
+            title: 'Aggiunto ai preferiti',
+            description: `${rider.full_name} è stato aggiunto ai tuoi preferiti`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Errore nella gestione dei preferiti:', error);
+      // Ripristina lo stato precedente
+      setIsFavorite(wasFavorite);
+      toast({
+        title: 'Errore',
+        description: 'Errore di connessione',
+      });
+    } finally {
+      setFavoriteLoading(false);
+    }
   };
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
@@ -368,17 +456,40 @@ export default function RiderBookingPage() {
       <div className='container mx-auto px-4 max-w-4xl'>
         {/* Header */}
         <div className='mb-6'>
-          <Button
-            variant='ghost'
-            onClick={() => router.back()}
-            className='mb-4'
-          >
-            <ArrowLeft className='h-4 w-4 mr-2' />
-            Torna alla Lista Rider
-          </Button>
-          <h1 className='text-3xl font-bold text-gray-900'>Prenota Rider</h1>
+          <div className='flex items-center justify-between mb-4'>
+            <Button variant='ghost' onClick={() => router.back()}>
+              <ArrowLeft className='h-4 w-4 mr-2' />
+              Torna alla Lista Rider
+            </Button>
+
+            {/* Favorite Button - Solo per merchant */}
+            {merchant && rider && (
+              <Button
+                variant='ghost'
+                onClick={toggleFavorite}
+                disabled={favoriteLoading}
+                className='flex items-center gap-2 px-4 py-2 hover:bg-red-50'
+              >
+                <Heart
+                  className={`h-5 w-5 ${
+                    isFavorite
+                      ? 'fill-red-500 text-red-500'
+                      : 'text-gray-400 hover:text-red-400'
+                  }`}
+                />
+                <span className='text-sm font-medium'>
+                  {isFavorite ? 'Nei Preferiti' : 'Aggiungi ai Preferiti'}
+                </span>
+              </Button>
+            )}
+          </div>
+          <h1 className='text-3xl font-bold text-gray-900'>
+            {merchant ? 'Prenota Rider' : 'Profilo Rider'}
+          </h1>
           <p className='text-gray-600'>
-            Effettua una prenotazione con {rider.full_name}
+            {merchant
+              ? `Effettua una prenotazione con ${rider.full_name}`
+              : `Visualizza il profilo di ${rider.full_name}`}
           </p>
         </div>
 
@@ -477,194 +588,216 @@ export default function RiderBookingPage() {
             </CardContent>
           </Card>
 
-          {/* Booking Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Richiesta di Servizio</CardTitle>
-              <CardDescription>
-                Compila i dettagli per inviare una richiesta di servizio. Il
-                rider valuterà la sua disponibilità e ti risponderà.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleBookingSubmit} className='space-y-4'>
-                {/* Data */}
-                <div>
-                  <Label htmlFor='startDate'>Data *</Label>
-                  <Input
-                    id='startDate'
-                    type='date'
-                    value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    max={
-                      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split('T')[0]
-                    }
-                    required
-                  />
-                </div>
-
-                {/* Ora */}
-                <div>
-                  <Label htmlFor='startTime'>Ora di Inizio *</Label>
-                  <Input
-                    id='startTime'
-                    type='time'
-                    value={startTime}
-                    onChange={e => setStartTime(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Durata */}
-                <div>
-                  <Label htmlFor='duration'>
-                    Durata (max {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore) *
-                  </Label>
-                  <select
-                    id='duration'
-                    value={duration}
-                    onChange={e => setDuration(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                    required
-                  >
-                    <option value=''>Seleziona durata</option>
-                    <option value='1'>1 ora</option>
-                    <option value='2'>2 ore</option>
-                  </select>
-                  <p className='text-xs text-gray-500 mt-1'>
-                    Massimo {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore per
-                    prenotazione
-                  </p>
-                </div>
-
-                {/* Indirizzo di Servizio */}
-                <div>
-                  <Label htmlFor='merchantAddress'>
-                    Indirizzo di Servizio *
-                  </Label>
-                  <Input
-                    id='merchantAddress'
-                    type='text'
-                    value={merchantAddress}
-                    onChange={e => setMerchantAddress(e.target.value)}
-                    placeholder="L'indirizzo completo dove il rider deve presentarsi"
-                    required
-                  />
-                  <p className='text-xs text-gray-500 mt-1'>
-                    Può essere l'indirizzo della tua attività o qualsiasi altro
-                    indirizzo dove serve il servizio
-                  </p>
-                </div>
-
-                {/* Descrizione */}
-                <div>
-                  <Label htmlFor='description'>
-                    Istruzioni e Comunicazioni *
-                  </Label>
-                  <textarea
-                    id='description'
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                    rows={3}
-                    placeholder='Inserisci istruzioni specifiche, indirizzi, note particolari o comunicazioni per il rider...'
-                    required
-                  />
-                  <p className='text-xs text-gray-500 mt-1'>
-                    Campo obbligatorio - minimo 2 caratteri
-                  </p>
-                </div>
-
-                {/* Alert per conflitti di disponibilità */}
-                {availabilityError && (
-                  <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm'>
-                    <strong>⚠️ Conflitto con le Disponibilità:</strong>
-                    <br />
-                    {availabilityError}
+          {/* Booking Form - Solo per merchant */}
+          {merchant ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Richiesta di Servizio</CardTitle>
+                <CardDescription>
+                  Compila i dettagli per inviare una richiesta di servizio. Il
+                  rider valuterà la sua disponibilità e ti risponderà.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleBookingSubmit} className='space-y-4'>
+                  {/* Data */}
+                  <div>
+                    <Label htmlFor='startDate'>Data *</Label>
+                    <Input
+                      id='startDate'
+                      type='date'
+                      value={startDate}
+                      onChange={e => setStartDate(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      max={
+                        new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                          .toISOString()
+                          .split('T')[0]
+                      }
+                      required
+                    />
                   </div>
-                )}
 
-                {/* Riepilogo */}
-                {startDate &&
-                  startTime &&
-                  duration &&
-                  merchantAddress &&
-                  description &&
-                  description.trim().length >= 2 && (
-                    <div className='bg-blue-50 p-4 rounded-lg space-y-2'>
-                      <h4 className='font-medium text-gray-900'>
-                        Riepilogo Richiesta
-                      </h4>
-                      <div className='text-sm space-y-1'>
-                        <div className='flex justify-between'>
-                          <span>Data richiesta:</span>
-                          <span>{formatDate(startDate)}</span>
-                        </div>
-                        <div className='flex justify-between'>
-                          <span>Ora di inizio:</span>
-                          <span>{startTime}</span>
-                        </div>
-                        <div className='flex justify-between'>
-                          <span>Durata:</span>
-                          <span>
-                            {duration} {duration === '1' ? 'ora' : 'ore'}
-                          </span>
-                        </div>
-                        <div className='flex justify-between'>
-                          <span>Indirizzo:</span>
-                          <span
-                            className='text-right max-w-xs truncate'
-                            title={merchantAddress}
-                          >
-                            {merchantAddress}
-                          </span>
-                        </div>
-                        {description && (
-                          <div className='flex justify-between'>
-                            <span>Istruzioni:</span>
-                            <span
-                              className='text-right max-w-xs truncate'
-                              title={description}
-                            >
-                              {description}
-                            </span>
-                          </div>
-                        )}
-                        <div className='flex justify-between font-medium'>
-                          <span>Costo stimato:</span>
-                          <span>{formatCurrency(calculateTotal())}</span>
-                        </div>
-                      </div>
-                      <div className='mt-3 p-2 bg-blue-100 rounded text-xs text-blue-800'>
-                        💡 Il rider riceverà questa richiesta e ti risponderà
-                        entro 24 ore
-                      </div>
+                  {/* Ora */}
+                  <div>
+                    <Label htmlFor='startTime'>Ora di Inizio *</Label>
+                    <Input
+                      id='startTime'
+                      type='time'
+                      value={startTime}
+                      onChange={e => setStartTime(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  {/* Durata */}
+                  <div>
+                    <Label htmlFor='duration'>
+                      Durata (max {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore) *
+                    </Label>
+                    <select
+                      id='duration'
+                      value={duration}
+                      onChange={e => setDuration(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                      required
+                    >
+                      <option value=''>Seleziona durata</option>
+                      <option value='1'>1 ora</option>
+                      <option value='2'>2 ore</option>
+                    </select>
+                    <p className='text-xs text-gray-500 mt-1'>
+                      Massimo {SYSTEM_CONSTANTS.MAX_BOOKING_HOURS} ore per
+                      prenotazione
+                    </p>
+                  </div>
+
+                  {/* Indirizzo di Servizio */}
+                  <div>
+                    <Label htmlFor='merchantAddress'>
+                      Indirizzo di Servizio *
+                    </Label>
+                    <Input
+                      id='merchantAddress'
+                      type='text'
+                      value={merchantAddress}
+                      onChange={e => setMerchantAddress(e.target.value)}
+                      placeholder="L'indirizzo completo dove il rider deve presentarsi"
+                      required
+                    />
+                    <p className='text-xs text-gray-500 mt-1'>
+                      Può essere l'indirizzo della tua attività o qualsiasi
+                      altro indirizzo dove serve il servizio
+                    </p>
+                  </div>
+
+                  {/* Descrizione */}
+                  <div>
+                    <Label htmlFor='description'>
+                      Istruzioni e Comunicazioni *
+                    </Label>
+                    <textarea
+                      id='description'
+                      value={description}
+                      onChange={e => setDescription(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                      rows={3}
+                      placeholder='Inserisci istruzioni specifiche, indirizzi, note particolari o comunicazioni per il rider...'
+                      required
+                    />
+                    <p className='text-xs text-gray-500 mt-1'>
+                      Campo obbligatorio - minimo 2 caratteri
+                    </p>
+                  </div>
+
+                  {/* Alert per conflitti di disponibilità */}
+                  {availabilityError && (
+                    <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm'>
+                      <strong>⚠️ Conflitto con le Disponibilità:</strong>
+                      <br />
+                      {availabilityError}
                     </div>
                   )}
 
-                <Button
-                  type='submit'
-                  className='w-full bg-blue-600 hover:bg-blue-700'
-                  disabled={bookingLoading || !!availabilityError}
-                >
-                  {bookingLoading ? (
-                    <>
-                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                      Invio Richiesta...
-                    </>
-                  ) : (
-                    <>
-                      <Calendar className='h-4 w-4 mr-2' />
-                      Verifica Disponibilità
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  {/* Riepilogo */}
+                  {startDate &&
+                    startTime &&
+                    duration &&
+                    merchantAddress &&
+                    description &&
+                    description.trim().length >= 2 && (
+                      <div className='bg-blue-50 p-4 rounded-lg space-y-2'>
+                        <h4 className='font-medium text-gray-900'>
+                          Riepilogo Richiesta
+                        </h4>
+                        <div className='text-sm space-y-1'>
+                          <div className='flex justify-between'>
+                            <span>Data richiesta:</span>
+                            <span>{formatDate(startDate)}</span>
+                          </div>
+                          <div className='flex justify-between'>
+                            <span>Ora di inizio:</span>
+                            <span>{startTime}</span>
+                          </div>
+                          <div className='flex justify-between'>
+                            <span>Durata:</span>
+                            <span>
+                              {duration} {duration === '1' ? 'ora' : 'ore'}
+                            </span>
+                          </div>
+                          <div className='flex justify-between'>
+                            <span>Indirizzo:</span>
+                            <span
+                              className='text-right max-w-xs truncate'
+                              title={merchantAddress}
+                            >
+                              {merchantAddress}
+                            </span>
+                          </div>
+                          {description && (
+                            <div className='flex justify-between'>
+                              <span>Istruzioni:</span>
+                              <span
+                                className='text-right max-w-xs truncate'
+                                title={description}
+                              >
+                                {description}
+                              </span>
+                            </div>
+                          )}
+                          <div className='flex justify-between font-medium'>
+                            <span>Costo stimato:</span>
+                            <span>{formatCurrency(calculateTotal())}</span>
+                          </div>
+                        </div>
+                        <div className='mt-3 p-2 bg-blue-100 rounded text-xs text-blue-800'>
+                          💡 Il rider riceverà questa richiesta e ti risponderà
+                          entro 24 ore
+                        </div>
+                      </div>
+                    )}
+
+                  <Button
+                    type='submit'
+                    className='w-full bg-blue-600 hover:bg-blue-700'
+                    disabled={bookingLoading || !!availabilityError}
+                  >
+                    {bookingLoading ? (
+                      <>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+                        Invio Richiesta...
+                      </>
+                    ) : (
+                      <>
+                        <Calendar className='h-4 w-4 mr-2' />
+                        Verifica Disponibilità
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Area Riservata agli Esercenti</CardTitle>
+                <CardDescription>
+                  Solo gli esercenti possono inviare richieste di servizio ai
+                  rider. Se sei un rider interessato a collaborare, attendi di
+                  ricevere richieste dagli esercenti.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='text-center py-8'>
+                  <div className='text-4xl mb-4'>🏪</div>
+                  <p className='text-gray-600'>
+                    Questa sezione è riservata agli esercenti per gestire le
+                    prenotazioni.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

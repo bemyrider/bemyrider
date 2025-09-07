@@ -13,4 +13,4 @@ Qui troverai tutte le informazioni tecniche e funzionali per comprendere, utiliz
 - [Branding e Linee Guida](./branding.md)
 - [FAQ](./faq.md)
 
-Per domande o suggerimenti, contatta il maintainer: Giorgio Di Martino - info@bemyrider.it 
+Per domande o suggerimenti, contatta il maintainer: Giorgio Di Martino - info@bemyrider.it

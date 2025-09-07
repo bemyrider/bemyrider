@@ -12,7 +12,9 @@ export interface FieldValidation {
 }
 
 export function useFormValidation(fields: Record<string, ValidationRule[]>) {
-  const [fieldStates, setFieldStates] = useState<Record<string, FieldValidation>>(() => {
+  const [fieldStates, setFieldStates] = useState<
+    Record<string, FieldValidation>
+  >(() => {
     const initial: Record<string, FieldValidation> = {};
     Object.keys(fields).forEach(fieldName => {
       initial[fieldName] = {
@@ -77,7 +79,10 @@ export function useFormValidation(fields: Record<string, ValidationRule[]>) {
     let hasErrors = false;
 
     Object.keys(fieldStates).forEach(fieldName => {
-      const fieldErrors = validateField(fieldName, fieldStates[fieldName].value);
+      const fieldErrors = validateField(
+        fieldName,
+        fieldStates[fieldName].value
+      );
       newErrors[fieldName] = fieldErrors;
       if (fieldErrors.length > 0) {
         hasErrors = true;
@@ -91,9 +96,15 @@ export function useFormValidation(fields: Record<string, ValidationRule[]>) {
 
   // Check if form is valid
   useEffect(() => {
-    const hasErrors = Object.values(errors).some(fieldErrors => fieldErrors.length > 0);
-    const allFieldsTouched = Object.values(fieldStates).every(field => field.touched);
-    const hasValues = Object.values(fieldStates).some(field => field.value.trim() !== '');
+    const hasErrors = Object.values(errors).some(
+      fieldErrors => fieldErrors.length > 0
+    );
+    const allFieldsTouched = Object.values(fieldStates).every(
+      field => field.touched
+    );
+    const hasValues = Object.values(fieldStates).some(
+      field => field.value.trim() !== ''
+    );
 
     setIsValid(!hasErrors && allFieldsTouched && hasValues);
   }, [errors, fieldStates]);
@@ -136,15 +147,20 @@ export const validationRules = {
     message: message || `Non può superare ${max} caratteri`,
   }),
 
-  password: (message = 'La password deve contenere almeno 8 caratteri, una maiuscola e un numero'): ValidationRule => ({
+  password: (
+    message = 'La password deve contenere almeno 8 caratteri, una maiuscola e un numero'
+  ): ValidationRule => ({
     validate: (value: string) => {
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
       return passwordRegex.test(value);
     },
     message,
   }),
 
-  phone: (message = 'Inserisci un numero di telefono valido'): ValidationRule => ({
+  phone: (
+    message = 'Inserisci un numero di telefono valido'
+  ): ValidationRule => ({
     validate: (value: string) => {
       const phoneRegex = /^(\+39|0039)?[ ]?3[0-9]{2}[ ]?[0-9]{6,7}$/;
       return phoneRegex.test(value.replace(/\s/g, ''));
@@ -169,7 +185,9 @@ export const validationRules = {
     message,
   }),
 
-  price: (message = 'Inserisci un prezzo valido (es: 15.50)'): ValidationRule => ({
+  price: (
+    message = 'Inserisci un prezzo valido (es: 15.50)'
+  ): ValidationRule => ({
     validate: (value: string) => {
       const priceRegex = /^\d+(\.\d{1,2})?$/;
       return priceRegex.test(value) && parseFloat(value) > 0;

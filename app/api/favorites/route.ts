@@ -33,13 +33,6 @@ export async function GET(request: NextRequest) {
       error: authError,
     } = await supabaseServer.auth.getUser();
 
-('Supabase auth result:', {
-      userId: user?.id,
-      userEmail: user?.email,
-      error: authError?.message,
-      errorCode: authError?.status,
-    });
-
     if (authError || !user) {
       console.error('Auth error:', authError);
       return NextResponse.json({ error: 'Non autorizzato' }, { status: 401 });
@@ -83,15 +76,6 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = cookies();
 
-(
-      'Available cookies:',
-      cookieStore.getAll().map(c => ({
-        name: c.name,
-        hasValue: !!c.value,
-        valueLength: c.value?.length || 0,
-      }))
-    );
-
     const supabaseServer = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -114,13 +98,6 @@ export async function POST(request: NextRequest) {
       data: { user },
       error: authError,
     } = await supabaseServer.auth.getUser();
-
-('Supabase auth result:', {
-      userId: user?.id,
-      userEmail: user?.email,
-      error: authError?.message,
-      errorCode: authError?.status,
-    });
 
     if (authError || !user) {
       console.error('Auth error:', authError);
@@ -161,24 +138,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-('Adding rider to favorites:', { merchantId: user.id, riderId });
 
     // Verifica che il rider esista
-('Checking if rider exists:', riderId);
     const rider = await db
       .select()
       .from(profiles)
       .where(and(eq(profiles.id, riderId), eq(profiles.role, 'rider')))
       .limit(1);
 
-('Rider found:', rider);
 
     if (!rider[0]) {
       return NextResponse.json({ error: 'Rider non trovato' }, { status: 404 });
     }
 
     // Aggiungi ai preferiti (se non già presente)
-('Inserting favorite into database...');
     await db
       .insert(merchantFavorites)
       .values({
@@ -187,7 +160,6 @@ export async function POST(request: NextRequest) {
       })
       .onConflictDoNothing();
 
-('Favorite added successfully');
 
     return NextResponse.json({ success: true });
   } catch (error) {

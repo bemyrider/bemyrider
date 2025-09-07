@@ -13,16 +13,6 @@ export async function DELETE(
   try {
     const cookieStore = cookies();
 
-('=== FAVORITES DELETE API DEBUG ===');
-(
-      'Available cookies:',
-      cookieStore.getAll().map(c => ({
-        name: c.name,
-        hasValue: !!c.value,
-        valueLength: c.value?.length || 0,
-      }))
-    );
-
     const supabaseServer = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -45,13 +35,6 @@ export async function DELETE(
       data: { user },
       error: authError,
     } = await supabaseServer.auth.getUser();
-
-('Supabase auth result:', {
-      userId: user?.id,
-      userEmail: user?.email,
-      error: authError?.message,
-      errorCode: authError?.status,
-    });
 
     if (authError || !user) {
       console.error('Auth error:', authError);

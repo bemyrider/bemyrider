@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const cookieStore = cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       { cookies: cookieStore }
     );
 
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
     const cookieStore = cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       { cookies: cookieStore }
     );
 

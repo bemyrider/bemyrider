@@ -618,7 +618,7 @@ function RiderDashboardContent() {
       fetchingProfileRef.current = false; // Reset flag di fetching
       fetchProfile();
     }
-    // Rimossa dipendenza da fetchProfile per evitare loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboardingComplete]);
 
   // Caricamento profilo iniziale (eseguito solo se necessario)
@@ -632,7 +632,7 @@ function RiderDashboardContent() {
       console.log('🏁 Caricamento profilo iniziale');
       fetchProfile();
     }
-    // Rimossa dipendenza da fetchProfile per evitare loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboardingComplete, state.profile]);
 
   // Fetch service requests quando il profilo è disponibile - VERSIONE ULTRA PROTETTA
@@ -647,7 +647,7 @@ function RiderDashboardContent() {
       console.log('👤 Profile ready, fetching service requests');
       fetchServiceRequests();
     }
-    // Rimosse dipendenze problematiche che causavano loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, state.loading]);
 
   // Funzione per recuperare i dati del portfolio - VERSIONE ULTRA PROTETTA
@@ -760,6 +760,7 @@ function RiderDashboardContent() {
       console.log('👤 Profile available, fetching portfolio data');
       fetchPortfolioData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     state.profile?.id,
     state.loading,

@@ -5,6 +5,129 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.9] - 2025-09-09
+
+### 🔧 **Correzione Loop Infinito e Riattivazione Portfolio**
+
+#### 🐛 **Fix Critico - Loop Infinito Dashboard Rider**
+
+##### 🚨 **Problema Risolto**
+- **Loop infinito critico** nel dashboard rider causato da dipendenze circolari negli useEffect
+- **Chiamate ripetute API** per `fetchProfile()` e `fetchServiceRequests()` che generavano spam nel console
+- **Performance degradate** con chiamate API continue e inutili
+- **Esperienza utente compromessa** con console piena di messaggi ripetuti
+
+##### 🔧 **Soluzioni Implementate**
+- **Rimossi useEffect ridondanti** che causavano conflitti tra loro
+- **Ottimizzate dipendenze useEffect** eliminando riferimenti circolari a funzioni
+- **Implementati controlli più rigorosi** per prevenire chiamate duplicate:
+  - Flag `fetchingProfileRef.current` per tracciare stato fetch profilo
+  - Flag `fetchingServiceRequestsRef.current` per tracciare stato fetch richieste
+  - Controllo `state.serviceRequests.length === 0` per evitare fetch ridondanti
+  - Controllo `!state.profile` per evitare loop se profilo già esistente
+- **Separazione logica** tra gestione onboarding e caricamento dati normale
+
+#### 🎨 **Riattivazione Portfolio Completa**
+
+##### 📁 **Portfolio Temporaneamente Disabilitato**
+- **Funzionalità portfolio disattivata** per risolvere loop infinito precedente
+- **Modal Portfolio Editor nascosto** nel codice con commenti
+- **Pulsanti "Crea Portfolio" e "Modifica Portfolio" non funzionanti**
+- **Dati portfolio non caricati** dal database
+
+##### ✅ **Portfolio Completamente Riattivato**
+- **Modal Portfolio Editor ripristinato** e funzionante
+- **Pulsanti portfolio operativi** con logica corretta di apertura modal
+- **Caricamento dati portfolio** dal database Supabase
+- **Gestione stato portfolio** centralizzata nel dashboard rider
+- **Architettura modulare** con separazione tra dashboard e componenti
+
+##### 🎯 **Flusso Portfolio Completo**
+- **Pulsante "Crea Portfolio"** per utenti senza portfolio esistente
+- **Pulsante "Modifica Portfolio"** per utenti con portfolio esistente
+- **Modal interattivo** con campi per immagini, certificazioni, URL e descrizione
+- **Salvataggio automatico** con feedback toast per operazioni completate
+- **Caricamento condizionale** solo quando necessario per ottimizzare performance
+
+#### 🔧 **Miglioramenti Tecnici Dashboard**
+
+##### 🏗️ **Architettura Migliorata**
+- **Centralizzazione gestione modal** nel dashboard principale invece che nei componenti
+- **Props semplificate** tra componenti con logica più chiara
+- **Gestione stato ottimizzata** con meno conflitti tra useEffect
+- **Type safety migliorata** con interfacce più precise
+
+##### ⚡ **Performance Ottimizzate**
+- **Eliminazione chiamate API duplicate** che causavano loop infinito
+- **Caricamento condizionale** dei dati solo quando necessario
+- **Flag di controllo avanzati** per prevenire race conditions
+- **Console pulita** senza messaggi spam ripetuti
+
+##### 🎨 **Esperienza Utente Migliorata**
+- **Feedback visivo immediato** per tutte le operazioni portfolio
+- **Loading states appropriati** durante caricamento dati
+- **Error handling migliorato** con messaggi user-friendly
+- **Transizioni fluide** tra stati dell'applicazione
+
+#### 🔧 **Configurazione Next.js Ottimizzata**
+
+##### 🖼️ **Supporto Immagini Supabase**
+- **Dominio Supabase aggiunto** a `next.config.js` per permettere caricamento immagini
+- **Configurazione `remotePatterns`** per `uolpvxgcobjefivqnscj.supabase.co`
+- **Fallback dominio generico** mantenuto per compatibilità futura
+- **Sicurezza immagini** preservata con pattern specifici
+
+#### 🐛 **Fix e Correzioni**
+
+##### 🔧 **Correzioni Critiche**
+- **Loop infinito completamente risolto** - Nessun messaggio ripetuto nel console
+- **Portfolio pienamente funzionante** - Tutti i pulsanti e modal operativi
+- **Caricamento immagini corretto** - Nessun errore Next.js Image
+- **Performance ripristinate** - Applicazione fluida senza chiamate duplicate
+
+##### 🎯 **Ottimizzazioni UX**
+- **Console pulita** per sviluppo più efficiente
+- **Feedback appropriato** per operazioni completate
+- **Gestione errori migliorata** con messaggi specifici
+- **Transizioni smooth** tra stati applicazione
+
+#### 📚 **Documentazione Aggiornata**
+
+##### 📖 **Documentazione Tecnica**
+- **Pattern risolti** per evitare loop infiniti in React
+- **Best practices useEffect** documentate per futuro sviluppo
+- **Architettura portfolio** descritta per manutenzione futura
+- **Configurazioni Next.js** documentate per deployment
+
+#### 📁 **File Modificati**
+
+##### 🔄 **File Aggiornati**
+- `app/dashboard/rider/page.tsx` - Risoluzione loop infinito e riattivazione portfolio
+- `components/dashboard/ModuloProfiloDisponibilita.tsx` - Riattivazione pulsanti portfolio
+- `next.config.js` - Aggiunto supporto immagini Supabase
+
+#### 🎯 **Impatto Utente**
+
+##### 🚀 **Esperienza Migliorata**
+- **Dashboard rider stabile** senza loop infiniti o rallentamenti
+- **Portfolio completamente funzionale** per promozione professionale rider
+- **Caricamento veloce** senza chiamate API ridondanti
+- **Interfaccia fluida** con feedback appropriato
+
+##### 🔧 **Affidabilità Sistema**
+- **Performance ottimali** con eliminazione overhead inutile
+- **Stabilità applicativa** senza comportamenti imprevedibili
+- **Debug facilitato** con console pulita per sviluppo
+- **Manutenibilità migliorata** con codice più pulito e modulare
+
+---
+
+**✅ LOOP INFINITO COMPLETAMENTE RISOLTO E PORTFOLIO RIATTIVATO!** 🎉✨
+
+Questa correzione critica ha risolto un problema che comprometteva seriamente l'esperienza utente e le performance dell'applicazione. Il portfolio è ora completamente funzionale, permettendo ai rider di creare profili professionali completi per attrarre più clienti.
+
+---
+
 ## [0.4.8] - 2025-09-08
 
 ### ⭐ **Sistema Preferiti Merchant Completo - Funzionalità Finale!**

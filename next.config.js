@@ -16,6 +16,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'uolpvxgcobjefivqnscj.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'bemyrider.it',
         port: '',
         pathname: '/**',

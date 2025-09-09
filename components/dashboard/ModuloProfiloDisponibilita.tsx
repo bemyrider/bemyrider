@@ -62,6 +62,7 @@ interface ModuloProfiloDisponibilitaProps {
   portfolioData: any;
   onProfileUpdate: () => void;
   onPortfolioSave: (data: PortfolioData) => Promise<void>;
+  onPortfolioEdit: () => void;
   onboardingState: number;
   requiredState: number;
 }
@@ -78,6 +79,7 @@ export default function ModuloProfiloDisponibilita({
   portfolioData,
   onProfileUpdate,
   onPortfolioSave,
+  onPortfolioEdit,
   onboardingState,
   requiredState,
 }: ModuloProfiloDisponibilitaProps) {
@@ -85,7 +87,6 @@ export default function ModuloProfiloDisponibilita({
     useState(false);
   const [showUpdateRateModal, setShowUpdateRateModal] = useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-  const [showPortfolioEditor, setShowPortfolioEditor] = useState(false);
 
   const isActive = onboardingState >= requiredState;
 
@@ -366,7 +367,7 @@ export default function ModuloProfiloDisponibilita({
 
                 <Button
                   variant='outline'
-                  onClick={() => setShowPortfolioEditor(true)}
+                  onClick={onPortfolioEdit}
                   className='w-full'
                 >
                   <Edit className='w-4 h-4 mr-2' />
@@ -381,7 +382,7 @@ export default function ModuloProfiloDisponibilita({
                   Crea il tuo portfolio per attrarre più clienti
                 </p>
                 <Button
-                  onClick={() => setShowPortfolioEditor(true)}
+                  onClick={onPortfolioEdit}
                   style={{ backgroundColor: '#333366' }}
                 >
                   Crea Portfolio
@@ -416,15 +417,6 @@ export default function ModuloProfiloDisponibilita({
           onProfileUpdate={onProfileUpdate}
         />
       )}
-
-      {/* Portfolio Editor - TEMPORANEAMENTE DISABILITATO */}
-      {/* {showPortfolioEditor && portfolioData && profile && (
-        <PortfolioEditor
-          initialData={portfolioData}
-          onSave={onPortfolioSave}
-          onClose={() => setShowPortfolioEditor(false)}
-        />
-      )} */}
     </>
   );
 }

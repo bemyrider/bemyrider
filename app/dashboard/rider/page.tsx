@@ -615,29 +615,40 @@ function RiderDashboardContent() {
       console.log('✅ Onboarding completato, ricaricando profilo');
       window.history.replaceState({}, '', '/dashboard/rider');
       profileFetchedRef.current = false; // Forza il reload del profilo
+      fetchingProfileRef.current = false; // Reset flag di fetching
       fetchProfile();
     }
-  }, [fetchProfile, onboardingComplete]);
+    // Rimossa dipendenza da fetchProfile per evitare loop
+  }, [onboardingComplete]);
 
   // Caricamento profilo iniziale (eseguito solo se necessario)
   useEffect(() => {
     if (
       !onboardingComplete &&
       !profileFetchedRef.current &&
-      !fetchingProfileRef.current
+      !fetchingProfileRef.current &&
+      !state.profile // Aggiunto controllo per evitare loop se profilo già esiste
     ) {
       console.log('🏁 Caricamento profilo iniziale');
       fetchProfile();
     }
-  }, [fetchProfile, onboardingComplete]);
+    // Rimossa dipendenza da fetchProfile per evitare loop
+  }, [onboardingComplete, state.profile]);
 
-  // Fetch service requests quando il profilo è disponibile
+  // Fetch service requests quando il profilo è disponibile - VERSIONE ULTRA PROTETTA
   useEffect(() => {
-    if (profileId && !state.loading && profileFetchedRef.current) {
+    if (
+      profileId &&
+      !state.loading &&
+      profileFetchedRef.current &&
+      !fetchingServiceRequestsRef.current &&
+      state.serviceRequests.length === 0 // Solo se non abbiamo già richieste caricate
+    ) {
       console.log('👤 Profile ready, fetching service requests');
       fetchServiceRequests();
     }
-  }, [profileId, state.loading, fetchServiceRequests, state]);
+    // Rimosse dipendenze problematiche che causavano loop
+  }, [profileId, state.loading]);
 
   // Funzione per recuperare i dati del portfolio - VERSIONE ULTRA PROTETTA
   const fetchPortfolioData = useCallback(async () => {
@@ -736,20 +747,27 @@ function RiderDashboardContent() {
     }
   };
 
-  // Assicuriamoci che fetchServiceRequests venga chiamata quando il profilo è disponibile
+  // Fetch portfolio data quando il profilo è disponibile e il portfolio non è ancora stato caricato
   useEffect(() => {
-    if (state.profile?.id && !state.loading) {
-      // Aggiunto controllo loading per evitare chiamate premature
-      console.log('👤 Profile available, fetching service requests...');
-      fetchServiceRequests();
-      // 🚨 DISABILITATO TEMPORANEAMENTE: fetchPortfolioData();
-      console.log(
-        '🚫 PORTFOLIO FETCH TEMPORANEAMENTE DISABILITATO PER FERMARE LOOP INFINITO'
-      );
-    } else if (!state.profile) {
-      console.log('⏳ Profile not available yet, waiting...');
+    if (
+      state.profile?.id &&
+      !state.loading &&
+      profileFetchedRef.current &&
+      !isFetchingPortfolio &&
+      !portfolioFetched &&
+      !state.portfolioData
+    ) {
+      console.log('👤 Profile available, fetching portfolio data');
+      fetchPortfolioData();
     }
-  }, [state.profile?.id, state.loading, state.profile, fetchServiceRequests]);
+  }, [
+    state.profile?.id,
+    state.loading,
+    isFetchingPortfolio,
+    portfolioFetched,
+    state.portfolioData,
+    fetchPortfolioData,
+  ]);
 
   // ✅ SOLUTION 6: Other optimized functions
   const handleRespondToRequest = useCallback(
@@ -894,12 +912,13 @@ function RiderDashboardContent() {
           <div id='profilo'>
             <ProfiloDisponibilita
               profile={state.profile}
-              portfolioData={null}
+              portfolioData={state.portfolioData}
               onProfileUpdate={() => {
                 profileFetchedRef.current = false;
                 fetchProfile();
               }}
-              onPortfolioSave={async () => {}}
+              onPortfolioSave={handleSavePortfolio}
+              onPortfolioEdit={() => state.setShowPortfolioEditor(true)}
               onboardingState={onboardingState}
               requiredState={RiderOnboardingState.BASIC_PROFILE}
             />
@@ -985,14 +1004,14 @@ function RiderDashboardContent() {
         onRespond={handleRespondToRequest}
       />
 
-      {/* Portfolio Editor Modal - TEMPORANEAMENTE DISABILITATO */}
-      {/* {state.showPortfolioEditor && state.portfolioData && state.profile && (
+      {/* Portfolio Editor Modal */}
+      {state.showPortfolioEditor && state.portfolioData && state.profile && (
         <PortfolioEditor
           initialData={state.portfolioData}
           onSave={handleSavePortfolio}
           onClose={() => state.setShowPortfolioEditor(false)}
         />
-      )} */}
+      )}
     </div>
   );
 }

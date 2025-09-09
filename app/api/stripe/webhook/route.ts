@@ -1,3 +1,6 @@
+// ✅ API Route ATTIVA per gestire webhook Stripe
+// Gestisce gli aggiornamenti automatici dell'onboarding dei rider
+
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
@@ -19,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(
+    event = await stripe.webhooks.constructEventAsync(
       rawBody,
       sig!,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -34,25 +37,45 @@ export async function POST(req: NextRequest) {
     const account = event.data.object as Stripe.Account;
     const accountId = account.id;
 
-    // La condizione migliore per considerare l'onboarding completo è quando
-    // i dettagli sono stati inviati E i pagamenti sono stati abilitati.
+    console.log('🔄 Webhook ricevuto per account:', accountId);
+    console.log('📊 Account status:', {
+      details_submitted: account.details_submitted,
+      charges_enabled: account.charges_enabled,
+      payouts_enabled: account.payouts_enabled,
+    });
+
+    // The condition to consider onboarding complete is when
+    // the details have been submitted AND payments have been enabled.
     if (account.details_submitted && account.charges_enabled) {
+      console.log('✅ Onboarding completato per account:', accountId);
       // Aggiorna il rider su Supabase usando il client ADMIN
       const { error } = await supabaseAdmin
         .from('riders_details')
-        .update({ stripe_onboarding_complete: true })
+        .update({
+          stripe_onboarding_complete: true,
+          updated_at: new Date().toISOString(),
+        })
         .eq('stripe_account_id', accountId);
 
       if (error) {
         console.error(
-          `ERRORE nell'aggiornamento Supabase per l'account ${accountId}:`,
+          `❌ ERRORE nell'aggiornamento database per account ${accountId}:`,
           error
         );
         // Anche se c'è un errore, restituiamo 200 a Stripe per evitare che ritenti il webhook.
         // L'errore viene loggato per il debug.
         return NextResponse.json({ received: true, error: error.message });
       }
+
+      console.log(
+        '✅ Database aggiornato con successo per account:',
+        accountId
+      );
+    } else {
+      console.log('⏳ Onboarding non ancora completo per account:', accountId);
     }
+  } else {
+    console.log('📨 Webhook ricevuto per evento non gestito:', event.type);
   }
 
   return NextResponse.json({ received: true });

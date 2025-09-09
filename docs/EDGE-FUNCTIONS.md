@@ -9,13 +9,22 @@ Le Edge Functions sono funzioni serverless che girano su Deno runtime e gestisco
 - Elaborazione asincrona di eventi
 - Integrazione con servizi esterni
 
-## 🔧 stripe-webhook Function
+## 🔧 Stripe Webhook Handler
 
 ### Scopo
 Gestisce i webhook di Stripe per aggiornare automaticamente lo stato di onboarding dei rider nel database.
 
-### Posizione
+### Implementazione Attuale
+**✅ API Route su Vercel (Raccomandata)**
 ```
+https://bemyrider.vercel.app/api/stripe/webhook
+app/api/stripe/webhook/route.ts
+```
+
+### Implementazione Alternativa
+**⚠️ Edge Function Supabase (Deprecata)**
+```
+https://uolpvxgcobjefivqnscj.supabase.co/functions/v1/stripe-webhook
 supabase/functions/stripe-webhook/index.ts
 ```
 
@@ -27,16 +36,16 @@ supabase/functions/stripe-webhook/index.ts
 ```mermaid
 sequenceDiagram
     participant Stripe
-    participant EdgeFunction
+    participant API_Route
     participant Supabase
-    
-    Stripe->>EdgeFunction: POST /stripe-webhook
-    EdgeFunction->>EdgeFunction: Verifica firma webhook
-    EdgeFunction->>EdgeFunction: Parse evento account.updated
-    EdgeFunction->>Supabase: Query rider con stripe_account_id
-    EdgeFunction->>EdgeFunction: Calcola onboarding_complete
-    EdgeFunction->>Supabase: Update riders_details
-    EdgeFunction->>Stripe: 200 OK
+
+    Stripe->>API_Route: POST /api/stripe/webhook
+    API_Route->>API_Route: Verifica firma webhook
+    API_Route->>API_Route: Parse evento account.updated
+    API_Route->>Supabase: Query rider con stripe_account_id
+    API_Route->>API_Route: Calcola onboarding_complete
+    API_Route->>Supabase: Update riders_details
+    API_Route->>Stripe: 200 OK
 ```
 
 ## 🚀 Deployment
@@ -312,7 +321,7 @@ Prima del deploy in produzione:
 
 - [ ] Function deployata e attiva
 - [ ] Environment variables configurate
-- [ ] Webhook Stripe configurato correttamente  
+- [ ] Webhook Stripe configurato correttamente
 - [ ] "Verify JWT" disabilitato
 - [ ] Test con Stripe CLI completato
 - [ ] Logs di produzione verificati

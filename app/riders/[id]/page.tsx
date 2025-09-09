@@ -32,6 +32,8 @@ import {
   validateBookingHours,
   ERROR_MESSAGES,
 } from '@/lib/constants';
+import PortfolioGallery from '@/components/PortfolioGallery';
+import PortfolioEditor from '@/components/PortfolioEditor';
 
 type RiderProfile = {
   id: string;
@@ -44,6 +46,11 @@ type RiderProfile = {
     hourly_rate: number | null;
     stripe_account_id: string | null;
     stripe_onboarding_complete: boolean | null;
+    // Portfolio fields
+    portfolio_images: string[] | null;
+    certifications: string[] | null;
+    portfolio_url: string | null;
+    services_description: string | null;
   } | null;
 };
 
@@ -62,6 +69,16 @@ export default function RiderBookingPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
 
+  // Portfolio states
+  const [showPortfolioEditor, setShowPortfolioEditor] = useState(false);
+  const [portfolioData, setPortfolioData] = useState({
+    portfolioImages: [] as string[],
+    certifications: [] as string[],
+    portfolioUrl: '',
+    servicesDescription: '',
+  });
+  const [portfolioLoading, setPortfolioLoading] = useState(false);
+
   // Booking form state
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -75,6 +92,18 @@ export default function RiderBookingPage() {
   useEffect(() => {
     fetchRiderProfile();
   }, [riderId]);
+
+  // Load portfolio data when rider is loaded
+  useEffect(() => {
+    if (rider?.riders_details) {
+      setPortfolioData({
+        portfolioImages: rider.riders_details.portfolio_images || [],
+        certifications: rider.riders_details.certifications || [],
+        portfolioUrl: rider.riders_details.portfolio_url || '',
+        servicesDescription: rider.riders_details.services_description || '',
+      });
+    }
+  }, [rider]);
 
   // Carica lo stato dei preferiti quando il rider è caricato
   useEffect(() => {
@@ -111,7 +140,11 @@ export default function RiderBookingPage() {
             bio,
             hourly_rate,
             stripe_account_id,
-            stripe_onboarding_complete
+            stripe_onboarding_complete,
+            portfolio_images,
+            certifications,
+            portfolio_url,
+            services_description
           )
         `
         )
@@ -249,7 +282,7 @@ export default function RiderBookingPage() {
           setIsFavorite(true);
           toast({
             title: 'Errore',
-            description: 'Impossibile rimuovere dai preferiti',
+            description: 'Unable to remove from favorites',
           });
         } else {
           toast({
@@ -272,7 +305,7 @@ export default function RiderBookingPage() {
           setIsFavorite(false);
           toast({
             title: 'Errore',
-            description: 'Impossibile aggiungere ai preferiti',
+            description: 'Unable to add to favorites',
           });
         } else {
           toast({
@@ -414,6 +447,64 @@ export default function RiderBookingPage() {
     return hours * rate;
   };
 
+  // Portfolio functions
+  const handleEditPortfolio = () => {
+    setShowPortfolioEditor(true);
+  };
+
+  const handleSavePortfolio = async (data: typeof portfolioData) => {
+    try {
+      setPortfolioLoading(true);
+
+      // Call the portfolio API
+      const response = await fetch(`/api/riders/${riderId}/portfolio`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save portfolio');
+      }
+
+      const result = await response.json();
+      setPortfolioData(result.data);
+
+      toast({
+        title: 'Portfolio aggiornato',
+        description: 'Le modifiche sono state salvate con successo',
+      });
+
+      // Update rider state to reflect changes
+      setRider(prev =>
+        prev
+          ? {
+              ...prev,
+              riders_details: prev.riders_details
+                ? {
+                    ...prev.riders_details,
+                    portfolio_images: result.data.portfolioImages,
+                    certifications: result.data.certifications,
+                    portfolio_url: result.data.portfolioUrl,
+                    services_description: result.data.servicesDescription,
+                  }
+                : null,
+            }
+          : null
+      );
+    } catch (error) {
+      console.error('Error saving portfolio:', error);
+      toast({
+        title: 'Errore',
+        description: 'Unable to save portfolio',
+      });
+    } finally {
+      setPortfolioLoading(false);
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('it-IT', {
@@ -522,7 +613,7 @@ export default function RiderBookingPage() {
                     <Bike className='h-4 w-4 text-gray-500' />
                     <span className='text-sm text-gray-600'>
                       {rider.riders_details?.vehicle_type ||
-                        'Veicolo non specificato'}
+                        'Vehicle not specified'}
                     </span>
                   </div>
                 </div>
@@ -553,6 +644,17 @@ export default function RiderBookingPage() {
                 </div>
               )}
 
+              {/* Portfolio Section */}
+              <PortfolioGallery
+                portfolioImages={portfolioData.portfolioImages}
+                certifications={portfolioData.certifications}
+                portfolioUrl={portfolioData.portfolioUrl}
+                servicesDescription={portfolioData.servicesDescription}
+                riderName={rider.full_name}
+                isOwner={false} // TODO: Check if current user is the rider
+                onEdit={handleEditPortfolio}
+              />
+
               {/* Availability Status */}
               <div className='space-y-3'>
                 <div className='flex items-center space-x-2'>
@@ -580,7 +682,7 @@ export default function RiderBookingPage() {
                     </div>
                   ) : (
                     <div className='text-sm text-gray-500 italic'>
-                      Nessun orario di disponibilità configurato
+                      No availability configured
                     </div>
                   )}
                 </div>
@@ -783,8 +885,8 @@ export default function RiderBookingPage() {
                 <CardTitle>Area Riservata agli Esercenti</CardTitle>
                 <CardDescription>
                   Solo gli esercenti possono inviare richieste di servizio ai
-                  rider. Se sei un rider interessato a collaborare, attendi di
-                  ricevere richieste dagli esercenti.
+                  rider. If you are a rider interested in collaborating, wait to
+                  receive requests from merchants.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -800,6 +902,16 @@ export default function RiderBookingPage() {
           )}
         </div>
       </div>
+
+      {/* Portfolio Editor Modal */}
+      {showPortfolioEditor && (
+        <PortfolioEditor
+          initialData={portfolioData}
+          onSave={handleSavePortfolio}
+          onClose={() => setShowPortfolioEditor(false)}
+          isLoading={portfolioLoading}
+        />
+      )}
     </div>
   );
 }

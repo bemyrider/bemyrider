@@ -29,7 +29,15 @@ type ServiceRequest = {
   duration_hours: number;
   merchant_address: string;
   description: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'expired';
+  status:
+    | 'pending'
+    | 'accepted'
+    | 'rejected'
+    | 'expired'
+    | 'booked'
+    | 'in_progress'
+    | 'completed'
+    | 'cancelled';
   rider_response: string | null;
   created_at: string;
   updated_at: string;

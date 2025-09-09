@@ -41,11 +41,15 @@ export const paymentStatusEnum = pgEnum('PaymentStatus', [
   'rimborsato',
 ]);
 export const serviceRequestStatusEnum = pgEnum('ServiceRequestStatus', [
-  'pending',
-  'accepted',
-  'rejected',
-  'expired',
-]);
+  'pending',      // Richiesta inviata, attesa risposta
+  'accepted',     // Rider disponibile
+  'rejected',     // Rider non disponibile
+  'expired',      // Scaduta senza risposta
+  'booked',       // Prenotazione confermata (servizio prenotato)
+  'in_progress',  // Servizio attualmente in corso
+  'completed',    // Servizio completato con successo
+  'cancelled',    // Annullata dal merchant o rider
+]) as any; // Type assertion per gestire enum esistente
 
 // Profile table (compatible with existing Supabase schema)
 export const profiles = pgTable('profiles', {
@@ -90,6 +94,14 @@ export const ridersDetails = pgTable('riders_details', {
   stripeOnboardingComplete: boolean('stripe_onboarding_complete').default(
     false
   ),
+  // Nuovi campi per portfolio rider
+  portfolioImages: text('portfolio_images').array().default([]),
+  certifications: text('certifications').array().default([]),
+  portfolioUrl: text('portfolio_url'),
+  servicesDescription: text('services_description'),
+  portfolioUpdatedAt: timestamp('portfolio_updated_at', {
+    withTimezone: true,
+  }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

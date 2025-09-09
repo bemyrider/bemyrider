@@ -8,6 +8,13 @@
       "when": 1757272295572,
       "tag": "0005_add_merchant_favorites",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757361859241,
+      "tag": "0001_perpetual_cannonball",
+      "breakpoints": true
     }
   ]
 }

@@ -68,12 +68,25 @@ export default function TopNavBar({
         ]
       : [
           { icon: Home, label: 'Dashboard', path: '/dashboard/rider' },
-          { icon: Calendar, label: 'Disponibilità', path: '/dashboard/rider' },
-          { icon: BarChart3, label: 'Richieste', path: '/dashboard/rider' },
+          {
+            icon: User,
+            label: 'Profilo & Disponibilità',
+            path: '/dashboard/rider#profilo',
+          },
+          {
+            icon: Calendar,
+            label: 'Gestione Lavoro',
+            path: '/dashboard/rider#lavoro',
+          },
+          {
+            icon: Settings,
+            label: 'Impostazioni',
+            path: '/dashboard/rider#impostazioni',
+          },
         ];
 
   return (
-    <div className='bg-white shadow-sm border-b border-gray-200'>
+    <div className='fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-200'>
       <div className='container mx-auto px-4'>
         <div className='flex items-center justify-between h-16'>
           {/* Mobile Menu & Logo */}

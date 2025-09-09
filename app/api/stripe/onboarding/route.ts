@@ -26,12 +26,17 @@ async function checkAndUpdateOnboardingStatus(
     });
 
     // Determina se l'onboarding è completo
+    // NOTA: Alcuni account potrebbero non avere payouts_enabled inizialmente
+    // Quindi controlliamo solo details_submitted && charges_enabled
     const onboardingComplete =
-      account.details_submitted &&
-      account.charges_enabled &&
-      account.payouts_enabled;
+      account.details_submitted && account.charges_enabled;
 
     console.log('✅ Onboarding complete status:', onboardingComplete);
+    console.log('📊 Account flags:', {
+      details_submitted: account.details_submitted,
+      charges_enabled: account.charges_enabled,
+      payouts_enabled: account.payouts_enabled,
+    });
 
     // Aggiorna il database
     const { error: updateError } = await supabase
@@ -280,5 +285,71 @@ export async function GET(request: NextRequest) {
       },
       { status: 500 }
     );
+  }
+}
+
+// ENDPOINT DI TEST TEMPORANEO - Rimuovi in produzione!
+export async function PUT(request: NextRequest) {
+  const cookieStore = cookies();
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options: any) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options: any) {
+          cookieStore.delete({ name, ...options });
+        },
+      },
+    }
+  );
+
+  try {
+    const { stripeAccountId } = await request.json();
+    console.log('🧪 TEST: Checking onboarding status for account:', stripeAccountId);
+
+    const account = await stripe.accounts.retrieve(stripeAccountId);
+    console.log('📊 Account status:', {
+      details_submitted: account.details_submitted,
+      charges_enabled: account.charges_enabled,
+      payouts_enabled: account.payouts_enabled,
+    });
+
+    const onboardingComplete = account.details_submitted && account.charges_enabled;
+    console.log('✅ Onboarding complete:', onboardingComplete);
+
+    // Aggiorna il database
+    const { error } = await supabase
+      .from('riders_details')
+      .update({
+        stripe_onboarding_complete: onboardingComplete,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('stripe_account_id', stripeAccountId);
+
+    if (error) {
+      console.error('❌ Database update error:', error);
+      return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+    }
+
+    console.log('✅ Database updated successfully');
+    return NextResponse.json({
+      success: true,
+      onboarding_complete: onboardingComplete,
+      account_status: {
+        details_submitted: account.details_submitted,
+        charges_enabled: account.charges_enabled,
+        payouts_enabled: account.payouts_enabled,
+      }
+    });
+  } catch (error) {
+    console.error('❌ Test endpoint error:', error);
+    return NextResponse.json({ error: 'Test failed' }, { status: 500 });
   }
 }

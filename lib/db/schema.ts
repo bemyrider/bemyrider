@@ -41,14 +41,14 @@ export const paymentStatusEnum = pgEnum('PaymentStatus', [
   'rimborsato',
 ]);
 export const serviceRequestStatusEnum = pgEnum('ServiceRequestStatus', [
-  'pending',      // Richiesta inviata, attesa risposta
-  'accepted',     // Rider disponibile
-  'rejected',     // Rider non disponibile
-  'expired',      // Scaduta senza risposta
-  'booked',       // Prenotazione confermata (servizio prenotato)
-  'in_progress',  // Servizio attualmente in corso
-  'completed',    // Servizio completato con successo
-  'cancelled',    // Annullata dal merchant o rider
+  'pending', // Richiesta inviata, attesa risposta
+  'accepted', // Rider disponibile
+  'rejected', // Rider non disponibile
+  'expired', // Scaduta senza risposta
+  'booked', // Prenotazione confermata (servizio prenotato)
+  'in_progress', // Servizio attualmente in corso
+  'completed', // Servizio completato con successo
+  'cancelled', // Annullata dal merchant o rider
 ]) as any; // Type assertion per gestire enum esistente
 
 // Profile table (compatible with existing Supabase schema)

@@ -138,14 +138,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
     // Verifica che il rider esista
     const rider = await db
       .select()
       .from(profiles)
       .where(and(eq(profiles.id, riderId), eq(profiles.role, 'rider')))
       .limit(1);
-
 
     if (!rider[0]) {
       return NextResponse.json({ error: 'Rider non trovato' }, { status: 404 });
@@ -159,7 +157,6 @@ export async function POST(request: NextRequest) {
         riderId: riderId,
       })
       .onConflictDoNothing();
-
 
     return NextResponse.json({ success: true });
   } catch (error) {

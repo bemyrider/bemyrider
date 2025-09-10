@@ -291,7 +291,7 @@ export async function GET(request: NextRequest) {
 // ENDPOINT DI TEST TEMPORANEO - Rimuovi in produzione!
 export async function PUT(request: NextRequest) {
   const cookieStore = cookies();
-  
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -312,7 +312,10 @@ export async function PUT(request: NextRequest) {
 
   try {
     const { stripeAccountId } = await request.json();
-    console.log('🧪 TEST: Checking onboarding status for account:', stripeAccountId);
+    console.log(
+      '🧪 TEST: Checking onboarding status for account:',
+      stripeAccountId
+    );
 
     const account = await stripe.accounts.retrieve(stripeAccountId);
     console.log('📊 Account status:', {
@@ -321,7 +324,8 @@ export async function PUT(request: NextRequest) {
       payouts_enabled: account.payouts_enabled,
     });
 
-    const onboardingComplete = account.details_submitted && account.charges_enabled;
+    const onboardingComplete =
+      account.details_submitted && account.charges_enabled;
     console.log('✅ Onboarding complete:', onboardingComplete);
 
     // Aggiorna il database
@@ -335,7 +339,10 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('❌ Database update error:', error);
-      return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Database update failed' },
+        { status: 500 }
+      );
     }
 
     console.log('✅ Database updated successfully');
@@ -346,7 +353,7 @@ export async function PUT(request: NextRequest) {
         details_submitted: account.details_submitted,
         charges_enabled: account.charges_enabled,
         payouts_enabled: account.payouts_enabled,
-      }
+      },
     });
   } catch (error) {
     console.error('❌ Test endpoint error:', error);

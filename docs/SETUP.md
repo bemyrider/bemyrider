@@ -278,4 +278,29 @@ Prima di andare in produzione:
 - [ ] Backup database configurato
 - [ ] Monitoraggio attivo
 
+## 📚 Documentazione Correlata
+
+Dopo aver completato il setup, consulta questi documenti per:
+
+### 🚀 Per Utenti
+- **[Guida Onboarding](./onboarding-utente.md)** - Come registrarsi e utilizzare la piattaforma
+- **[Flussi Utente](./flussi-utente.md)** - Come funziona il processo di prenotazione
+- **[FAQ](./faq.md)** - Risposte alle domande più comuni
+
+### 🔧 Per Sviluppatori
+- **[Architettura](./architettura.md)** - Diagramma architetturale e schema database completo
+- **[Contributing Guide](./CONTRIBUTING.md)** - Come contribuire al progetto
+- **[Testing](./testing.md)** - Strategia di testing e QA
+- **[Runbook Operativo](./runbook.md)** - Monitoraggio e manutenzione produzione
+
+### 📊 Operazioni
+- **[Deployment](./../DEPLOYMENT.md)** - Guida deployment produzione
+- **[Roadmap](./ROADMAP.md)** - Pianificazione sviluppo futuro
+
 **Congratulazioni! 🎉 bemyrider è ora configurato e pronto per l'uso!**
+
+### 🎯 Prossimi Passi
+1. **Testa l'applicazione** seguendo la [strategia di testing](./testing.md)
+2. **Deploy in produzione** usando la [guida deployment](./../DEPLOYMENT.md)
+3. **Monitora le performance** con il [runbook operativo](./runbook.md)
+4. **Contribuisci al progetto** seguendo la [contributing guide](./CONTRIBUTING.md)

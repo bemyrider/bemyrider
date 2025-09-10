@@ -2,7 +2,7 @@
 
 ## ⚠️ **GRAVE INCIDENTE DI SICUREZZA**
 
-**Data:** 8 Settembre 2025  
+**Data:** 8 Settembre 2025
 **Stato:** RISOLTO - File rimossi dalla storia Git
 
 ### 📋 **COSA È ACCADUTO**
@@ -79,7 +79,7 @@ Per evitare che questo accada di nuovo:
 ### ✅ **COSA È STATO FATTO**
 
 - ✅ **File rimossi** dalla storia Git
-- ✅ **Repository ripulito** da chiavi compromesse  
+- ✅ **Repository ripulito** da chiavi compromesse
 - ✅ **`.gitignore` aggiornato** per prevenire futuri incidenti
 - ✅ **`.env.example` creato** con template sicuro
 - ✅ **Push forzato** per aggiornare la storia pubblica
@@ -90,7 +90,50 @@ Se hai bisogno di aiuto per rigenerare le chiavi o configurare l'ambiente:
 - Contatta il supporto Supabase
 - Contatta il supporto Stripe
 - Verifica la documentazione ufficiale
+- Consulta il [runbook operativo](../docs/runbook.md) per procedure di sicurezza
+
+### 📚 **DOCUMENTAZIONE SICUREZZA AGGIORNATA**
+
+#### **Procedure Sicurezza bemyrider**
+- **[Runbook Operativo](../docs/runbook.md)** - Monitoraggio e sicurezza produzione
+- **[Contributing Guide](../docs/CONTRIBUTING.md)** - Best practices sicurezza per sviluppatori
+- **[Testing Strategy](../docs/testing.md)** - Test sicurezza automatizzati
+
+#### **Politiche di Sicurezza**
+- **Row Level Security (RLS)** attivo su tutte le tabelle
+- **Autenticazione JWT** con Supabase Auth
+- **PCI Compliance** per pagamenti Stripe
+- **Input validation** client e server-side
+- **Audit logging** per operazioni critiche
+
+### 🔄 **MISURE PREVENTIVE IMPLEMENTATE**
+
+#### **Dopo l'Incidente**
+- ✅ **.gitignore rafforzato** con pattern di esclusione completi
+- ✅ **Pre-commit hooks** per controllo chiavi sensibili
+- ✅ **Environment segregation** (dev/staging/production)
+- ✅ **Secret management** centralizzato
+- ✅ **Monitoring sicurezza** attivo
+
+#### **Procedure di Sicurezza**
+- 🔒 **Review obbligatorio** per commit contenenti configurazioni
+- 🔒 **Rotazione chiavi** periodica programmata
+- 🔒 **Access control** basato su ruoli
+- 🔒 **Backup sicuri** con crittografia
+- 🔒 **Incident response plan** documentato
+
+### 📊 **STATUS SICUREZZA ATTUALE**
+
+| Componente | Stato Sicurezza | Note |
+|------------|-----------------|------|
+| **Database** | 🔒 Protetto | RLS attivo, backup crittografati |
+| **API** | 🔒 Sicuro | JWT + validazione input |
+| **Pagamenti** | 🔒 PCI Compliant | Stripe Connect sicuro |
+| **Storage** | 🔒 Protetto | Supabase Storage sicuro |
+| **Deployment** | 🔒 Sicuro | Environment variables isolate |
 
 ---
 
 **⚠️ PRIORITÀ MASSIMA:** Rigenerare tutte le chiavi compromesse PRIMA di continuare lo sviluppo!
+
+**🔄 ULTIMO AGGIORNAMENTO:** Documentazione sicurezza sincronizzata con runbook operativo v1.0

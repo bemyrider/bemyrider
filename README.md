@@ -1,14 +1,16 @@
 # bemyrider 🚴‍♂️
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
+[![Version](https://img.shields.io/badge/version-0.4.9-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
 [![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-Connect-blue.svg)](https://stripe.com/)
+[![Documentation](https://img.shields.io/badge/docs-Complete-brightgreen.svg)](docs/)
+[![Security](https://img.shields.io/badge/security-Enterprise--Grade-blue.svg)](README_SECURITY.md)
 
-**bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria. 
+**bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria.
 
-🏪 **Per Esercenti**: Trova e prenota rider qualificati per le tue consegne  
+🏪 **Per Esercenti**: Trova e prenota rider qualificati per le tue consegne
 🚴‍♂️ **Per Rider**: Monetizza il tuo tempo con tariffe personalizzate
 
 ## 🚀 Deployment su Vercel
@@ -80,7 +82,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 
 ## 📋 Prerequisiti
 
-- Node.js 18+ 
+- Node.js 18+
 - npm o yarn
 - Account Supabase
 - Account Stripe (con Connect abilitato)
@@ -140,7 +142,7 @@ npm run db:push
 
 # Le migrations includono automaticamente:
 # - Tutte le tabelle e relazioni
-# - Enums (DayOfWeek, PaymentStatus, Status, VehicleType)  
+# - Enums (DayOfWeek, PaymentStatus, Status, VehicleType)
 # - Indexes ottimizzati
 # - Constraints e chiavi esterne
 ```
@@ -171,7 +173,7 @@ Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase
 #### 🔐 Row Level Security (RLS)
 Tutte le tabelle hanno policies RLS configurate automaticamente per:
 - ✅ Sicurezza dati per ruolo
-- ✅ Isolamento merchant/rider  
+- ✅ Isolamento merchant/rider
 - ✅ Accesso basato su proprietà
 CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
 
@@ -286,12 +288,21 @@ bemyrider/
 ├── public/              # Asset statici
 │   └── bemyrider_logo.svg # Logo principale
 ├── drizzle.config.ts    # Configurazione Drizzle
-├── CHANGELOG.md         # Storia delle modifiche v1.1.0
+├── CHANGELOG.md         # Storia delle modifiche tecniche
 ├── RELEASE_NOTES.md     # Note di release dettagliate
 └── package.json         # Dipendenze e script
 ```
 
-## ✨ Nuove Feature v1.1.0
+## ✨ Documentazione Production-Ready v0.4.9
+
+### 📚 Suite Documentale Completa
+- **🏗️ Architettura completa** con diagrammi Mermaid e schema database dettagliato
+- **👥 Guida onboarding utente** passo-passo per rider e merchant
+- **🔧 Contributing Guide** professionale per sviluppatori
+- **🧪 Testing Strategy** completa con esempi pratici
+- **⚙️ Runbook Operativo** per monitoraggio e troubleshooting
+- **🎨 Design System** enterprise con palette colori e componenti
+- **❓ FAQ estesa** con 50+ domande organizzate per categoria
 
 ### 🗑️ Gestione Account Avanzata
 - **Eliminazione account sicura** con modal di conferma doppio step
@@ -299,7 +310,7 @@ bemyrider/
 - **Integrazione Supabase Auth** per rimozione completa
 - **Posizionamento discreto** nel menu "Avanzate"
 
-### 🎨 Menu Profilo Unificato  
+### 🎨 Menu Profilo Unificato
 - **TopNavBar moderna** con design responsive
 - **Dropdown menu** con sezioni organizzate (Impostazioni, Privacy, Avanzate)
 - **Icona profilo** con navigazione intuitiva
@@ -308,7 +319,7 @@ bemyrider/
 ### 🔧 Migrazione ORM a Drizzle
 - **Performance ottimizzate** rispetto a Prisma
 - **Schema completo** con 8+ tabelle e relazioni
-- **Connection pooling** ottimizzato per Supabase  
+- **Connection pooling** ottimizzato per Supabase
 - **Type safety** migliorata con TypeScript
 
 ### 🔐 Sicurezza Enterprise-Grade
@@ -316,6 +327,7 @@ bemyrider/
 - **Redirect intelligenti** basati su metadata utente
 - **Protezione dashboard** con controlli rigorosi
 - **Row Level Security** su tutte le tabelle
+- **Documentazione sicurezza** completa con runbook operativo
 
 ## 🔄 Flussi Utente
 
@@ -343,15 +355,30 @@ bemyrider/
 - **Pagamento**: Gestito tramite Stripe Connect
 - **Tariffa**: Definito dal rider (€/ora)
 
-## 📚 Documentazione
+## 📚 Documentazione Completa
 
-Per informazioni dettagliate, consulta la documentazione completa:
+bemyrider dispone di una documentazione completa e professionale, organizzata per diversi livelli di utenza:
 
-- **[📖 Setup Completo](docs/SETUP.md)** - Guida passo-passo per configurazione
-- **[🔧 API Documentation](docs/API.md)** - Documentazione completa API endpoints  
+### 🚀 **Per Iniziare**
+- **[👥 Guida Onboarding Utente](docs/onboarding-utente.md)** - Come registrarsi e utilizzare la piattaforma
+- **[🔧 Setup Completo](docs/SETUP.md)** - Guida passo-passo per configurazione
+- **[❓ FAQ Estesa](docs/faq.md)** - Domande frequenti e risposte
+
+### 🏗️ **Architettura e Sviluppo**
+- **[🏛️ Architettura Sistema](docs/architettura.md)** - Diagramma architetturale e schema database
+- **[🔧 API Documentation](docs/API.md)** - Documentazione completa API endpoints
+- **[🧪 Testing Strategy](docs/testing.md)** - Strategia testing e QA completa
+- **[⚙️ Runbook Operativo](docs/runbook.md)** - Monitoraggio e manutenzione produzione
+
+### 🎨 **Design e Contribuzione**
+- **[🎨 Design System](docs/branding.md)** - Linee guida branding e componenti UI
+- **[🤝 Contributing Guide](docs/CONTRIBUTING.md)** - Come contribuire al progetto
 - **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Deploy in produzione
-- **[⚡ Edge Functions](docs/EDGE-FUNCTIONS.md)** - Supabase Edge Functions
-- **[📋 Changelog](CHANGELOG.md)** - Storia delle modifiche
+
+### 📋 **Storia del Progetto**
+- **[📝 Changelog](CHANGELOG.md)** - Storia delle modifiche tecniche
+- **[📈 Release Notes](RELEASE_NOTES.md)** - Cronologia versioni completa
+- **[🔒 Sicurezza](README_SECURITY.md)** - Procedure sicurezza e incidenti
 
 ## 🚀 Deployment
 
@@ -375,11 +402,11 @@ Il progetto può essere deployato su qualsiasi provider che supporti Next.js.
 
 ## 📄 Licenza
 
-Questo progetto è sotto **licenza proprietaria personalizzata**. 
+Questo progetto è sotto **licenza proprietaria personalizzata**.
 
 ### Uso Permesso
 - ✅ Studio e valutazione personale
-- ✅ Sviluppo non commerciale  
+- ✅ Sviluppo non commerciale
 - ✅ Scopi educativi
 
 ### Uso Commerciale
@@ -409,4 +436,6 @@ Per contatti: info@bemyrider.it
 
 ---
 
-**bemyrider** - Connetti rider e esercenti per consegne efficienti e trasparenti 🚴‍♂️🏪 
+**bemyrider** - Connettiamo rider professionisti con esercenti locali attraverso una piattaforma digitale innovativa, sicura e completamente documentata 🚴‍♂️🏪
+
+**✨ Documentazione Production-Ready** | **🔒 Sicurezza Enterprise-Grade** | **📈 Architettura Scalabile**

@@ -26,7 +26,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 const MOCK_RIDERS = [
   {
     email: 'alessandro.conti@bemyrider.test',
-    password: 'MotoAlessandro2024!',
+    password: 'X9kLp2#mN8vR4tY!',
     fullName: 'Alessandro Conti',
     role: 'rider',
     bio: 'Pilota esperto con Honda SH 125. Specializzato in consegne rapide nel centro storico. Conosco ogni vicolo di Milano.',
@@ -44,7 +44,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'valentina.moretti@bemyrider.test',
-    password: 'MotoValentina2024!',
+    password: 'P7qW3#nR9bM5xZ!',
     fullName: 'Valentina Moretti',
     role: 'rider',
     bio: 'Pilota donna con Yamaha TMAX. Perfetta per consegne delicate e prodotti di lusso. Sempre elegante e professionale.',
@@ -66,7 +66,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'francesco.galli@bemyrider.test',
-    password: 'MotoFrancesco2024!',
+    password: 'A2kL8@pT6vH1yB!',
     fullName: 'Francesco Galli',
     role: 'rider',
     bio: 'Rider giovane e dinamico con Piaggio Beverly. Perfetto per consegne veloci e affidabili in zona universitaria.',
@@ -84,7 +84,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'sofia.ferrari@bemyrider.test',
-    password: 'MotoSofia2024!',
+    password: 'F5mN9#qR3wE7uI!',
     fullName: 'Sofia Ferrari',
     role: 'rider',
     bio: 'Pilota esperta con Vespa Primavera. Specializzata in consegne artistiche e prodotti creativi. Adoro il mio lavoro!',
@@ -106,7 +106,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'matteo.romano@bemyrider.test',
-    password: 'MotoMatteo2024!',
+    password: 'S1jK4@lP8bN2xC!',
     fullName: 'Matteo Romano',
     role: 'rider',
     bio: 'Rider affidabile con Aprilia Scarabeo. Perfetto per consegne pesanti fino a 20kg. Disponibile anche la sera.',
@@ -124,7 +124,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'giorgia.lombardi@bemyrider.test',
-    password: 'MotoGiorgia2024!',
+    password: 'D9hV6#rT4eW0yG!',
     fullName: 'Giorgia Lombardi',
     role: 'rider',
     bio: 'Pilota dinamica con Kymco Agility. Specializzata in consegne farmaceutiche e prodotti sanitari. Massima affidabilità.',
@@ -142,7 +142,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'davide.marini@bemyrider.test',
-    password: 'MotoDavide2024!',
+    password: 'Q3zX7@pL5kJ8mF!',
     fullName: 'Davide Marini',
     role: 'rider',
     bio: 'Rider esperto con Gilera Runner. Perfetto per consegne in zone residenziali. Conosco ogni strada di Roma.',
@@ -164,7 +164,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'chiara.bellini@bemyrider.test',
-    password: 'MotoChiara2024!',
+    password: 'W8nB2#kR6vT9hY!',
     fullName: 'Chiara Bellini',
     role: 'rider',
     bio: 'Pilota giovane con Peugeot Tweet. Specializzata in consegne sostenibili e prodotti bio. Amo la natura!',
@@ -182,7 +182,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'andrea.villa@bemyrider.test',
-    password: 'MotoAndrea2024!',
+    password: 'E4gM1@lS7cN5bV!',
     fullName: 'Andrea Villa',
     role: 'rider',
     bio: 'Rider affidabile con Moto Guzzi V7. Specializzato in consegne di grandi dimensioni. Trasporto tutto con sicurezza.',
@@ -204,7 +204,7 @@ const MOCK_RIDERS = [
   },
   {
     email: 'elena.ricci@bemyrider.test',
-    password: 'MotoElena2024!',
+    password: 'R6tY9#fU2iO4pA!',
     fullName: 'Elena Ricci',
     role: 'rider',
     bio: 'Pilota esperta con BMW C 400 X. Perfetta per consegne business e documenti importanti. Sempre professionale.',

@@ -2,7 +2,8 @@
 import { supabase } from './supabase';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const SUPABASE_PUBLISHABLE_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
 export async function directApiCall(
   endpoint: string,
@@ -17,7 +18,7 @@ export async function directApiCall(
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      apikey: SUPABASE_ANON_KEY,
+      apikey: SUPABASE_PUBLISHABLE_KEY,
     };
 
     if (session?.access_token) {

@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const cookieStore = cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       { cookies: cookieStore }
     );
 
@@ -76,12 +76,25 @@ export async function POST(request: NextRequest) {
     const grossAmount = parseFloat(duration) * hourlyRate;
     const netAmount = grossAmount; // Semplificato - in produzione calcolare tasse
 
-    // TODO: Implementare con Drizzle quando il database sarà aggiornato
-    // Per ora simula la creazione
-    const bookingId = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Creazione prenotazione nel database con Drizzle
+    const newBooking = await db
+      .insert(prenotazioni)
+      .values({
+        esercenteId: user.id,
+        riderId: riderId,
+        startTime: startDateTime,
+        endTime: endDateTime,
+        serviceDurationHours: duration, // Passa come stringa
+        grossAmount: grossAmount.toString(),
+        netAmount: netAmount.toString(),
+        taxWithholdingAmount: undefined, // Campo opzionale, non specificato
+        status: 'in_attesa',
+        paymentStatus: 'in_attesa',
+      })
+      .returning();
 
-    console.log('📝 Booking creation simulation:', {
-      id: bookingId,
+    console.log('📝 Booking created:', {
+      id: newBooking[0].id,
       merchantId: user.id,
       riderId,
       startTime: startDateTime.toISOString(),
@@ -93,23 +106,10 @@ export async function POST(request: NextRequest) {
       status: 'in_attesa',
     });
 
-    // Simula salvataggio nel database
-    // const booking = await db.insert(prenotazioni).values({
-    //   esercenteId: user.id,
-    //   riderId,
-    //   startTime: startDateTime,
-    //   endTime: endDateTime,
-    //   serviceDurationHours: parseFloat(duration),
-    //   grossAmount: grossAmount.toString(),
-    //   netAmount: netAmount.toString(),
-    //   status: 'in_attesa',
-    //   paymentStatus: 'in_attesa'
-    // }).returning()
-
     return NextResponse.json({
       success: true,
       booking: {
-        id: bookingId,
+        id: newBooking[0].id,
         merchantId: user.id,
         riderId,
         startTime: startDateTime.toISOString(),
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
     const cookieStore = cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       { cookies: cookieStore }
     );
 

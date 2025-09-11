@@ -144,6 +144,7 @@ export const prenotazioni = pgTable('prenotazioni', {
 });
 
 // Service Requests table (richieste di servizio prima della prenotazione)
+// Updated: 2024-12-11 - Test workflow sicurezza automatica
 export const serviceRequests = pgTable('service_requests', {
   id: uuid('id').primaryKey().defaultRandom(),
   merchantId: uuid('merchant_id').notNull(),

@@ -15,6 +15,20 @@
       "when": 1757361859241,
       "tag": "0001_perpetual_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757618679501,
+      "tag": "0002_flippant_baron_strucker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757618794601,
+      "tag": "0003_slippery_mongoose",
+      "breakpoints": true
     }
   ]
 }

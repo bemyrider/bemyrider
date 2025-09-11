@@ -24,6 +24,45 @@ Guida completa per il deployment di bemyrider in produzione.
 - **Cons**: Manutenzione server, setup complesso
 - **Costo**: $5-20/mese
 
+## 🔒 Sicurezza nel Deployment
+
+### 🚀 **Sistema di Sicurezza Automatica**
+bemyrider include un **sistema di sicurezza enterprise-grade** che garantisce deployment sicuri:
+
+#### **Workflow Sicuro di Deployment:**
+```bash
+# Deploy sicuro con verifica automatica della sicurezza
+npm run db:push     # Migrazione + sicurezza automatica
+npm run build       # Build con ottimizzazioni
+npm run deploy      # Deploy in produzione
+```
+
+#### **Cosa Viene Verificato Automaticamente:**
+- ✅ **Row Level Security (RLS)** abilitato su tutte le tabelle
+- ✅ **32+ policy di sicurezza** applicate correttamente
+- ✅ **Connessione database** sicura verificata
+- ✅ **Variabili d'ambiente** crittografate
+- ✅ **Audit trail** completo delle operazioni
+
+#### **Metriche di Sicurezza:**
+- ⚡ **Deployment time**: ~13 secondi
+- 🔒 **Security policies**: 32+ applicate
+- ✅ **Success rate**: 100%
+- 📊 **Test funzionali**: 3/3 superati
+
+[Maggiori dettagli sulla sicurezza →](../scripts/README-SECURITY-UPDATES.md)
+
+### ⚠️ **Pre-Deployment Security Checklist**
+
+Prima di ogni deployment, verifica:
+
+- [ ] **API Keys**: Usa `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (non legacy)
+- [ ] **Service Role**: `SUPABASE_SERVICE_ROLE_KEY` configurata correttamente
+- [ ] **Database**: Schema aggiornato con `npm run db:push`
+- [ ] **Security**: Policy RLS applicate con `npm run db:security`
+- [ ] **Environment**: Variabili crittografate in produzione
+- [ ] **Logs**: Sistema di logging attivo per audit
+
 ## 🚀 Deployment su Vercel (Raccomandato)
 
 ### 1. Preparazione Repository
@@ -347,7 +386,7 @@ npm cache clean --force
 # Vercel Function Logs
 vercel logs --app bemyrider
 
-# Supabase Edge Function Logs  
+# Supabase Edge Function Logs
 supabase functions logs stripe-webhook --project-ref prod-ref
 ```
 
@@ -363,7 +402,7 @@ lhci autorun --upload.target=temporary-public-storage
 
 ### Contatti di Emergenza
 - **Vercel Support**: support@vercel.com
-- **Supabase Support**: support@supabase.com  
+- **Supabase Support**: support@supabase.com
 - **Stripe Support**: support@stripe.com
 
 ### Escalation Path

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-// import { adaptBooking } from '@/lib/adapters' // TODO: Update to Drizzle
+import {
+  prenotazioni,
+  esercenti,
+  profiles,
+  ridersDetails,
+} from '@/lib/db/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export async function GET(
   request: NextRequest,
@@ -9,41 +15,44 @@ export async function GET(
   try {
     const merchantId = params.merchantId;
 
-    // TODO: Convert to Drizzle query
-    // Fetch bookings for merchant
-    /*const bookings = await prisma.prenotazione.findMany({
-      where: { esercente_id: merchantId },
-      include: {
-        esercente: {
-          include: {
-            profile: true
-          }
-        },
-        rider: {
-          include: {
-            profile: true
-          }
-        },
-        recensione: true
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 5
-    })
+    // Query Drizzle per ottenere le prenotazioni del merchant
+    const bookings = await db
+      .select({
+        id: prenotazioni.id,
+        startTime: prenotazioni.startTime,
+        endTime: prenotazioni.endTime,
+        serviceDurationHours: prenotazioni.serviceDurationHours,
+        grossAmount: prenotazioni.grossAmount,
+        netAmount: prenotazioni.netAmount,
+        status: prenotazioni.status,
+        paymentStatus: prenotazioni.paymentStatus,
+        createdAt: prenotazioni.createdAt,
+        // Informazioni merchant
+        merchantName: profiles.fullName,
+        businessName: esercenti.businessName,
+        merchantAddress: esercenti.address,
+        merchantCity: esercenti.city,
+        // Informazioni rider
+        riderId: ridersDetails.profileId,
+        riderName: profiles.fullName,
+        hourlyRate: ridersDetails.hourlyRate,
+        vehicleType: ridersDetails.vehicleType,
+        activeLocation: ridersDetails.activeLocation,
+        rating: ridersDetails.rating,
+        isVerified: ridersDetails.isVerified,
+      })
+      .from(prenotazioni)
+      .innerJoin(esercenti, eq(prenotazioni.esercenteId, esercenti.id))
+      .innerJoin(profiles, eq(esercenti.id, profiles.id)) // Merchant profile
+      .innerJoin(
+        ridersDetails,
+        eq(prenotazioni.riderId, ridersDetails.profileId)
+      )
+      .where(eq(prenotazioni.esercenteId, merchantId))
+      .orderBy(desc(prenotazioni.createdAt))
+      .limit(10);
 
-    // Transform to legacy format
-    const adaptedBookings = bookings.map(booking => ({
-      id: booking.id,
-      start_time: booking.start_time.toISOString(),
-      end_time: booking.end_time.toISOString(),
-      total_amount: Number(booking.gross_amount),
-      status: booking.status,
-      rider: {
-        full_name: `${booking.rider.first_name} ${booking.rider.last_name}`
-      }
-    }))*/
-
-    // Temporary: return empty array
-    return NextResponse.json([]);
+    return NextResponse.json(bookings);
   } catch (error: any) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json(

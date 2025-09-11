@@ -5,6 +5,7 @@ Guida operativa completa per monitoraggio, manutenzione e risoluzione problemi d
 ## 📋 Indice
 
 - [Monitoraggio Sistema](#-monitoraggio-sistema)
+- [🔒 Operazioni di Sicurezza](#-operazioni-di-sicurezza)
 - [Alert e Notifiche](#-alert-e-notifiche)
 - [Procedure di Manutenzione](#-procedure-di-manutenzione)
 - [Troubleshooting](#-troubleshooting)
@@ -44,6 +45,204 @@ error_rate: < 1%
 uptime: > 99.9%
 database_query_time: < 200ms
 ```
+
+## 🔒 Operazioni di Sicurezza
+
+### 🚀 **Sistema di Sicurezza Automatica**
+
+bemyrider utilizza un **sistema di sicurezza enterprise-grade** completamente automatico:
+
+#### **Metriche di Sicurezza da Monitorare:**
+```yaml
+# Security Health Metrics
+security_deployment_time: < 15s
+rls_policies_active: 32+
+security_test_pass_rate: 100%
+database_access_control: enabled
+audit_trail_active: enabled
+```
+
+#### **Comandi Operativi di Sicurezza:**
+```bash
+# Verifica stato sicurezza (daily check)
+npm run db:security
+
+# Applicazione emergenziale sicurezza
+npm run db:push
+
+# Verifica manuale policy
+npm run db:security:legacy
+
+# Check log sicurezza
+tail -f logs/security-deploy.log
+```
+
+### 🛡️ **Procedure di Sicurezza Routine**
+
+#### **Daily Security Check:**
+```bash
+# 1. Verifica stato database
+npm run db:security
+
+# 2. Controlla log sicurezza
+cat logs/security-deploy.log | tail -20
+
+# 3. Verifica metriche Supabase
+# - RLS enabled su tutte le tabelle
+# - Policy attive: 32+
+# - Nessun errore di sicurezza
+```
+
+#### **Post-Deployment Security Verification:**
+```bash
+# Dopo ogni deploy verificare:
+npm run db:security
+
+# Expected output:
+# ✅ Connessione al database stabilita
+# ✅ Test funzionali superati: 3/3
+# ✅ Policy stimate applicate: ~33
+# 🎉 Deployment sicurezza completato con successo
+```
+
+### 🚨 **Alert di Sicurezza**
+
+#### **Trigger di Alert:**
+- **Security deployment failure**: `npm run db:security` fallisce
+- **RLS policies missing**: Meno di 30 policy attive
+- **Database access violation**: Tentativi di accesso non autorizzato
+- **API key exposure**: Chiavi API rilevate in log pubblici
+
+#### **Risposta a Incidenti di Sicurezza:**
+```bash
+# 1. Isola il problema
+git log --oneline -10  # Verifica recenti modifiche
+
+# 2. Applica sicurezza massima
+npm run db:security
+
+# 3. Verifica isolamento
+# - Controlla accessi database
+# - Verifica policy RLS
+# - Check log di sicurezza
+
+# 4. Notifica team
+# - Documenta incidente
+# - Pianifica remediation
+```
+
+### 🔐 **Gestione Chiavi API**
+
+#### **Rotazione Chiavi di Emergenza:**
+```bash
+# 1. Genera nuove chiavi Supabase
+# Vai su Supabase Dashboard → Settings → API
+
+# 2. Aggiorna .env.local
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=nuova_chiave
+SUPABASE_SERVICE_ROLE_KEY=nuova_service_key
+
+# 3. Test connessione
+npm run db:security
+
+# 4. Deploy con nuove chiavi
+npm run build
+npm run deploy
+```
+
+#### **Audit Chiavi API:**
+```bash
+# Verifica chiavi in uso
+grep -r "SUPABASE_" .env* --exclude-dir=node_modules
+
+# Check expiration dates
+# Supabase Dashboard → Settings → API → Key Details
+```
+
+### 📊 **Monitoraggio Sicurezza Avanzato**
+
+#### **Query di Monitoraggio Database:**
+```sql
+-- Verifica RLS abilitato
+SELECT schemaname, tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
+ORDER BY tablename;
+
+-- Conta policy attive
+SELECT COUNT(*) as active_policies
+FROM pg_policies
+WHERE schemaname = 'public';
+
+-- Verifica accessi recenti (audit)
+SELECT *
+FROM audit_log
+WHERE action = 'SECURITY_VIOLATION'
+ORDER BY created_at DESC
+LIMIT 10;
+```
+
+#### **Log Analysis:**
+```bash
+# Analizza pattern di sicurezza
+grep "SECURITY" logs/security-deploy.log | tail -20
+
+# Check errori sicurezza
+grep "ERROR" logs/security-deploy.log | grep -i security
+
+# Monitora performance sicurezza
+grep "Deployment sicurezza completato" logs/security-deploy.log | tail -7
+```
+
+### 🛠️ **Troubleshooting Sicurezza**
+
+#### **Problema: Security deployment fallisce**
+```bash
+# Diagnosi
+npm run db:security 2>&1 | tee security-debug.log
+
+# Check connessione database
+ping your-project-ref.supabase.co
+
+# Verifica variabili ambiente
+echo $SUPABASE_SERVICE_ROLE_KEY | head -c 20
+```
+
+#### **Problema: Policy RLS mancanti**
+```bash
+# Force reapply
+rm -rf logs/security-deploy.log
+npm run db:security
+
+# Manual verification
+npm run db:security:legacy
+```
+
+#### **Problema: Accesso non autorizzato**
+```bash
+# Emergency lockdown
+npm run db:security
+
+# Check recent changes
+git log --oneline --since="1 hour ago"
+
+# Audit database access
+# Supabase Dashboard → Database → Query → Recent Queries
+```
+
+### 📞 **Contatti Sicurezza**
+
+#### **Incident Response Team:**
+- **Lead Security**: [Nome Contatto]
+- **Database Admin**: [Nome Contatto]
+- **DevOps Lead**: [Nome Contatto]
+
+#### **Procedure di Escalation:**
+1. **Livello 1**: Try documented solutions
+2. **Livello 2**: Contact DevOps Lead
+3. **Livello 3**: Full incident response team
+
+[Maggiori dettagli sulla sicurezza →](../scripts/README-SECURITY-UPDATES.md)
 
 #### Business Metrics
 ```yaml

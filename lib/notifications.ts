@@ -67,9 +67,19 @@ class NotificationManager {
     const config = notificationConfigs[type];
     const IconComponent = config.icon;
 
+    // Validate message is a string
+    if (typeof message !== 'string') {
+      console.error('Notification message must be a string:', message);
+      message = 'Si è verificato un errore';
+    }
+
+    // Validate title and description are valid React nodes
+    const safeTitle = options.title || config.defaultTitle;
+    const safeMessage = message;
+
     return toast({
-      title: options.title || config.defaultTitle,
-      description: message,
+      title: safeTitle,
+      description: safeMessage,
       // Note: duration and className not supported by toast component
       // Note: Action support removed for build compatibility
     });

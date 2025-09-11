@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Bike, Store } from 'lucide-react';
+import { Bike, Store, Mail } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { validationRules } from '@/lib/hooks/use-form-validation';
 import { notifications, notificationMessages } from '@/lib/notifications';
@@ -23,8 +23,10 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const [showResendButton, setShowResendButton] = useState(false);
   const router = useRouter();
 
   // Update form validity in real-time
@@ -86,7 +88,43 @@ export default function LoginPage() {
       });
 
       if (error) {
-        notifications.error(notificationMessages.loginError);
+        console.error('❌ Login error:', error);
+
+        // Handle specific error cases
+        if (
+          error.message.includes('email_not_confirmed') ||
+          error.message.includes('Email not confirmed')
+        ) {
+          notifications.error(
+            'Controlla la tua email e conferma il tuo account prima di accedere.',
+            {
+              title: 'Email non confermata',
+            }
+          );
+          setShowResendButton(true);
+        } else if (
+          error.message.includes('invalid_credentials') ||
+          error.message.includes('Invalid login credentials')
+        ) {
+          notifications.error('Email o password non corrette. Riprova.', {
+            title: 'Credenziali non valide',
+          });
+        } else if (error.message.includes('too_many_requests')) {
+          notifications.error(
+            'Hai fatto troppi tentativi. Riprova più tardi.',
+            {
+              title: 'Troppi tentativi',
+            }
+          );
+        } else {
+          notifications.error(
+            error.message || "Si è verificato un errore durante l'accesso.",
+            {
+              title: 'Errore di accesso',
+            }
+          );
+        }
+
         setLoading(false);
         return;
       }
@@ -135,6 +173,54 @@ export default function LoginPage() {
       notifications.error(notificationMessages.networkError);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email.trim()) {
+      notifications.error(
+        'Inserisci il tuo indirizzo email per rispedire la conferma.',
+        {
+          title: 'Email richiesta',
+        }
+      );
+      return;
+    }
+
+    setResendLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      });
+
+      if (error) {
+        notifications.error(
+          "Impossibile rispedire l'email di conferma. Riprova più tardi.",
+          {
+            title: 'Errore',
+          }
+        );
+      } else {
+        notifications.success(
+          'Controlla la tua casella di posta per il link di conferma.',
+          {
+            title: 'Email inviata!',
+          }
+        );
+        setShowResendButton(false);
+      }
+    } catch (error) {
+      console.error('Error resending confirmation:', error);
+      notifications.error(
+        "Si è verificato un errore durante l'invio dell'email.",
+        {
+          title: 'Errore',
+        }
+      );
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -193,6 +279,21 @@ export default function LoginPage() {
             >
               {loading ? 'Accesso in corso...' : 'Accedi'}
             </Button>
+
+            {showResendButton && (
+              <Button
+                type='button'
+                variant='outline'
+                className='w-full mt-3'
+                onClick={handleResendConfirmation}
+                disabled={resendLoading}
+              >
+                <Mail className='w-4 h-4 mr-2' />
+                {resendLoading
+                  ? 'Invio email...'
+                  : 'Rispedisci email di conferma'}
+              </Button>
+            )}
           </form>
 
           <div className='mt-6 text-center'>

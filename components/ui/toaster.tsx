@@ -135,12 +135,20 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
+        // Validate that title and description are strings
+        const safeTitle =
+          typeof title === 'string' ? title : String(title || '');
+        const safeDescription =
+          typeof description === 'string'
+            ? description
+            : String(description || '');
+
         return (
           <Toast key={id} {...props}>
             <div className='grid gap-1'>
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
+              {safeTitle && <ToastTitle>{safeTitle}</ToastTitle>}
+              {safeDescription && (
+                <ToastDescription>{safeDescription}</ToastDescription>
               )}
             </div>
             {action}

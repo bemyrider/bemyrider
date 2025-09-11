@@ -48,6 +48,21 @@ export default function RegisterPage() {
     try {
       console.log('🚀 Starting registration with role:', role);
 
+      // Check if user already exists
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('email', email)
+        .single();
+
+      if (existingUser) {
+        setError(
+          'An account with this email already exists. Please log in instead.'
+        );
+        setLoading(false);
+        return;
+      }
+
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -66,21 +81,47 @@ export default function RegisterPage() {
       );
 
       if (signUpError) {
-        throw signUpError;
+        // Handle specific error cases
+        if (signUpError.message.includes('already registered')) {
+          setError(
+            'An account with this email already exists. Please log in instead.'
+          );
+        } else if (signUpError.message.includes('email_not_confirmed')) {
+          setError(
+            'Please check your email and confirm your registration before logging in.'
+          );
+        } else {
+          setError(signUpError.message);
+        }
+        return;
       }
 
-      toast({
-        title: 'Registration successful!',
-        description: 'You can now log in.',
-      });
+      // If user exists but needs email confirmation
+      if (data.user && !data.session) {
+        toast({
+          title: 'Registration successful!',
+          description:
+            'Please check your email to confirm your account, then log in.',
+        });
+        router.push('/auth/login');
+        return;
+      }
 
-      // Redirect based on role
-      if (role === 'merchant') {
-        console.log('🏦 Redirecting to merchant dashboard');
-        router.push('/dashboard/merchant');
-      } else {
-        console.log('🚴‍♂️ Redirecting to rider dashboard');
-        router.push('/dashboard/rider');
+      // If registration successful and user is confirmed
+      if (data.user && data.session) {
+        toast({
+          title: 'Registration successful!',
+          description: 'Welcome to bemyrider!',
+        });
+
+        // Redirect based on role
+        if (role === 'merchant') {
+          console.log('🏦 Redirecting to merchant dashboard');
+          router.push('/dashboard/merchant');
+        } else {
+          console.log('🚴‍♂️ Redirecting to rider dashboard');
+          router.push('/dashboard/rider');
+        }
       }
     } catch (error: any) {
       console.error('❌ Registration error:', error);

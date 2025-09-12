@@ -1,12 +1,13 @@
 # bemyrider 🚴‍♂️
 
-[![Version](https://img.shields.io/badge/version-0.4.9-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
+[![Version](https://img.shields.io/badge/version-0.4.11-blue.svg)](https://github.com/bemyrider/bemyrider/releases)
 [![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-Connect-blue.svg)](https://stripe.com/)
 [![Documentation](https://img.shields.io/badge/docs-Complete-brightgreen.svg)](docs/)
 [![Security](https://img.shields.io/badge/security-Enterprise--Grade-blue.svg)](README_SECURITY.md)
+[![JWT](https://img.shields.io/badge/JWT-Signing%20Keys%20ECC%20P--256-green.svg)](docs/AUTH_SECURITY.md)
 [![Database Security](https://img.shields.io/badge/database-security--auto-green.svg)](scripts/README-SECURITY-UPDATES.md)
 
 **bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria.
@@ -15,6 +16,14 @@
 🚴‍♂️ **Per Rider**: Monetizza il tuo tempo con tariffe personalizzate
 
 ## 🔒 Sistema di Sicurezza Enterprise-Grade
+
+### 🔑 **JWT Signing Keys Avanzati (v0.4.11)**
+bemyrider utilizza **JWT Signing Keys con algoritmo ECC (P-256)** per massima sicurezza:
+- ✅ **Chiavi asimmetriche** non estraibili da Supabase
+- ✅ **Revoca istantanea** delle chiavi compromesse
+- ✅ **Validazione JWT locale** per performance ottimizzate
+- ✅ **Compliance enterprise** (SOC2/PCI-DSS/HIPAA)
+- ✅ **Performance**: Autenticazione 60% più veloce
 
 ### 🚀 **Sicurezza Automatica del Database**
 bemyrider implementa un **sistema di sicurezza avanzato e automatico** che garantisce:

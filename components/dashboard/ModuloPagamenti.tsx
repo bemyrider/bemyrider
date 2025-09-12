@@ -142,7 +142,8 @@ export default function ModuloPagamenti({
                   <p className='text-sm text-yellow-700 mb-4'>
                     Completa l&apos;onboarding Stripe per attivare i pagamenti e
                     ricevere compensi per i tuoi servizi. Il processo richiede
-                    pochi minuti.
+                    pochi minuti e verificheremo automaticamente il
+                    completamento al tuo ritorno.
                   </p>
                   <div className='flex flex-col sm:flex-row gap-2'>
                     <Button
@@ -150,7 +151,14 @@ export default function ModuloPagamenti({
                       disabled={loading}
                       className='bg-green-600 hover:bg-green-700 flex-1'
                     >
-                      {loading ? 'Caricamento...' : 'Attiva Pagamenti'}
+                      {loading ? (
+                        <div className='flex items-center gap-2'>
+                          <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                          <span className='text-sm'>Verifica Stato...</span>
+                        </div>
+                      ) : (
+                        'Attiva Pagamenti'
+                      )}
                     </Button>
                     {profile.riders_details?.stripe_account_id && (
                       <Button

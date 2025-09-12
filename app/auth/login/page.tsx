@@ -29,6 +29,55 @@ export default function LoginPage() {
   const [showResendButton, setShowResendButton] = useState(false);
   const router = useRouter();
 
+  // Get redirect URL and confirmation status from query parameters
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+
+  useEffect(() => {
+    // Get parameters from URL search params
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectParam = searchParams.get('redirectTo');
+    const confirmedParam = searchParams.get('confirmed');
+    const messageParam = searchParams.get('message');
+
+    if (redirectParam) {
+      setRedirectTo(decodeURIComponent(redirectParam));
+    }
+
+    if (confirmedParam === 'true') {
+      setEmailConfirmed(true);
+      // Show success notification
+      setTimeout(() => {
+        notifications.success(
+          'Email confermata con successo! Ora puoi accedere.',
+          {
+            title: '✅ Email Verificata',
+            duration: 5000,
+          }
+        );
+      }, 100);
+      // Clean up URL
+      window.history.replaceState({}, '', '/auth/login');
+    }
+
+    if (messageParam === 'registration_success') {
+      setRegistrationSuccess(true);
+      // Show success notification
+      setTimeout(() => {
+        notifications.success(
+          "Registrazione completata! Controlla la tua email per confermare l'account.",
+          {
+            title: '🎉 Benvenuto su bemyrider!',
+            duration: 7000,
+          }
+        );
+      }, 100);
+      // Clean up URL
+      window.history.replaceState({}, '', '/auth/login');
+    }
+  }, []);
+
   // Update form validity in real-time
   useEffect(() => {
     const emailValid = emailRules.every(rule => rule.validate(email));
@@ -82,10 +131,42 @@ export default function LoginPage() {
         return;
       }
 
+      // 🔒 SECURITY: Use getUser() for server-side authentication verification
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      if (error) {
+        // ... existing error handling
+      }
+
+      // 🔒 SECURITY: Verify authentication server-side
+      const {
+        data: { user: verifiedUser },
+        error: verifyError,
+      } = await supabase.auth.getUser();
+
+      if (verifyError || !verifiedUser) {
+        console.error(
+          '❌ Server-side authentication verification failed:',
+          verifyError
+        );
+        notifications.error('Errore di autenticazione. Riprova.', {
+          title: 'Verifica fallita',
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (verifiedUser.id !== data.user?.id) {
+        console.error('❌ User ID mismatch between login and verification');
+        notifications.error('Errore di sicurezza. Riprova.', {
+          title: 'Verifica sicurezza fallita',
+        });
+        setLoading(false);
+        return;
+      }
 
       if (error) {
         console.error('❌ Login error:', error);
@@ -152,16 +233,20 @@ export default function LoginPage() {
           // Mostra notifica di successo
           notifications.success(notificationMessages.loginSuccess);
 
-          // Redirect basato sul ruolo
-          if (profileData.role === 'merchant') {
+          // Redirect basato sul ruolo o al redirectTo se specificato
+          if (redirectTo) {
+            console.log('🔄 Redirecting to original destination:', redirectTo);
+            // Usa window.location.href per forzare un reload completo e sincronizzare lo stato
+            window.location.href = redirectTo;
+          } else if (profileData.role === 'merchant') {
             console.log('🏪 Redirecting to merchant dashboard');
-            router.push('/dashboard/merchant');
+            window.location.href = '/dashboard/merchant';
           } else if (profileData.role === 'rider') {
             console.log('🚴‍♂️ Redirecting to rider dashboard');
-            router.push('/dashboard/rider');
+            window.location.href = '/dashboard/rider';
           } else {
             console.log('❓ Unknown role, redirecting to registration');
-            router.push('/auth/register');
+            window.location.href = '/auth/register';
           }
         } else {
           console.log('❌ No profile found, redirecting to registration');
@@ -244,6 +329,25 @@ export default function LoginPage() {
           <CardDescription>
             Inserisci le tue credenziali per accedere
           </CardDescription>
+
+          {/* Messaggi informativi - fuori da CardDescription per evitare hydration error */}
+          {redirectTo && (
+            <div className='mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700'>
+              🚪 Effettua l'accesso per continuare alla pagina richiesta
+            </div>
+          )}
+          {emailConfirmed && (
+            <div className='mt-2 p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700'>
+              ✅ Il tuo account è stato verificato! Inserisci le tue credenziali
+              per accedere.
+            </div>
+          )}
+          {registrationSuccess && (
+            <div className='mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700'>
+              📧 Registrazione completata! Controlla la tua email per il link di
+              conferma, poi torna qui per accedere.
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className='space-y-4'>

@@ -1,5 +1,16 @@
 'use client';
 
+// 🔧 AUTH CLEANUP UTILITY (Solo per sviluppatori)
+// Per pulire tutti i dati di autenticazione in console:
+// localStorage.clear(); sessionStorage.clear();
+// document.cookie.split(';').forEach(c => {
+//   const [n] = c.split('=');
+//   if (n.trim().includes('supabase') || n.trim().includes('sb-')) {
+//     document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+//   }
+// });
+// window.location.href = '/auth/login';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,6 +57,7 @@ export default function RegisterPage() {
     }
 
     try {
+      // 🔒 SECURITY: Enhanced signup with email verification
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -54,21 +66,42 @@ export default function RegisterPage() {
             full_name: fullName,
             role: role,
           },
+          // Force email confirmation for security
+          emailRedirectTo: `${window.location.origin}/auth/login?confirmed=true`,
         },
       });
 
       if (signUpError) {
-        // Handle specific error cases
-        if (signUpError.message.includes('already registered')) {
+        // 🔒 SECURITY: Handle specific error cases with better UX
+        if (
+          signUpError.message.includes('already registered') ||
+          signUpError.message.includes('User already registered')
+        ) {
           setError(
-            'An account with this email already exists. Please log in instead.'
+            'Un account con questa email esiste già. Effettua il login invece.'
           );
+          // Suggest redirect to login
+          setTimeout(() => {
+            toast({
+              title: 'Account esistente',
+              description:
+                'Vuoi accedere con questa email? Vai alla pagina di login.',
+            });
+          }, 2000);
         } else if (signUpError.message.includes('email_not_confirmed')) {
           setError(
-            'Please check your email and confirm your registration before logging in.'
+            'Controlla la tua email e conferma la registrazione prima di accedere.'
           );
+        } else if (
+          signUpError.message.includes('Password should be at least')
+        ) {
+          setError('La password deve contenere almeno 6 caratteri.');
+        } else if (signUpError.message.includes('Invalid email')) {
+          setError('Inserisci un indirizzo email valido.');
+        } else if (signUpError.message.includes('rate_limit')) {
+          setError('Troppi tentativi. Riprova tra qualche minuto.');
         } else {
-          setError(signUpError.message);
+          setError(signUpError.message || 'Errore durante la registrazione.');
         }
         return;
       }
@@ -76,11 +109,14 @@ export default function RegisterPage() {
       // If user exists but needs email confirmation
       if (data.user && !data.session) {
         toast({
-          title: 'Registration successful!',
+          title: '✅ Registrazione completata!',
           description:
-            'Please check your email to confirm your account, then log in.',
+            "Controlla la tua email per confermare l'account, poi effettua il login.",
         });
-        router.push('/auth/login');
+        // Redirect to login with success message
+        setTimeout(() => {
+          router.push('/auth/login?message=registration_success');
+        }, 2000);
         return;
       }
 

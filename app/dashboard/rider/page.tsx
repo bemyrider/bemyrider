@@ -32,6 +32,7 @@ import PortfolioEditor from '@/components/PortfolioEditor';
 import PortfolioGallery from '@/components/PortfolioGallery';
 import { RiderDashboardSkeleton } from '@/components/ui/skeleton-loaders';
 import { notifications, notificationMessages } from '@/lib/notifications';
+import { handleAuthError } from '@/lib/auth-utils';
 import ProfiloDisponibilita from '@/components/dashboard/ModuloProfiloDisponibilita';
 import ModuloGestioneLavoro from '@/components/dashboard/ModuloGestioneLavoro';
 import ModuloPagamenti from '@/components/dashboard/ModuloPagamenti';
@@ -191,6 +192,7 @@ const useRiderDashboardState = () => {
   );
   const [showPortfolioEditor, setShowPortfolioEditor] = useState(false);
   const [portfolioData, setPortfolioData] = useState<any>(null);
+  const [isPollingOnboarding, setIsPollingOnboarding] = useState(false);
 
   return {
     // State
@@ -226,6 +228,8 @@ const useRiderDashboardState = () => {
     setShowPortfolioEditor,
     portfolioData,
     setPortfolioData,
+    isPollingOnboarding,
+    setIsPollingOnboarding,
   };
 };
 
@@ -252,6 +256,71 @@ function RiderDashboardContent() {
 
   // Use states from hook instead of duplicating locally
   const { isOpen, toggle } = useSidebar();
+
+  // ✅ SOLUTION 7: Add auth state change listener
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔄 Auth state changed:', event, session?.user?.id);
+
+      if (event === 'SIGNED_OUT' || !session) {
+        console.log(
+          '🚪 User signed out or session expired, redirecting to login'
+        );
+        router.push('/auth/login');
+      } else if (event === 'SIGNED_IN' && session && !state.profile) {
+        // If user just signed in and we don't have profile data, reload
+        console.log('✅ User signed in, reloading profile');
+        profileFetchedRef.current = false;
+        fetchProfile();
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router, state.profile]);
+
+  // Simplified auth error handling - only handle critical errors
+  useEffect(() => {
+    const handleCriticalErrors = async () => {
+      try {
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
+
+        // Only handle the most critical error that prevents normal operation
+        if (
+          error?.message?.includes('user_not_found') ||
+          error?.code === 'user_not_found'
+        ) {
+          console.log('🚫 User not found, clearing session and redirecting');
+
+          // Clear auth data and redirect
+          localStorage.clear();
+          sessionStorage.clear();
+          document.cookie.split(';').forEach(cookie => {
+            const [name] = cookie.split('=');
+            if (
+              name.trim().includes('supabase') ||
+              name.trim().includes('sb-')
+            ) {
+              document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+            }
+          });
+
+          window.location.href = '/auth/login';
+        }
+      } catch (err) {
+        console.error('❌ Auth check error:', err);
+      }
+    };
+
+    // Only run once on mount to avoid performance issues
+    handleCriticalErrors();
+  }, []);
 
   // Sidebar items definition
   const sidebarItems = [
@@ -313,7 +382,10 @@ function RiderDashboardContent() {
 
       if (authError || !user) {
         console.error('🚫 No authenticated user, redirecting to login');
-        router.push('/auth/login');
+        console.error('Auth error details:', authError);
+
+        // Use centralized error handling
+        handleAuthError(authError, router);
         return;
       }
 
@@ -469,7 +541,33 @@ function RiderDashboardContent() {
   const handleStripeOnboarding = async () => {
     state.setLoading(true);
     state.setError(null);
+
     try {
+      // Prima verifica se l'utente ha già completato l'onboarding
+      // Questo è utile se il webhook ha funzionato ma l'UI non si è aggiornata
+      console.log(
+        '🔍 Verifica preventiva stato onboarding prima di avviare...'
+      );
+
+      const checkResponse = await fetch('/api/stripe/onboarding', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (checkResponse.ok) {
+        const checkData = await checkResponse.json();
+
+        if (checkData.stripe_onboarding_complete) {
+          console.log('✅ Onboarding già completato - ricarico profilo');
+          profileFetchedRef.current = false;
+          await fetchProfile();
+          state.setLoading(false);
+          return; // Non avviare nuovo onboarding
+        }
+      }
+
+      // Se non è completato, avvia il processo di onboarding
+      console.log('🚀 Avvio nuovo processo di onboarding Stripe...');
       const response = await fetch('/api/stripe/onboarding', {
         method: 'POST',
         headers: {
@@ -485,6 +583,7 @@ function RiderDashboardContent() {
 
       const data = await response.json();
       if (data.url) {
+        console.log('🔗 Redirecting to Stripe onboarding:', data.url);
         window.location.href = data.url;
       } else {
         throw new Error('No URL returned from Stripe');
@@ -569,7 +668,9 @@ function RiderDashboardContent() {
           created_at, updated_at,
           merchant:profiles!merchant_id (
             id, full_name,
-            esercenti (business_name, address, city)
+            esercenti (
+              business_name, address, city
+            )
           )
         `
         )
@@ -590,15 +691,18 @@ function RiderDashboardContent() {
             merchant: {
               ...merchant,
               esercenti: Array.isArray(merchant?.esercenti)
-                ? merchant.esercenti[0]
-                : merchant?.esercenti,
+                ? merchant.esercenti[0] || null
+                : merchant?.esercenti || null, // Gestisci sia array che singolo oggetto
             },
           };
         })
         .filter(request => request.merchant);
 
       state.setServiceRequests(transformedRequests);
-      console.log('✅ Service requests loaded:', transformedRequests.length);
+      console.log(
+        '✅ Richieste di servizio caricate:',
+        transformedRequests.length
+      );
     } catch (error) {
       console.error('❌ Error fetching service requests:', error);
       state.setError('Errore nel caricamento delle richieste di servizio');
@@ -609,17 +713,151 @@ function RiderDashboardContent() {
 
   // ✅ SOLUTION 5: Simplified and protected useEffect
 
-  // Gestione onboarding complete (eseguito solo al mount)
+  // Prevenzione duplicati con flag statico (fuori da useEffect)
+  const onboardingHandledRef = useRef(false);
+
+  // Gestione onboarding complete con polling robusto e prevenzione duplicati
   useEffect(() => {
-    if (onboardingComplete === 'true') {
-      console.log('✅ Onboarding completato, ricaricando profilo');
-      window.history.replaceState({}, '', '/dashboard/rider');
-      profileFetchedRef.current = false; // Forza il reload del profilo
-      fetchingProfileRef.current = false; // Reset flag di fetching
-      fetchProfile();
-    }
+    const handleOnboardingReturn = async () => {
+      if (onboardingComplete === 'true' && !onboardingHandledRef.current) {
+        onboardingHandledRef.current = true; // Previeni esecuzioni multiple
+        state.setIsPollingOnboarding(true); // Mostra indicatore polling
+
+        console.log(
+          '✅ Rilevato ritorno da onboarding Stripe, verificando stato...'
+        );
+
+        // Rimuovi il parametro URL per evitare loop
+        window.history.replaceState({}, '', '/dashboard/rider');
+
+        // Forza il reload del profilo
+        profileFetchedRef.current = false;
+        fetchingProfileRef.current = false;
+
+        // Implementa polling per verificare che il webhook abbia aggiornato il database
+        let attempts = 0;
+        const maxAttempts = 10; // 10 secondi massimo
+        const checkInterval = 1000; // Controlla ogni secondo
+
+        const pollOnboardingStatus = async () => {
+          attempts++;
+          console.log(
+            `🔍 Tentativo ${attempts}/${maxAttempts} - Verifica stato onboarding...`
+          );
+
+          try {
+            // Verifica lo stato tramite API dedicata
+            const response = await fetch('/api/stripe/onboarding', {
+              method: 'GET',
+              credentials: 'include',
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              console.log('📊 Stato onboarding dal server:', data);
+
+              if (data.stripe_onboarding_complete) {
+                console.log('✅ Onboarding confermato completato dal server');
+                state.setIsPollingOnboarding(false); // Nasconde indicatore polling
+                await fetchProfile(); // Ricarica il profilo con i dati aggiornati
+                return; // Successo, interrompi polling
+              } else if (attempts >= maxAttempts) {
+                console.log('⏱️ Timeout raggiunto, ricarico profilo comunque');
+                state.setIsPollingOnboarding(false); // Nasconde indicatore polling
+                await fetchProfile(); // Ricarica anche se non confermato
+                return;
+              }
+            } else {
+              console.error('❌ Errore nella verifica dello stato onboarding');
+            }
+          } catch (error) {
+            // Ignora errori di rete temporanei (comuni in sviluppo)
+            if (
+              error instanceof TypeError &&
+              error.message.includes('NetworkError')
+            ) {
+              console.log(
+                '⚠️ Errore rete temporaneo durante polling (ignorato)'
+              );
+            } else {
+              console.error('❌ Errore durante polling onboarding:', error);
+              state.setIsPollingOnboarding(false); // Nasconde indicatore in caso di errore
+            }
+          }
+
+          // Continua polling se non completato e non raggiunto timeout
+          if (attempts < maxAttempts) {
+            setTimeout(pollOnboardingStatus, checkInterval);
+          } else {
+            console.log('⏱️ Polling completato, ricarico profilo finale');
+            state.setIsPollingOnboarding(false); // Nasconde indicatore polling
+            await fetchProfile();
+          }
+        };
+
+        // Avvia il polling
+        await pollOnboardingStatus();
+      }
+    };
+
+    handleOnboardingReturn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboardingComplete]);
+
+  // Controllo stato Stripe al caricamento iniziale (fallback per webhook)
+  useEffect(() => {
+    const checkStripeStatusOnLoad = async () => {
+      // Solo se profilo è caricato ma non stiamo facendo onboarding
+      if (state.profile && !onboardingComplete && profileFetchedRef.current) {
+        const riderDetails = state.profile.riders_details;
+
+        // Se ha un account Stripe ma onboarding non è marcato come completo
+        if (
+          riderDetails?.stripe_account_id &&
+          !riderDetails?.stripe_onboarding_complete
+        ) {
+          console.log(
+            '🔍 Controllo stato Stripe al caricamento - possibile disincronizzazione...'
+          );
+
+          try {
+            // Verifica lo stato attuale con Stripe
+            const response = await fetch('/api/stripe/onboarding', {
+              method: 'GET',
+              credentials: 'include',
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+
+              // Se il server dice che è completo ma il profilo locale no, ricarica
+              if (
+                data.stripe_onboarding_complete &&
+                !riderDetails.stripe_onboarding_complete
+              ) {
+                console.log(
+                  '✅ Rilevata desincronizzazione - ricarico profilo'
+                );
+                profileFetchedRef.current = false;
+                await fetchProfile();
+              }
+            }
+          } catch (error) {
+            console.error(
+              '❌ Errore controllo stato Stripe al caricamento:',
+              error
+            );
+          }
+        }
+      }
+    };
+
+    // Piccolo delay per assicurarsi che il profilo sia completamente caricato
+    const timeoutId = setTimeout(checkStripeStatusOnLoad, 1000);
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.profile, onboardingComplete]);
 
   // Caricamento profilo iniziale (eseguito solo se necessario)
   useEffect(() => {
@@ -888,6 +1126,24 @@ function RiderDashboardContent() {
 
         {/* Progress Indicator */}
         <OnboardingProgress currentState={onboardingState} />
+
+        {/* Indicatore Polling Onboarding */}
+        {state.isPollingOnboarding && (
+          <div className='mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg'>
+            <div className='flex items-center gap-3'>
+              <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600'></div>
+              <div>
+                <h4 className='font-semibold text-blue-800'>
+                  Verifica Account Stripe
+                </h4>
+                <p className='text-sm text-blue-600'>
+                  Stiamo verificando che l'onboarding sia stato completato
+                  correttamente...
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {state.error && (
           <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700'>

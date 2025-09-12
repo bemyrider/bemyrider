@@ -1,70 +1,8 @@
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import type { CookieOptions } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(req: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: req.headers,
-    },
-  });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          req.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: CookieOptions) {
-          req.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-        },
-      },
-    }
-  );
-
-  // Refresh session if expired - required for Server Components
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { pathname } = req.nextUrl;
 
   // Define public routes that don't require authentication
@@ -72,6 +10,7 @@ export async function middleware(req: NextRequest) {
     '/',
     '/auth/login',
     '/auth/register',
+    '/auth/cleanup',
     '/riders',
     '/test-direct',
     '/test-roles',
@@ -95,77 +34,97 @@ export async function middleware(req: NextRequest) {
 
   const isApiRoute = apiRoutes.some(route => pathname.startsWith(route));
 
-  // Allow API routes to pass through
+  // Allow API routes and static files to pass through
   if (isApiRoute) {
-    return response;
+    return NextResponse.next();
   }
 
-  // If user is not authenticated and trying to access protected route
-  if (!session && !isPublicRoute) {
-    // Don't redirect if this is a static file request (like SVG, CSS, JS)
-    if (
-      pathname.startsWith('/_next/') ||
-      pathname.startsWith('/public/') ||
-      pathname.includes('.svg') ||
-      pathname.includes('.css') ||
-      pathname.includes('.js') ||
-      pathname.includes('.png') ||
-      pathname.includes('.jpg') ||
-      pathname.includes('.ico')
-    ) {
-      return response;
-    }
-
-    const redirectUrl = new URL('/auth/login', req.url);
-    redirectUrl.searchParams.set('redirectTo', pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  // Don't redirect static files
   if (
-    session &&
-    (pathname === '/auth/login' || pathname === '/auth/register')
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/public/') ||
+    pathname.includes('.svg') ||
+    pathname.includes('.css') ||
+    pathname.includes('.js') ||
+    pathname.includes('.png') ||
+    pathname.includes('.jpg') ||
+    pathname.includes('.ico')
   ) {
-    // Get user role from metadata
-    const userRole = user?.user_metadata?.role;
+    return NextResponse.next();
+  }
 
-    if (userRole === 'rider') {
-      return NextResponse.redirect(new URL('/dashboard/rider', req.url));
-    } else if (userRole === 'merchant') {
-      return NextResponse.redirect(new URL('/dashboard/merchant', req.url));
-    } else {
-      // Default fallback
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+  // 🔒 SECURITY: Server-side authentication check for protected routes
+  if (!isPublicRoute) {
+    try {
+      // Initialize Supabase server client
+      const response = NextResponse.next();
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        {
+          cookies: {
+            get(name: string) {
+              return req.cookies.get(name)?.value;
+            },
+            set(name: string, value: string, options: any) {
+              response.cookies.set({ name, value, ...options });
+            },
+            remove(name: string, options: any) {
+              response.cookies.set({ name, value: '', ...options });
+            },
+          },
+        }
+      );
+
+      // Verify user authentication server-side
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error('❌ Middleware: Session error:', sessionError);
+      }
+
+      if (!session) {
+        console.log('🚪 Middleware: No session, redirecting to login');
+
+        // Preserve the original URL for redirect after login
+        const loginUrl = new URL('/auth/login', req.url);
+        loginUrl.searchParams.set('redirectTo', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+
+      // Verify user exists in our database
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('❌ Middleware: User profile not found:', profileError);
+        const loginUrl = new URL('/auth/login', req.url);
+        return NextResponse.redirect(loginUrl);
+      }
+
+      // Add user info to headers for client-side use
+      response.headers.set('x-user-id', session.user.id);
+      response.headers.set('x-user-role', profile.role);
+      response.headers.set('x-protected-route', 'true');
+
+      return response;
+    } catch (error) {
+      console.error('❌ Middleware: Authentication error:', error);
+
+      // On error, redirect to login
+      const loginUrl = new URL('/auth/login', req.url);
+      loginUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // If user is authenticated and accessing dashboard without specific role route
-  if (session && pathname === '/dashboard') {
-    const userRole = user?.user_metadata?.role;
-
-    if (userRole === 'rider') {
-      return NextResponse.redirect(new URL('/dashboard/rider', req.url));
-    } else if (userRole === 'merchant') {
-      return NextResponse.redirect(new URL('/dashboard/merchant', req.url));
-    }
-  }
-
-  // Role-based access control for dashboard routes
-  if (session && pathname.startsWith('/dashboard/')) {
-    const userRole = user?.user_metadata?.role;
-
-    if (pathname.includes('/rider') && userRole !== 'rider') {
-      // Rider trying to access merchant dashboard
-      return NextResponse.redirect(new URL('/dashboard/merchant', req.url));
-    }
-
-    if (pathname.includes('/merchant') && userRole !== 'merchant') {
-      // Merchant trying to access rider dashboard
-      return NextResponse.redirect(new URL('/dashboard/rider', req.url));
-    }
-  }
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

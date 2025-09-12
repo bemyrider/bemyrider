@@ -242,8 +242,8 @@ export default function MerchantDashboard() {
 
       if (fiscalError && fiscalError.code !== 'PGRST116') {
         console.error('Error fetching fiscal data:', fiscalError);
-      } else if (fiscalData) {
-        setMerchantFiscalData(fiscalData);
+      } else if (fiscalData && fiscalData.length > 0) {
+        setMerchantFiscalData(fiscalData[0]);
       }
     } catch (error: any) {
       console.error('Error fetching merchant data:', error);

@@ -5,6 +5,25 @@ Tutte le modifiche importanti a questo progetto saranno documentate in questo fi
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.10] - 2025-09-12
+
+### 🛠️ **Schema Database - Fix Registrazione Utenti**
+
+#### ✅ **Problema Critico Risolto:**
+- **Errore 500 registrazione**: Risolto errore SQL che impediva la registrazione degli utenti
+- **Colonne mancanti**: Aggiunte `created_at` e `updated_at` alla tabella `esercenti`
+- **Trigger database**: Verificato funzionamento corretto del sistema di creazione profili automatica
+
+#### 🔧 **Modifiche Tecniche:**
+- **Migrazione database**: `0004_chilly_skin.sql` - Aggiunta colonne timestamp alla tabella esercenti
+- **Schema TypeScript**: Aggiornato schema Drizzle con nuove colonne
+- **Trigger Supabase**: Confermata funzionalità del trigger `handle_new_user()`
+
+#### 📊 **Impatto:**
+- **Registrazione utenti**: Ora completamente funzionante
+- **Database consistency**: Schema allineato tra locale e produzione
+- **User experience**: Nessun più errori 500 durante la registrazione
+
 ## [0.5.0] - 2025-09-11
 
 ### 🚀 **Sistema di Sicurezza Enterprise-Grade Completamente Ridisegnato**

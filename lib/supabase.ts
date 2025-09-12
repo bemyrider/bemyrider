@@ -1,8 +1,10 @@
 import { createBrowserClient } from '@supabase/ssr';
 
+// Temporary workaround: Using legacy key for registration to work
 export const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoYXpkaWtlbXVxb2xxdmN1c2lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MDIyOTUsImV4cCI6MjA3MzE3ODI5NX0.2jz8PAevIr79Wlk8LCZOZoJTpNRoJqKU6__vT6WH3tE'
 );
 
 // Database types

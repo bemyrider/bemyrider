@@ -70,6 +70,12 @@ export const esercenti = pgTable('esercenti', {
   phoneNumber: varchar('phone_number', { length: 20 }),
   description: text('description'),
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 // Rider Details table (senza first_name e last_name - ora in rider_tax_details)

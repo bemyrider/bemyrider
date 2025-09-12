@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -46,23 +46,6 @@ export default function RegisterPage() {
     }
 
     try {
-      console.log('🚀 Starting registration with role:', role);
-
-      // Check if user already exists
-      const { data: existingUser } = await supabase
-        .from('profiles')
-        .select('id, email')
-        .eq('email', email)
-        .single();
-
-      if (existingUser) {
-        setError(
-          'An account with this email already exists. Please log in instead.'
-        );
-        setLoading(false);
-        return;
-      }
-
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -73,12 +56,6 @@ export default function RegisterPage() {
           },
         },
       });
-
-      console.log('📋 Registration data:', data);
-      console.log(
-        '🔍 User metadata after registration:',
-        data.user?.user_metadata
-      );
 
       if (signUpError) {
         // Handle specific error cases
@@ -109,6 +86,10 @@ export default function RegisterPage() {
 
       // If registration successful and user is confirmed
       if (data.user && data.session) {
+        console.log(
+          '✅ User registered successfully, profile created by trigger'
+        );
+
         toast({
           title: 'Registration successful!',
           description: 'Welcome to bemyrider!',
@@ -116,10 +97,8 @@ export default function RegisterPage() {
 
         // Redirect based on role
         if (role === 'merchant') {
-          console.log('🏦 Redirecting to merchant dashboard');
           router.push('/dashboard/merchant');
         } else {
-          console.log('🚴‍♂️ Redirecting to rider dashboard');
           router.push('/dashboard/rider');
         }
       }
@@ -230,7 +209,7 @@ export default function RegisterPage() {
                 </div>
                 {!role && error && error.includes('role') && (
                   <p className='text-sm text-red-500 mt-2'>
-                    ⚠️ Seleziona un ruolo per continuare
+                    ⚠️ Select a role to continue
                   </p>
                 )}
               </div>

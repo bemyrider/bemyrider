@@ -19,10 +19,16 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Schema TypeScript**: Aggiornato schema Drizzle con nuove colonne
 - **Trigger Supabase**: Confermata funzionalità del trigger `handle_new_user()`
 
+#### 🔧 **Modifiche Tecniche Aggiuntive:**
+- **Foreign Key Constraints**: Aggiunte relazioni tra `riders_details`, `rider_tax_details`, `esercente_tax_details` e le tabelle padre
+- **Migrazione database**: `0005_hot_stellaris.sql` - Foreign key relationships
+- **Schema Drizzle**: Aggiornati riferimenti foreign key per TypeScript
+
 #### 📊 **Impatto:**
 - **Registrazione utenti**: Ora completamente funzionante
+- **Dashboard caricamento**: Risolto errore PGRST200 nelle query join
 - **Database consistency**: Schema allineato tra locale e produzione
-- **User experience**: Nessun più errori 500 durante la registrazione
+- **User experience**: Nessun più errori 500 durante la registrazione e caricamento dashboard
 
 ## [0.5.0] - 2025-09-11
 

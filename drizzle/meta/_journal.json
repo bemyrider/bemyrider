@@ -36,6 +36,13 @@
       "when": 1757660626787,
       "tag": "0004_chilly_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1757673782935,
+      "tag": "0005_hot_stellaris",
+      "breakpoints": true
     }
   ]
 }

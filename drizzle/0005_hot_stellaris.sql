@@ -1,0 +1,3 @@
+ALTER TABLE "esercente_tax_details" ADD CONSTRAINT "esercente_tax_details_esercente_id_esercenti_id_fk" FOREIGN KEY ("esercente_id") REFERENCES "public"."esercenti"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "rider_tax_details" ADD CONSTRAINT "rider_tax_details_rider_id_profiles_id_fk" FOREIGN KEY ("rider_id") REFERENCES "public"."profiles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "riders_details" ADD CONSTRAINT "riders_details_profile_id_profiles_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE no action ON UPDATE no action;

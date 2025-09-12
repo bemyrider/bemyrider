@@ -80,7 +80,7 @@ export const esercenti = pgTable('esercenti', {
 
 // Rider Details table (senza first_name e last_name - ora in rider_tax_details)
 export const ridersDetails = pgTable('riders_details', {
-  profileId: uuid('profile_id').primaryKey(),
+  profileId: uuid('profile_id').primaryKey().references(() => profiles.id),
   vehicleType: vehicleTypeEnum('vehicle_type'),
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
@@ -188,7 +188,7 @@ export const recensioni = pgTable('recensioni', {
 
 // Rider Tax Details table (ora include first_name e last_name)
 export const riderTaxDetails = pgTable('rider_tax_details', {
-  riderId: uuid('rider_id').primaryKey(),
+  riderId: uuid('rider_id').primaryKey().references(() => profiles.id),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
   fiscalCode: varchar('fiscal_code', { length: 50 }),
@@ -200,7 +200,7 @@ export const riderTaxDetails = pgTable('rider_tax_details', {
 
 // Esercente Tax Details table
 export const esercenteTaxDetails = pgTable('esercente_tax_details', {
-  esercenteId: uuid('esercente_id').primaryKey(),
+  esercenteId: uuid('esercente_id').primaryKey().references(() => esercenti.id),
   companyName: varchar('company_name', { length: 255 }),
   vatNumber: varchar('vat_number', { length: 50 }),
   address: varchar('address', { length: 255 }),

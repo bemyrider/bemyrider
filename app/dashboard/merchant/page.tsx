@@ -238,8 +238,7 @@ export default function MerchantDashboard() {
       const { data: fiscalData, error: fiscalError } = await supabase
         .from('esercente_tax_details')
         .select('*')
-        .eq('esercente_id', profile.id)
-        .single();
+        .eq('esercente_id', profile.id);
 
       if (fiscalError && fiscalError.code !== 'PGRST116') {
         console.error('Error fetching fiscal data:', fiscalError);
@@ -312,7 +311,7 @@ export default function MerchantDashboard() {
           end_time,
           total_amount,
           status,
-          rider:profiles!rider_id (
+          rider:profiles (
             full_name
           )
         `)

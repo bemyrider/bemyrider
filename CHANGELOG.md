@@ -20,9 +20,21 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Trigger Supabase**: Confermata funzionalità del trigger `handle_new_user()`
 
 #### 🔧 **Modifiche Tecniche Aggiuntive:**
-- **Foreign Key Constraints**: Aggiunte relazioni tra `riders_details`, `rider_tax_details`, `esercente_tax_details` e le tabelle padre
-- **Migrazione database**: `0005_hot_stellaris.sql` - Foreign key relationships
-- **Schema Drizzle**: Aggiornati riferimenti foreign key per TypeScript
+- **Foreign Key Constraints**: Aggiunte relazioni complete tra tutte le tabelle correlate
+  - `service_requests.merchant_id` → `profiles.id`
+  - `service_requests.rider_id` → `profiles.id`
+  - `prenotazioni.esercente_id` → `esercenti.id`
+  - `prenotazioni.rider_id` → `profiles.id`
+  - `disponibilita_riders.rider_id` → `profiles.id`
+  - `recensioni.prenotazione_id` → `prenotazioni.id`
+  - `recensioni.esercente_id` → `esercenti.id`
+  - `recensioni.rider_id` → `profiles.id`
+  - `merchant_favorites.merchant_id` → `profiles.id`
+  - `merchant_favorites.rider_id` → `profiles.id`
+  - `occasional_performance_receipts.prenotazione_id` → `prenotazioni.id`
+- **Migrazioni database**: `0005_hot_stellaris.sql` e `0006_natural_penance.sql`
+- **Schema Drizzle**: Aggiornati tutti i riferimenti foreign key per TypeScript
+- **Query Supabase**: Corrette le query join per utilizzare la sintassi corretta
 
 #### 📊 **Impatto:**
 - **Registrazione utenti**: Ora completamente funzionante

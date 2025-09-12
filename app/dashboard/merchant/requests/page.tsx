@@ -124,7 +124,7 @@ export default function MerchantRequestsPage() {
           rider_response,
           created_at,
           updated_at,
-          rider:profiles!rider_id (
+          rider:profiles (
             id,
             full_name,
             avatar_url,

@@ -80,7 +80,9 @@ export const esercenti = pgTable('esercenti', {
 
 // Rider Details table (senza first_name e last_name - ora in rider_tax_details)
 export const ridersDetails = pgTable('riders_details', {
-  profileId: uuid('profile_id').primaryKey().references(() => profiles.id),
+  profileId: uuid('profile_id')
+    .primaryKey()
+    .references(() => profiles.id),
   vehicleType: vehicleTypeEnum('vehicle_type'),
   profilePictureUrl: varchar('profile_picture_url', { length: 255 }),
   bio: text('bio'),
@@ -119,7 +121,9 @@ export const ridersDetails = pgTable('riders_details', {
 // Disponibilita Riders table (ora punta a profiles)
 export const disponibilitaRiders = pgTable('disponibilita_riders', {
   id: uuid('id').primaryKey().defaultRandom(),
-  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
+  riderId: uuid('rider_id')
+    .notNull()
+    .references(() => profiles.id), // Ora punta a profiles.id
   dayOfWeek: dayOfWeekEnum('day_of_week').notNull(),
   startTime: time('start_time').notNull(),
   endTime: time('end_time').notNull(),
@@ -128,8 +132,12 @@ export const disponibilitaRiders = pgTable('disponibilita_riders', {
 // Prenotazioni table (ora rider_id punta a profiles)
 export const prenotazioni = pgTable('prenotazioni', {
   id: uuid('id').primaryKey().defaultRandom(),
-  esercenteId: uuid('esercente_id').notNull(),
-  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
+  esercenteId: uuid('esercente_id')
+    .notNull()
+    .references(() => esercenti.id),
+  riderId: uuid('rider_id')
+    .notNull()
+    .references(() => profiles.id), // Ora punta a profiles.id
   startTime: timestamp('start_time', { withTimezone: true }).notNull(),
   endTime: timestamp('end_time', { withTimezone: true }).notNull(),
   serviceDurationHours: decimal('service_duration_hours', {
@@ -153,8 +161,12 @@ export const prenotazioni = pgTable('prenotazioni', {
 // Updated: 2024-12-11 - Test workflow sicurezza automatica
 export const serviceRequests = pgTable('service_requests', {
   id: uuid('id').primaryKey().defaultRandom(),
-  merchantId: uuid('merchant_id').notNull(),
-  riderId: uuid('rider_id').notNull(),
+  merchantId: uuid('merchant_id')
+    .notNull()
+    .references(() => profiles.id),
+  riderId: uuid('rider_id')
+    .notNull()
+    .references(() => profiles.id),
   requestedDate: timestamp('requested_date', { mode: 'date' }).notNull(),
   startTime: time('start_time').notNull(),
   durationHours: decimal('duration_hours', {
@@ -176,9 +188,16 @@ export const serviceRequests = pgTable('service_requests', {
 // Recensioni table (ora rider_id punta a profiles)
 export const recensioni = pgTable('recensioni', {
   id: uuid('id').primaryKey().defaultRandom(),
-  prenotazioneId: uuid('prenotazione_id').notNull().unique(),
-  esercenteId: uuid('esercente_id').notNull(),
-  riderId: uuid('rider_id').notNull(), // Ora punta a profiles.id
+  prenotazioneId: uuid('prenotazione_id')
+    .notNull()
+    .unique()
+    .references(() => prenotazioni.id),
+  esercenteId: uuid('esercente_id')
+    .notNull()
+    .references(() => esercenti.id),
+  riderId: uuid('rider_id')
+    .notNull()
+    .references(() => profiles.id), // Ora punta a profiles.id
   rating: integer('rating').notNull(),
   comment: text('comment'),
   createdAt: timestamp('created_at', { withTimezone: true })
@@ -188,7 +207,9 @@ export const recensioni = pgTable('recensioni', {
 
 // Rider Tax Details table (ora include first_name e last_name)
 export const riderTaxDetails = pgTable('rider_tax_details', {
-  riderId: uuid('rider_id').primaryKey().references(() => profiles.id),
+  riderId: uuid('rider_id')
+    .primaryKey()
+    .references(() => profiles.id),
   firstName: varchar('first_name', { length: 100 }),
   lastName: varchar('last_name', { length: 100 }),
   fiscalCode: varchar('fiscal_code', { length: 50 }),
@@ -200,7 +221,9 @@ export const riderTaxDetails = pgTable('rider_tax_details', {
 
 // Esercente Tax Details table
 export const esercenteTaxDetails = pgTable('esercente_tax_details', {
-  esercenteId: uuid('esercente_id').primaryKey().references(() => esercenti.id),
+  esercenteId: uuid('esercente_id')
+    .primaryKey()
+    .references(() => esercenti.id),
   companyName: varchar('company_name', { length: 255 }),
   vatNumber: varchar('vat_number', { length: 50 }),
   address: varchar('address', { length: 255 }),
@@ -212,7 +235,10 @@ export const occasionalPerformanceReceipts = pgTable(
   'occasional_performance_receipts',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    prenotazioneId: uuid('prenotazione_id').notNull().unique(),
+    prenotazioneId: uuid('prenotazione_id')
+      .notNull()
+      .unique()
+      .references(() => prenotazioni.id),
     receiptNumber: integer('receipt_number').notNull(),
     receiptDate: timestamp('receipt_date', { mode: 'date' }).notNull(),
   }
@@ -221,8 +247,12 @@ export const occasionalPerformanceReceipts = pgTable(
 // Merchant Favorites table
 export const merchantFavorites = pgTable('merchant_favorites', {
   id: uuid('id').primaryKey().defaultRandom(),
-  merchantId: uuid('merchant_id').notNull(),
-  riderId: uuid('rider_id').notNull(),
+  merchantId: uuid('merchant_id')
+    .notNull()
+    .references(() => profiles.id),
+  riderId: uuid('rider_id')
+    .notNull()
+    .references(() => profiles.id),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

@@ -1,5 +1,37 @@
 # 📋 Changelog - bemyrider
 
+## [0.4.15] - 2025-01-17
+
+### 📞 Pagina Contatto - Risoluzione Errore 404
+
+#### 🚀 Nuove Funzionalità
+- **Pagina Contatto Completa**: `/contact` con design moderno e responsive
+- **Form di Contatto Funzionale**: Validazione client-side e feedback toast
+- **Informazioni Aziendali**: Dettagli contatto, orari e sede
+- **Sezione FAQ**: Domande frequenti per supporto utenti
+- **Partnership Section**: Area dedicata per collaborazioni business
+
+#### 🎨 Design e UX
+- **Brand Colors**: Utilizzo colori corporate #333366 e #ff9900
+- **Layout Responsive**: Ottimizzato per desktop e mobile
+- **Feedback Visivo**: Toast notifications per conferme e errori
+- **Form Validation**: Controlli real-time su campi obbligatori
+- **Loading States**: Indicatori di caricamento durante invio
+
+#### 🔧 Implementazione Tecnica
+- **app/contact/page.tsx**: Pagina principale con form e informazioni
+- **Integrazione Toast**: Utilizzo sistema notifiche esistente
+- **Componenti UI**: Card, Input, Textarea, Button per form
+- **State Management**: Gestione stato form con React hooks
+- **Error Handling**: Gestione robusta errori e feedback utente
+
+#### ✅ Risoluzioni
+- **Errore 404**: Completamente risolto per `/contact` su Vercel
+- **Build Success**: Compilazione senza errori TypeScript
+- **Deploy Ready**: Pronto per deploy automatico su Vercel
+
+---
+
 ## [0.4.14] - 2025-01-17
 
 ### 🌐 Sistema di Controllo Connessione - Monitoraggio Intelligente

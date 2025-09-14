@@ -40,6 +40,7 @@ export function RidersList({ riders, loading }: RidersListProps) {
           <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center'>
             <Image
               src='/bemyrider_logo_text.svg'
+              priority
               alt='bemyrider'
               width={40}
               height={40}

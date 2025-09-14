@@ -20,6 +20,7 @@ export async function middleware(req: NextRequest) {
 
   // API routes that should be accessible
   const apiRoutes = [
+    '/api/health',
     '/api/stripe/webhook',
     '/api/stripe/onboarding',
     '/api/stripe/create-account',

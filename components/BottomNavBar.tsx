@@ -76,7 +76,7 @@ export function BottomNavBar({
             <button className='flex flex-col items-center p-1.5 rounded-xl text-gray-700 shadow-lg transition-colors'>
               <div className='flex items-center justify-center w-9 h-9 bg-gray-300 bg-opacity-30 rounded-full'>
                 <Image
-                  src='/bemyrider_logo.svg'
+                  src='/bemyrider_logo_text.svg'
                   alt='bemyrider'
                   width={20}
                   height={20}

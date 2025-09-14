@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='it'>
       <head>
-        <link rel='icon' type='image/svg+xml' href='/bemyrider_logo.svg' />
+        <link rel='icon' type='image/svg+xml' href='/bemyrider_logo_text.svg' />
       </head>
       <body className={inter.className}>
         {children}

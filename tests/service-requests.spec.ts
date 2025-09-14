@@ -28,7 +28,10 @@ test.describe('Flusso Richieste di Servizio - End-to-End', () => {
 
       // Inserisci credenziali usando ID specifici
       await page.fill('#email', 'italiagofood@gmail.com');
-      await page.fill('#password', process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!');
+      await page.fill(
+        '#password',
+        process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!'
+      );
       console.log('✍️ Credenziali inserite');
 
       // Screenshot dopo inserimento credenziali
@@ -99,7 +102,8 @@ test.describe('Flusso Richieste di Servizio - End-to-End', () => {
       // === INSERISCI QUI LE CREDENZIALI MERCHANT ===
       // Sostituisci questi valori con le credenziali reali del merchant
       const MERCHANT_EMAIL = 'italiagofood@gmail.com';
-      const MERCHANT_PASSWORD = process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!';
+      const MERCHANT_PASSWORD =
+        process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!';
 
       // Inserisci credenziali merchant usando ID specifici con più attesa
       await page.fill('#email', MERCHANT_EMAIL);
@@ -244,7 +248,8 @@ test.describe('Flusso Richieste di Servizio - End-to-End', () => {
       // === FASE 5: LOGIN RIDER ===
       // Sostituisci questi valori con le credenziali reali del rider
       const RIDER_EMAIL = 'bemyrider@gmail.com';
-      const RIDER_PASSWORD = process.env.TEST_RIDER_PASSWORD || 'TestPassword123!';
+      const RIDER_PASSWORD =
+        process.env.TEST_RIDER_PASSWORD || 'TestPassword123!';
 
       await page.fill('#email', RIDER_EMAIL);
       await page.fill('#password', RIDER_PASSWORD);
@@ -341,7 +346,8 @@ test.describe('Flusso Richieste di Servizio - End-to-End', () => {
 
       // Login merchant - usa le stesse credenziali
       const MERCHANT_EMAIL = 'italiagofood@gmail.com';
-      const MERCHANT_PASSWORD = process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!';
+      const MERCHANT_PASSWORD =
+        process.env.TEST_MERCHANT_PASSWORD || 'TestPassword123!';
 
       await page.goto('/auth/login');
       await page.fill('#email', MERCHANT_EMAIL);

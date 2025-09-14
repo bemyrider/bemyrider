@@ -8,12 +8,12 @@ require('dotenv').config({ path: '.env.local' });
 
 // Configurazione
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.***REMOVED***;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('❌ Errore: Variabili ambiente mancanti!');
   console.log(
-    'Assicurati di avere NEXT_PUBLIC_SUPABASE_URL e ***REMOVED*** in .env.local'
+    'Assicurati di avere NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY in .env.local'
   );
   process.exit(1);
 }

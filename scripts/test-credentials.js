@@ -49,7 +49,7 @@ async function testDatabaseConnection() {
   try {
     console.log('🔌 Connessione al database...');
 
-    const client = postgres(process.env.***REMOVED***);
+    const client = postgres(process.env.DATABASE_URL);
     const db = drizzle(client);
 
     // Test semplice: query per vedere se la connessione funziona
@@ -77,7 +77,7 @@ async function testSupabaseConnection() {
     // Usa la service role key per i test amministrativi
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.***REMOVED***
+      process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
     // Test semplice: ottieni informazioni sul progetto

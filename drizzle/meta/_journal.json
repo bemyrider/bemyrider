@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1757272295572,
+      "tag": "0005_add_merchant_favorites",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757361859241,
+      "tag": "0001_perpetual_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757618679501,
+      "tag": "0002_flippant_baron_strucker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757618794601,
+      "tag": "0003_slippery_mongoose",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1757660626787,
+      "tag": "0004_chilly_skin",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1757673782935,
+      "tag": "0005_hot_stellaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1757674368381,
+      "tag": "0006_natural_penance",
+      "breakpoints": true
+    }
+  ]
+}

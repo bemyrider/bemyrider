@@ -183,7 +183,7 @@ export default function RiderBookingPage() {
 
   useEffect(() => {
     fetchRiderProfile();
-  }, [fetchRiderProfile]);
+  }, [riderId]); // Changed from [fetchRiderProfile] to [riderId] to prevent infinite loop
 
   // Load merchant profile for booking functionality
   useEffect(() => {

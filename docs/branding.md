@@ -5,27 +5,28 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ## 🌈 Palette Colori
 
 ### Colori Primari
+
 ```css
 /* Corporate Blue - Affidabilità e Professionalità */
---primary: #333366;        /* Blue Navy */
+--primary: #333366; /* Blue Navy */
 --primary-50: #f8f9ff;
 --primary-100: #e6e7ff;
 --primary-200: #d1d3ff;
 --primary-300: #a3a7ff;
 --primary-400: #6e74ff;
---primary-500: #333366;    /* Primary */
+--primary-500: #333366; /* Primary */
 --primary-600: #2a2e5a;
 --primary-700: #202249;
 --primary-800: #161735;
 --primary-900: #0d0e1f;
 
 /* Orange Accent - Energia e Dinamismo */
---secondary: #ff9900;      /* Orange */
+--secondary: #ff9900; /* Orange */
 --secondary-50: #fff9f0;
 --secondary-100: #ffe6cc;
 --secondary-200: #ffcc99;
 --secondary-300: #ffaa66;
---secondary-400: #ff9900;  /* Secondary */
+--secondary-400: #ff9900; /* Secondary */
 --secondary-500: #e6860d;
 --secondary-600: #cc6600;
 --secondary-700: #b34700;
@@ -34,29 +35,31 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ```
 
 ### Colori Semantici
+
 ```css
 /* Success States */
---success: #10b981;       /* Green */
+--success: #10b981; /* Green */
 --success-light: #d1fae5;
 --success-dark: #047857;
 
 /* Warning States */
---warning: #f59e0b;       /* Yellow */
+--warning: #f59e0b; /* Yellow */
 --warning-light: #fef3c7;
 --warning-dark: #d97706;
 
 /* Error States */
---error: #ef4444;         /* Red */
+--error: #ef4444; /* Red */
 --error-light: #fecaca;
 --error-dark: #dc2626;
 
 /* Info States */
---info: #3b82f6;          /* Blue */
+--info: #3b82f6; /* Blue */
 --info-light: #dbeafe;
 --info-dark: #1d4ed8;
 ```
 
 ### Colori Neutrali
+
 ```css
 /* Gray Scale */
 --gray-50: #f9fafb;
@@ -80,6 +83,7 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ## 📝 Tipografia
 
 ### Font Family Principali
+
 ```css
 /* Logo e Titoli */
 --font-logo: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -92,33 +96,35 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ```
 
 ### Scale Tipografica
+
 ```css
 /* Display */
---text-display-2xl: 4.5rem;    /* 72px */
---text-display-xl: 3.75rem;    /* 60px */
---text-display-lg: 3rem;       /* 48px */
---text-display-md: 2.25rem;    /* 36px */
---text-display-sm: 1.875rem;   /* 30px */
+--text-display-2xl: 4.5rem; /* 72px */
+--text-display-xl: 3.75rem; /* 60px */
+--text-display-lg: 3rem; /* 48px */
+--text-display-md: 2.25rem; /* 36px */
+--text-display-sm: 1.875rem; /* 30px */
 
 /* Headings */
---text-heading-xl: 2rem;       /* 32px */
---text-heading-lg: 1.5rem;     /* 24px */
---text-heading-md: 1.25rem;    /* 20px */
---text-heading-sm: 1.125rem;   /* 18px */
+--text-heading-xl: 2rem; /* 32px */
+--text-heading-lg: 1.5rem; /* 24px */
+--text-heading-md: 1.25rem; /* 20px */
+--text-heading-sm: 1.125rem; /* 18px */
 
 /* Body */
---text-body-lg: 1.125rem;      /* 18px */
---text-body-md: 1rem;          /* 16px */
---text-body-sm: 0.875rem;      /* 14px */
---text-body-xs: 0.75rem;       /* 12px */
+--text-body-lg: 1.125rem; /* 18px */
+--text-body-md: 1rem; /* 16px */
+--text-body-sm: 0.875rem; /* 14px */
+--text-body-xs: 0.75rem; /* 12px */
 
 /* Labels */
---text-label-lg: 0.875rem;     /* 14px */
---text-label-md: 0.8125rem;    /* 13px */
---text-label-sm: 0.75rem;      /* 12px */
+--text-label-lg: 0.875rem; /* 14px */
+--text-label-md: 0.8125rem; /* 13px */
+--text-label-sm: 0.75rem; /* 12px */
 ```
 
 ### Pesie Font
+
 ```css
 --font-weight-thin: 100;
 --font-weight-light: 300;
@@ -133,12 +139,14 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ## 🎯 Logo e Identità
 
 ### Logo Principale
+
 - **File**: `public/bemyrider_logo.svg`
 - **Utilizzo**: Sempre versione vettoriale
 - **Colore**: Primary (#333366) su sfondo chiaro
 - **Colore**: White su sfondo primary
 
 ### Logo Variants
+
 ```css
 /* Logo con tagline */
 .bemyrider-logo-full {
@@ -157,9 +165,10 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ```
 
 ### Spazio di Respirazione (Clear Space)
+
 ```css
 /* Minimum clear space around logo */
---logo-clear-space: 1.5rem;  /* 24px */
+--logo-clear-space: 1.5rem; /* 24px */
 
 /* Usage */
 .logo-container {
@@ -172,6 +181,7 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ### Componenti Base (shadcn/ui)
 
 #### Button Variants
+
 ```typescript
 // Primary Button
 <button className="bg-primary hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
@@ -190,6 +200,7 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ```
 
 #### Card Component
+
 ```typescript
 // Standard Card
 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -211,44 +222,48 @@ Questa sezione contiene tutte le linee guida per mantenere la coerenza visiva e 
 ### Layout Patterns
 
 #### Container Widths
+
 ```css
---container-xs: 20rem;      /* 320px */
---container-sm: 24rem;      /* 384px */
---container-md: 28rem;      /* 448px */
---container-lg: 32rem;      /* 512px */
---container-xl: 36rem;      /* 576px */
---container-2xl: 42rem;     /* 672px */
---container-3xl: 48rem;     /* 768px */
---container-4xl: 56rem;     /* 896px */
---container-5xl: 64rem;     /* 1024px */
---container-6xl: 72rem;     /* 1152px */
---container-7xl: 80rem;     /* 1280px */
+--container-xs: 20rem; /* 320px */
+--container-sm: 24rem; /* 384px */
+--container-md: 28rem; /* 448px */
+--container-lg: 32rem; /* 512px */
+--container-xl: 36rem; /* 576px */
+--container-2xl: 42rem; /* 672px */
+--container-3xl: 48rem; /* 768px */
+--container-4xl: 56rem; /* 896px */
+--container-5xl: 64rem; /* 1024px */
+--container-6xl: 72rem; /* 1152px */
+--container-7xl: 80rem; /* 1280px */
 ```
 
 #### Spacing Scale
+
 ```css
---space-1: 0.25rem;   /* 4px */
---space-2: 0.5rem;    /* 8px */
---space-3: 0.75rem;   /* 12px */
---space-4: 1rem;      /* 16px */
---space-5: 1.25rem;   /* 20px */
---space-6: 1.5rem;    /* 24px */
---space-8: 2rem;      /* 32px */
---space-10: 2.5rem;   /* 40px */
---space-12: 3rem;     /* 48px */
---space-16: 4rem;     /* 64px */
---space-20: 5rem;     /* 80px */
---space-24: 6rem;     /* 96px */
+--space-1: 0.25rem; /* 4px */
+--space-2: 0.5rem; /* 8px */
+--space-3: 0.75rem; /* 12px */
+--space-4: 1rem; /* 16px */
+--space-5: 1.25rem; /* 20px */
+--space-6: 1.5rem; /* 24px */
+--space-8: 2rem; /* 32px */
+--space-10: 2.5rem; /* 40px */
+--space-12: 3rem; /* 48px */
+--space-16: 4rem; /* 64px */
+--space-20: 5rem; /* 80px */
+--space-24: 6rem; /* 96px */
 ```
 
 ## 🎭 Iconografia
 
 ### Icon Library
+
 - **Framework**: Lucide React (open source, consistente)
 - **Stile**: Outline per interfaccia generale, Filled per azioni importanti
 - **Dimensione**: 16px, 20px, 24px, 32px scale
 
 ### Icon Usage Guidelines
+
 ```typescript
 // Action Icons
 import { CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
@@ -263,15 +278,17 @@ import { Clock, Check, X, AlertTriangle } from 'lucide-react';
 ## 📱 Responsive Design
 
 ### Breakpoints
+
 ```css
---breakpoint-sm: 640px;   /* Mobile */
---breakpoint-md: 768px;   /* Tablet */
---breakpoint-lg: 1024px;  /* Desktop */
---breakpoint-xl: 1280px;  /* Large Desktop */
+--breakpoint-sm: 640px; /* Mobile */
+--breakpoint-md: 768px; /* Tablet */
+--breakpoint-lg: 1024px; /* Desktop */
+--breakpoint-xl: 1280px; /* Large Desktop */
 --breakpoint-2xl: 1536px; /* Extra Large */
 ```
 
 ### Mobile-First Approach
+
 ```css
 /* Mobile First */
 .component {
@@ -296,6 +313,7 @@ import { Clock, Check, X, AlertTriangle } from 'lucide-react';
 ## 🌙 Dark Mode Support
 
 ### Dark Mode Colors
+
 ```css
 /* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
@@ -310,6 +328,7 @@ import { Clock, Check, X, AlertTriangle } from 'lucide-react';
 ```
 
 ### Dark Mode Implementation
+
 ```typescript
 // Theme provider
 const [isDark, setIsDark] = useState(false);
@@ -321,11 +340,13 @@ document.documentElement.classList.toggle('dark', isDark);
 ## ♿ Accessibilità
 
 ### Contrast Requirements
+
 - **Text normale**: 4.5:1 minimum contrast ratio
 - **Large text**: 3:1 minimum contrast ratio
 - **UI components**: 3:1 minimum contrast ratio
 
 ### Focus Management
+
 ```css
 /* Focus styles */
 .focusable:focus {
@@ -348,6 +369,7 @@ document.documentElement.classList.toggle('dark', isDark);
 ## 📏 Grid e Layout
 
 ### CSS Grid System
+
 ```css
 /* 12-column grid */
 .grid-container {
@@ -367,6 +389,7 @@ document.documentElement.classList.toggle('dark', isDark);
 ## 🎯 Component Patterns
 
 ### Loading States
+
 ```typescript
 // Skeleton loader
 <div className="animate-pulse">
@@ -379,6 +402,7 @@ document.documentElement.classList.toggle('dark', isDark);
 ```
 
 ### Error States
+
 ```typescript
 // Error message
 <div className="bg-error-light border border-error text-error px-4 py-3 rounded-lg">
@@ -395,19 +419,21 @@ document.documentElement.classList.toggle('dark', isDark);
 ## 📊 Data Visualization
 
 ### Chart Colors
+
 ```css
 /* Chart color palette */
---chart-1: #333366;  /* Primary */
---chart-2: #ff9900;  /* Secondary */
---chart-3: #10b981;  /* Success */
---chart-4: #f59e0b;  /* Warning */
---chart-5: #ef4444;  /* Error */
---chart-6: #3b82f6;  /* Info */
+--chart-1: #333366; /* Primary */
+--chart-2: #ff9900; /* Secondary */
+--chart-3: #10b981; /* Success */
+--chart-4: #f59e0b; /* Warning */
+--chart-5: #ef4444; /* Error */
+--chart-6: #3b82f6; /* Info */
 ```
 
 ## 🚀 Implementation Guide
 
 ### Tailwind Configuration
+
 ```javascript
 // tailwind.config.js
 module.exports = {
@@ -426,18 +452,19 @@ module.exports = {
           500: '#ff9900',
           600: '#e6860d',
           // ... other shades
-        }
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui'],
-        logo: ['Manrope', 'system-ui']
-      }
-    }
-  }
+        logo: ['Manrope', 'system-ui'],
+      },
+    },
+  },
 };
 ```
 
 ### CSS Custom Properties
+
 ```css
 /* css/globals.css */
 :root {

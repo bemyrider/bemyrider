@@ -7,6 +7,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ## 🛡️ Architettura di Sicurezza
 
 ### 1. JWT Signing Keys Avanzati
+
 ```typescript
 // Sistema JWT Enterprise-Grade
 - ✅ Algoritmo ECC (P-256) per massima sicurezza
@@ -18,6 +19,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ```
 
 ### 2. Middleware Server-Side
+
 ```typescript
 // middleware.ts - Autenticazione server-side per tutte le route protette
 - ✅ Verifica sessione Supabase server-side
@@ -28,6 +30,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ```
 
 ### 3. Verifica Autenticazione Client-Side
+
 ```typescript
 // login/page.tsx - Verifica duale per massima sicurezza
 - ✅ Login con signInWithPassword
@@ -38,6 +41,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ```
 
 ### 4. Gestione Stati e Redirect
+
 ```typescript
 // Sistema di redirect intelligente
 - ✅ Preservazione URL destinazione
@@ -50,18 +54,21 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ## 🎯 Flusso Utente Ottimizzato
 
 ### Registrazione
+
 1. **Validazione form in tempo reale** → Feedback immediato
 2. **Invio email conferma** → Forza verifica email
 3. **Redirect intelligente** → Guida utente al passo successivo
 4. **Gestione errori specifici** → Messaggi chiari per ogni scenario
 
 ### Login
+
 1. **Validazione credenziali** → Controllo sicurezza server-side
 2. **Verifica ruolo utente** → Redirect alla dashboard corretta
 3. **Gestione stati speciali** → Email confermata, registrazione completata
 4. **Recupero password** → Rispedizione email conferma
 
 ### Recupero Account
+
 1. **Verifica email esistente** → Solo per account registrati
 2. **Invio email sicura** → Link con scadenza
 3. **Conferma automatica** → Redirect con feedback visivo
@@ -69,6 +76,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ## 🔧 Caratteristiche Tecniche
 
 ### Sicurezza
+
 - **🔐 Autenticazione server-side obbligatoria**
 - **🛡️ Verifica duale client + server**
 - **🚫 Prevenzione session hijacking**
@@ -79,6 +87,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 - **🏢 Compliance enterprise (SOC2/PCI-DSS)**
 
 ### User Experience
+
 - **📱 Validazione real-time dei form**
 - **🎨 Feedback visivo immediato**
 - **🔄 Redirect intelligenti**
@@ -89,6 +98,7 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 - **🔄 Sincronizzazione stato client-server**
 
 ### Gestione Errori
+
 - **🚨 Errori specifici per ogni scenario**
 - **🔄 Recovery automatico dove possibile**
 - **📊 Logging dettagliato per debugging**
@@ -97,33 +107,36 @@ Il sistema di autenticazione di bemyrider implementa un flusso sicuro multi-laye
 ## 📊 Stati del Sistema
 
 ### Stati Autenticazione
+
 ```typescript
 enum AuthState {
-  UNAUTHENTICATED,     // Utente non loggato
-  AUTHENTICATING,      // In corso di autenticazione
-  AUTHENTICATED,       // Autenticato correttamente
-  EMAIL_UNCONFIRMED,   // Email non confermata
-  PROFILE_INCOMPLETE,  // Profilo incompleto
-  ERROR                // Errore di autenticazione
+  UNAUTHENTICATED, // Utente non loggato
+  AUTHENTICATING, // In corso di autenticazione
+  AUTHENTICATED, // Autenticato correttamente
+  EMAIL_UNCONFIRMED, // Email non confermata
+  PROFILE_INCOMPLETE, // Profilo incompleto
+  ERROR, // Errore di autenticazione
 }
 ```
 
 ### Stati Registrazione
+
 ```typescript
 enum RegistrationState {
-  FORM_FILLING,        // Compilazione form
-  VALIDATING,          // Validazione dati
-  SUBMITTING,          // Invio registrazione
-  EMAIL_SENT,          // Email conferma inviata
-  EMAIL_CONFIRMED,     // Email confermata
-  PROFILE_CREATED,     // Profilo creato
-  ERROR                // Errore registrazione
+  FORM_FILLING, // Compilazione form
+  VALIDATING, // Validazione dati
+  SUBMITTING, // Invio registrazione
+  EMAIL_SENT, // Email conferma inviata
+  EMAIL_CONFIRMED, // Email confermata
+  PROFILE_CREATED, // Profilo creato
+  ERROR, // Errore registrazione
 }
 ```
 
 ## 🔄 Flussi Dettagliati
 
 ### Flusso Registrazione Completo
+
 ```
 1. Form compilazione → Validazione real-time
 2. Invio dati → Verifica server-side
@@ -135,6 +148,7 @@ enum RegistrationState {
 ```
 
 ### Flusso Login Sicuro
+
 ```
 1. Form credenziali → Validazione client
 2. Invio autenticazione → Verifica Supabase
@@ -147,10 +161,13 @@ enum RegistrationState {
 ## 🛠️ Implementazione Tecnica
 
 ### Middleware Sicuro
+
 ```typescript
 export async function middleware(req: NextRequest) {
   // Server-side session verification
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     // Preserve original URL and redirect to login
@@ -172,15 +189,19 @@ export async function middleware(req: NextRequest) {
 ```
 
 ### Verifica Client-Side
+
 ```typescript
-const handleLogin = async (e) => {
+const handleLogin = async e => {
   // Primary authentication
   const { data, error } = await supabase.auth.signInWithPassword({
-    email, password
+    email,
+    password,
   });
 
   // Security verification
-  const { data: { user: verifiedUser } } = await supabase.auth.getUser();
+  const {
+    data: { user: verifiedUser },
+  } = await supabase.auth.getUser();
 
   if (verifiedUser.id !== data.user?.id) {
     // Security breach detected
@@ -194,6 +215,7 @@ const handleLogin = async (e) => {
 ## 📈 Metriche e Monitoraggio
 
 ### KPI Sicurezza
+
 - **🔒 Tasso autenticazioni riuscite**: > 95%
 - **🚫 Tentativi intrusione bloccati**: 100%
 - **⚡ Tempo risposta medio**: < 200ms (migliorato con JWT signing keys)
@@ -202,6 +224,7 @@ const handleLogin = async (e) => {
 - **🏢 Compliance enterprise**: SOC2/PCI-DSS/HIPAA
 
 ### KPI User Experience
+
 - **📱 Tasso completamento registrazione**: > 80%
 - **⚡ Tempo registrazione medio**: < 2 minuti
 - **🔄 Tasso recovery errori**: > 90%
@@ -210,6 +233,7 @@ const handleLogin = async (e) => {
 ## 🚀 Miglioramenti Futuri
 
 ### Sicurezza Avanzata
+
 - [x] **JWT Signing Keys avanzati** ✅ COMPLETATO
 - [ ] **2FA (Two-Factor Authentication)**
 - [ ] **Biometric authentication**
@@ -217,12 +241,14 @@ const handleLogin = async (e) => {
 - [ ] **Audit logging completo**
 
 ### User Experience
+
 - [ ] **Social login (Google, Facebook)**
 - [ ] **Magic link authentication**
 - [ ] **Progressive Web App**
 - [ ] **Offline capability**
 
 ### Scalabilità
+
 - [ ] **Redis per session caching**
 - [ ] **Load balancing**
 - [ ] **CDN per asset statici**
@@ -231,17 +257,20 @@ const handleLogin = async (e) => {
 ## 🔑 Migrazione JWT Signing Keys
 
 ### Panoramica Migrazione
+
 La migrazione dai JWT secret legacy ai JWT signing keys avanzati è stata completata con successo, portando l'applicazione bemyrider a standard di sicurezza enterprise-grade.
 
 ### Benefici Ottenuti
 
 #### Sicurezza Avanzata
+
 - **🔐 Algoritmo ECC (P-256)**: Chiavi asimmetriche per massima sicurezza
 - **🛡️ Chiavi non estraibili**: Impossibile estrarre chiavi private da Supabase
 - **⚡ Revoca istantanea**: Chiavi compromesse possono essere revocate immediatamente
 - **🏢 Compliance**: Allineamento con standard SOC2, PCI-DSS, HIPAA
 
 #### Performance Ottimizzata
+
 - **⚡ Validazione locale**: JWT verificati localmente senza Auth server
 - **📈 Riduzione latenza**: Autenticazione più veloce e responsiva
 - **💾 Meno carico DB**: Riduzione delle chiamate al database
@@ -250,6 +279,7 @@ La migrazione dai JWT secret legacy ai JWT signing keys avanzati è stata comple
 ### Implementazione Tecnica
 
 #### Configurazione Supabase
+
 ```bash
 # Dashboard Supabase → Authentication → JWT Keys
 ✅ CURRENT KEY: ECC (P-256) - ed31f20f-fc57-48f4-aa3e-947392aee14d
@@ -258,25 +288,31 @@ La migrazione dai JWT secret legacy ai JWT signing keys avanzati è stata comple
 ```
 
 #### Compatibilità Codice
+
 ```typescript
 // Il codice esistente è automaticamente compatibile
 // Supabase client gestisce automaticamente i nuovi signing keys
 const { data, error } = await supabase.auth.signInWithPassword({
-  email, password
+  email,
+  password,
 });
 
 // Verifica server-side continua a funzionare
-const { data: { user } } = await supabase.auth.getUser();
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 ```
 
 ### Risoluzione Problemi
 
 #### Errori Risolti Durante Migrazione
+
 1. **Errore Hydration**: `<div>` dentro `<p>` risolto spostando messaggi fuori da CardDescription
 2. **Loop Redirect**: Sostituito `router.push()` con `window.location.href` per sincronizzazione
 3. **Middleware Syntax**: Corretto errore sintassi in `response.cookies.set()`
 
 #### Test di Verifica
+
 - ✅ **Login/Logout**: Funzionanti senza errori
 - ✅ **Redirect Dashboard**: Basato su ruolo (rider/merchant)
 - ✅ **Performance**: Tempi di autenticazione < 200ms
@@ -286,12 +322,14 @@ const { data: { user } } = await supabase.auth.getUser();
 ### Monitoraggio Post-Migrazione
 
 #### Metriche Chiave
+
 - **Tempo autenticazione**: < 200ms (migliorato da 500ms)
 - **Validazione JWT**: < 50ms (locale vs server)
 - **Errori autenticazione**: 0% (zero errori JWT)
 - **Uptime**: 100% (nessuna interruzione servizio)
 
 #### Alerting
+
 - **Performance degradation**: Se tempo auth > 300ms
 - **JWT errors**: Se errori di validazione > 0.1%
 - **Key rotation**: Notifica per future rotazioni
@@ -300,6 +338,7 @@ const { data: { user } } = await supabase.auth.getUser();
 ## 📞 Supporto e Manutenzione
 
 ### Monitoraggio
+
 - **Logs Supabase** per tentativi autenticazione
 - **Error tracking** per debugging
 - **Performance monitoring** per ottimizzazioni
@@ -307,6 +346,7 @@ const { data: { user } } = await supabase.auth.getUser();
 - **JWT validation metrics** per performance
 
 ### Manutenzione
+
 - **Aggiornamenti regolari** dipendenze sicurezza
 - **Code review** obbligatorio per modifiche auth
 - **Backup automatizzati** dati utente

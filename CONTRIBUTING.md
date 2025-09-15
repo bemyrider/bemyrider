@@ -28,4 +28,4 @@ Grazie per il tuo interesse a contribuire a bemyrider! Prima di iniziare, leggi 
 
 ## Contatti
 
-Per domande o dubbi, contatta il maintainer: Giorgio Di Martino - info@bemyrider.it 
+Per domande o dubbi, contatta il maintainer: Giorgio Di Martino - info@bemyrider.it

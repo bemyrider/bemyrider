@@ -33,8 +33,5 @@
     // Better Comments - Migliora i commenti
     "aaron-bond.better-comments"
   ],
-  "unwantedRecommendations": [
-    "ms-vscode.vscode-typescript",
-    "hookyqr.beautify"
-  ]
+  "unwantedRecommendations": ["ms-vscode.vscode-typescript", "hookyqr.beautify"]
 }

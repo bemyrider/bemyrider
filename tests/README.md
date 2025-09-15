@@ -7,6 +7,7 @@ I test sono stati configurati per **minimizzare i rischi di crash** del sistema.
 ## 🚀 Avvio Sicuro (Raccomandato)
 
 ### 1. Prima esecuzione - Test singolo e sicuro
+
 ```bash
 # Avvia prima Next.js
 npm run dev
@@ -16,6 +17,7 @@ npm run test:safe
 ```
 
 Questo comando:
+
 - ✅ Controlla la memoria disponibile
 - ✅ Verifica che Next.js sia attivo
 - ✅ Monitora i processi attivi
@@ -23,6 +25,7 @@ Questo comando:
 - ✅ Si interrompe automaticamente se rileva problemi
 
 ### 2. Se il test sicuro va bene, prova test più completi
+
 ```bash
 # Test homepage completi
 npm run test:homepage
@@ -36,27 +39,30 @@ npm run test
 
 ## 📋 Comandi Disponibili
 
-| Comando | Descrizione | Sicurezza |
-|---------|-------------|----------|
-| `npm run test:safe` | **Raccomandato** - Test singolo con monitoraggio | 🛡️ Massima |
-| `npm run test:single` | Solo test homepage base | 🛡️ Alta |
-| `npm run test:homepage` | Tutti i test homepage | 🛡️ Media |
-| `npm run test:auth` | Test autenticazione | 🛡️ Media |
-| `npm run test` | Tutti i test | ⚠️ Bassa |
+| Comando                 | Descrizione                                      | Sicurezza  |
+| ----------------------- | ------------------------------------------------ | ---------- |
+| `npm run test:safe`     | **Raccomandato** - Test singolo con monitoraggio | 🛡️ Massima |
+| `npm run test:single`   | Solo test homepage base                          | 🛡️ Alta    |
+| `npm run test:homepage` | Tutti i test homepage                            | 🛡️ Media   |
+| `npm run test:auth`     | Test autenticazione                              | 🛡️ Media   |
+| `npm run test`          | Tutti i test                                     | ⚠️ Bassa   |
 
 ## 🔧 Modalità Debug e Sviluppo
 
 ### Test con interfaccia grafica
+
 ```bash
 npm run test:ui
 ```
 
 ### Test con browser visibile
+
 ```bash
 npm run test:headed
 ```
 
 ### Debug step-by-step
+
 ```bash
 npm run test:debug
 ```
@@ -64,6 +70,7 @@ npm run test:debug
 ## 🛑 Segnali di Pericolo
 
 **Interrompi immediatamente se noti:**
+
 - ❌ Rallentamenti del sistema
 - ❌ Aumento memoria RAM
 - ❌ Crash di Cursor
@@ -73,6 +80,7 @@ npm run test:debug
 ## 🧹 Pulizia di Sicurezza
 
 Se qualcosa va storto:
+
 ```bash
 # Ferma tutti i processi Playwright
 pkill -f playwright
@@ -90,12 +98,14 @@ rm -rf node_modules && npm install
 ## 📊 Cosa Testano
 
 ### Homepage (`homepage.spec.ts`)
+
 - ✅ Caricamento pagina
 - ✅ Presenza elementi essenziali
 - ✅ Logo bemyrider
 - ✅ Pulsanti navigazione
 
 ### Autenticazione (`auth.spec.ts`)
+
 - ✅ Caricamento form login
 - ✅ Caricamento form registrazione
 - ✅ Presenza campi obbligatori
@@ -120,6 +130,7 @@ rm -rf node_modules && npm install
 ## 📞 Supporto
 
 Se riscontri problemi:
+
 1. Ferma immediatamente i test
 2. Usa i comandi di pulizia
 3. Riavvia Cursor se necessario

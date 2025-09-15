@@ -17,22 +17,22 @@ import { useConnectionStatus } from '@/lib/hooks/use-connection-status';
 
 const MyComponent = () => {
   const {
-    isOnline,        // Stato connessione internet del browser
-    isConnected,     // Stato connessione ai servizi
-    isHealthy,       // Connessione stabile (online + connected)
-    needsRetry,      // Necessita retry automatico
+    isOnline, // Stato connessione internet del browser
+    isConnected, // Stato connessione ai servizi
+    isHealthy, // Connessione stabile (online + connected)
+    needsRetry, // Necessita retry automatico
     maxRetriesReached, // Raggiunto limite retry
-    forceCheck,      // Funzione per forzare controllo
+    forceCheck, // Funzione per forzare controllo
     resetRetryCount, // Funzione per resettare retry
-    lastChecked,     // Timestamp ultimo controllo
-    retryCount       // Numero tentativi attuali
+    lastChecked, // Timestamp ultimo controllo
+    retryCount, // Numero tentativi attuali
   } = useConnectionStatus({
-    checkInterval: 30000,  // Intervallo controllo (ms)
-    maxRetries: 3,         // Massimo numero retry
+    checkInterval: 30000, // Intervallo controllo (ms)
+    maxRetries: 3, // Massimo numero retry
     testUrl: '/api/health', // URL per test connessione
-    onStatusChange: (status) => {
+    onStatusChange: status => {
       console.log('Status changed:', status);
-    }
+    },
   });
 };
 ```
@@ -50,8 +50,8 @@ const MyComponent = () => {
   const { execute, retry, loading, error, retryCount } = useApiWithRetry({
     maxRetries: 3,
     retryDelay: 1000,
-    onSuccess: (data) => console.log('Success:', data),
-    onError: (error) => console.error('Error:', error)
+    onSuccess: data => console.log('Success:', data),
+    onError: error => console.error('Error:', error),
   });
 
   const fetchData = async () => {
@@ -113,6 +113,7 @@ Endpoint leggero per testare la disponibilità del server.
 ### Integrazione Base
 
 1. **Aggiungi il banner alla pagina:**
+
 ```typescript
 import ConnectionStatusBanner from '@/components/ConnectionStatusBanner';
 
@@ -127,6 +128,7 @@ export default function MyPage() {
 ```
 
 2. **Usa il hook per chiamate API:**
+
 ```typescript
 import { useApiWithRetry } from '@/lib/hooks/use-api-with-retry';
 
@@ -138,7 +140,7 @@ const MyComponent = () => {
       // La tua chiamata API qui
       const response = await fetch('/api/submit', {
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
       return await response.json();
     });
@@ -152,17 +154,17 @@ const MyComponent = () => {
 
 ```typescript
 const connectionStatus = useConnectionStatus({
-  checkInterval: 10000,  // Controlla ogni 10 secondi
-  maxRetries: 5,         // Massimo 5 tentativi
+  checkInterval: 10000, // Controlla ogni 10 secondi
+  maxRetries: 5, // Massimo 5 tentativi
   testUrl: '/api/custom-health', // URL personalizzato
-  onStatusChange: (status) => {
+  onStatusChange: status => {
     // Logica personalizzata quando cambia lo stato
     if (status.isHealthy) {
       showSuccessNotification('Connessione ripristinata');
     } else if (!status.isOnline) {
       showErrorNotification('Connessione internet assente');
     }
-  }
+  },
 });
 ```
 
@@ -172,31 +174,36 @@ const connectionStatus = useConnectionStatus({
 const apiRetry = useApiWithRetry({
   maxRetries: 5,
   retryDelay: 2000,
-  retryCondition: (error) => {
+  retryCondition: error => {
     // Condizioni personalizzate per retry
-    return error.status >= 500 ||
-           error.name === 'TypeError' ||
-           error.message.includes('network');
+    return (
+      error.status >= 500 ||
+      error.name === 'TypeError' ||
+      error.message.includes('network')
+    );
   },
   onRetry: (attempt, error) => {
     console.log(`Retry attempt ${attempt}:`, error);
-  }
+  },
 });
 ```
 
 ## Stati della Connessione
 
 ### 1. Online + Connected (Healthy)
+
 - ✅ Connessione internet attiva
 - ✅ Servizi raggiungibili
 - ✅ Tutto funziona normalmente
 
 ### 2. Online + Not Connected (Unstable)
+
 - ✅ Connessione internet attiva
 - ❌ Servizi non raggiungibili
 - 🔄 Tentativi di riconnessione automatici
 
 ### 3. Offline
+
 - ❌ Connessione internet assente
 - ❌ Servizi non raggiungibili
 - ⏳ Attesa ripristino connessione
@@ -206,6 +213,7 @@ const apiRetry = useApiWithRetry({
 ### Pagina di Test
 
 Visita `/test-connection` per:
+
 - Monitorare lo stato della connessione in tempo reale
 - Eseguire test specifici (health endpoint, database, latenza)
 - Simulare problemi di connessione
@@ -216,14 +224,14 @@ Visita `/test-connection` per:
 ```typescript
 // Abilita logging dettagliato
 const connectionStatus = useConnectionStatus({
-  onStatusChange: (status) => {
+  onStatusChange: status => {
     console.log('Connection Status:', {
       isOnline: status.isOnline,
       isConnected: status.isConnected,
       retryCount: status.retryCount,
-      lastChecked: status.lastChecked
+      lastChecked: status.lastChecked,
     });
-  }
+  },
 });
 ```
 
@@ -244,20 +252,22 @@ const connectionStatus = useConnectionStatus({
 ## Best Practices
 
 ### 1. Gestione Errori
+
 ```typescript
 const { execute, error, loading } = useApiWithRetry({
-  onError: (error) => {
+  onError: error => {
     // Gestisci errori specifici
     if (error.status === 401) {
       redirectToLogin();
     } else if (error.status >= 500) {
       showServerErrorNotification();
     }
-  }
+  },
 });
 ```
 
 ### 2. UX Ottimale
+
 ```typescript
 // Mostra loading state durante retry
 if (loading) {
@@ -271,6 +281,7 @@ if (error && maxRetriesReached) {
 ```
 
 ### 3. Performance
+
 ```typescript
 // Usa intervalli appropriati per il controllo
 const connectionStatus = useConnectionStatus({
@@ -303,7 +314,7 @@ console.log('Connection Status:', {
   isOnline: navigator.onLine,
   isConnected: connectionStatus.isConnected,
   retryCount: connectionStatus.retryCount,
-  lastChecked: connectionStatus.lastChecked
+  lastChecked: connectionStatus.lastChecked,
 });
 ```
 

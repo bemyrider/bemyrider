@@ -7,6 +7,7 @@ Le **Row Level Security (RLS)** sono state configurate **manualmente** nel datab
 ## ✅ Stato Attuale
 
 ### Tabelle con RLS Attivo
+
 - ✅ **profiles** - 4 policy (SELECT, INSERT, UPDATE, DELETE)
 - ✅ **riders_details** - 4 policy (SELECT pubblico + privato, INSERT, UPDATE)
 - ✅ **esercenti** - 4 policy (INSERT, SELECT, UPDATE, DELETE)
@@ -24,16 +25,19 @@ Le **Row Level Security (RLS)** sono state configurate **manualmente** nel datab
 ## 🛡️ Livelli di Sicurezza
 
 ### 1. Accesso Pubblico (Lettura)
+
 - **Profili utente**: Visibili per ricerca
 - **Dettagli rider**: Visibili per matching
 - **Disponibilità**: Visibili per prenotazioni
 
 ### 2. Accesso Autenticato (Scrittura)
+
 - **Propri profili**: Solo il proprietario può modificare
 - **Dati personali**: Controllo basato su `auth.uid()`
 - **Relazioni**: Accesso basato su relazioni utente
 
 ### 3. Accesso Basato su Ruolo
+
 - **Merchant**: Accesso ai propri dati e richieste
 - **Rider**: Accesso ai propri dati e prenotazioni
 - **Cross-role**: Accesso limitato alle relazioni esistenti
@@ -43,11 +47,13 @@ Le **Row Level Security (RLS)** sono state configurate **manualmente** nel datab
 ### Quando Aggiungi una Nuova Tabella
 
 1. **Abilita RLS**:
+
 ```sql
 ALTER TABLE nuova_tabella ENABLE ROW LEVEL SECURITY;
 ```
 
 2. **Crea Policy Appropriate**:
+
 ```sql
 -- Esempio per tabella con proprietario
 CREATE POLICY "Users can view own data" ON nuova_tabella
@@ -58,6 +64,7 @@ FOR UPDATE USING (auth.uid() = user_id);
 ```
 
 3. **Verifica Sicurezza**:
+
 ```sql
 -- Controlla che RLS sia attivo
 SELECT rowsecurity FROM pg_tables WHERE tablename = 'nuova_tabella';
@@ -76,6 +83,7 @@ SELECT policyname FROM pg_policies WHERE tablename = 'nuova_tabella';
 ## 📞 Supporto
 
 Per problemi con RLS:
+
 1. Controlla i log di Supabase
 2. Verifica le policy con query SQL
 3. Testa con utenti di test

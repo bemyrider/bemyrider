@@ -16,12 +16,14 @@ Benvenuto nel progetto bemyrider! 🎉 Siamo felici che tu voglia contribuire al
 ## 🚀 Prima di Iniziare
 
 ### Requisiti
+
 - **Git**: Version control system
 - **Node.js 18+**: Runtime JavaScript
 - **npm o yarn**: Package manager
 - **GitHub Account**: Per contribuire via pull request
 
 ### Conoscenze Richieste
+
 - **TypeScript**: Linguaggio principale del progetto
 - **Next.js**: Framework React per full-stack
 - **PostgreSQL**: Database utilizzato
@@ -29,6 +31,7 @@ Benvenuto nel progetto bemyrider! 🎉 Siamo felici che tu voglia contribuire al
 - **Stripe**: Sistema pagamenti
 
 ### Codice di Condotta
+
 - **Rispetto**: Tratta tutti con rispetto e professionalità
 - **Collaborazione**: Lavora in team e comunica chiaramente
 - **Qualità**: Mantieni alti standard di qualità del codice
@@ -37,6 +40,7 @@ Benvenuto nel progetto bemyrider! 🎉 Siamo felici che tu voglia contribuire al
 ## 🛠️ Setup Ambiente Sviluppo
 
 ### 1. Fork e Clone
+
 ```bash
 # Fork del repository su GitHub
 # Poi clona il tuo fork
@@ -48,6 +52,7 @@ git remote add upstream https://github.com/bemyrider/bemyrider.git
 ```
 
 ### 2. Installazione Dipendenze
+
 ```bash
 # Installa tutte le dipendenze
 npm install
@@ -57,6 +62,7 @@ npm run dev
 ```
 
 ### 3. Configurazione Environment
+
 ```bash
 # Copia il file di esempio
 cp env.example .env.local
@@ -66,6 +72,7 @@ cp env.example .env.local
 ```
 
 ### 4. Database Setup
+
 ```bash
 # Avvia Supabase localmente (se usi Supabase CLI)
 supabase start
@@ -75,6 +82,7 @@ supabase start
 ```
 
 ### 5. Verifica Setup
+
 ```bash
 # Test build
 npm run build
@@ -89,11 +97,13 @@ npm run type-check
 ## 🔄 Processo di Sviluppo
 
 ### 1. Scegli un Task
+
 - Controlla la **[ROADMAP.md](./ROADMAP.md)** per feature pianificate
 - Guarda le **GitHub Issues** per bug e feature request
 - Unisciti alle discussioni su **Discord** per idee collaborative
 
 ### 2. Crea un Branch
+
 ```bash
 # Crea branch con nome descrittivo
 git checkout -b feature/nome-feature
@@ -104,6 +114,7 @@ git checkout -b docs/aggiornamento-documentazione
 ```
 
 ### 3. Sviluppo Iterativo
+
 ```bash
 # Scrivi codice seguendo gli standard
 # Commit frequentemente con messaggi chiari
@@ -117,6 +128,7 @@ git commit -m "feat: aggiungi funzionalità X
 ```
 
 ### 4. Test e Quality Assurance
+
 ```bash
 # Esegui tutti i test
 npm run test
@@ -131,6 +143,7 @@ npm run build
 ```
 
 ### 5. Pull Request
+
 ```bash
 # Push del branch
 git push origin feature/nome-feature
@@ -142,6 +155,7 @@ git push origin feature/nome-feature
 ## 📝 Standard di Codice
 
 ### TypeScript
+
 ```typescript
 // ✅ CORRETTO
 interface UserProfile {
@@ -163,6 +177,7 @@ interface userProfile {
 ```
 
 ### Naming Conventions
+
 - **File**: `kebab-case.ts` (es. `user-profile.ts`)
 - **Componenti**: `PascalCase.tsx` (es. `UserProfile.tsx`)
 - **Funzioni**: `camelCase` (es. `getUserProfile`)
@@ -170,6 +185,7 @@ interface userProfile {
 - **Tipi**: `PascalCase` (es. `UserProfile`, `ApiResponse`)
 
 ### Struttura File
+
 ```
 src/
 ├── app/                    # Next.js App Router
@@ -187,6 +203,7 @@ src/
 ```
 
 ### Commit Messages
+
 Seguiamo il [Conventional Commits](https://conventionalcommits.org/) standard:
 
 ```bash
@@ -204,6 +221,7 @@ add stuff
 ```
 
 ### Commenti e Documentazione
+
 ```typescript
 // ✅ CORRETTO - JSDoc per funzioni importanti
 /**
@@ -237,12 +255,14 @@ const isRiderAvailable = (
 ## 🧪 Testing
 
 ### Strategia di Testing
+
 - **Unit Tests**: Funzioni e componenti isolati
 - **Integration Tests**: Interazioni tra componenti
 - **E2E Tests**: Flussi utente completi
 - **API Tests**: Endpoints e logica backend
 
 ### Comandi di Test
+
 ```bash
 # Test unitari
 npm run test:unit
@@ -261,6 +281,7 @@ npm run test -- component-name
 ```
 
 ### Scrivere Test
+
 ```typescript
 // ✅ CORRETTO - Test completo per componente
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -295,6 +316,7 @@ describe('RiderCard', () => {
 ```
 
 ### Coverage Requirements
+
 - **Statements**: ≥ 80%
 - **Branches**: ≥ 75%
 - **Functions**: ≥ 85%
@@ -303,13 +325,16 @@ describe('RiderCard', () => {
 ## 🔄 Pull Request Process
 
 ### Template PR
+
 Quando crei una PR, usa questo template:
 
 ```markdown
 ## 📝 Descrizione
+
 Breve descrizione delle modifiche apportate.
 
 ## 🎯 Tipo di Cambiamento
+
 - [ ] 🐛 Bug fix
 - [ ] ✨ New feature
 - [ ] 💥 Breaking change
@@ -319,6 +344,7 @@ Breve descrizione delle modifiche apportate.
 - [ ] ⚡ Performance
 
 ## ✅ Checklist
+
 - [ ] Test aggiunti/aggiornati
 - [ ] Documentazione aggiornata
 - [ ] Linting superato
@@ -326,26 +352,31 @@ Breve descrizione delle modifiche apportate.
 - [ ] Build locale funzionante
 
 ## 🧪 Test Eseguiti
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] E2E tests
 - [ ] Manual testing
 
 ## 📋 Issues Correlate
+
 Closes #123
 Relates to #456
 
 ## 📸 Screenshots (se applicabile)
+
 [Inserisci screenshots delle modifiche UI]
 ```
 
 ### Review Process
+
 1. **Auto-checks**: GitHub Actions esegue linting, test, build
 2. **Code Review**: Almeno un maintainer deve approvare
 3. **Testing**: Reviewer testa le modifiche
 4. **Approval**: PR viene mergiata da maintainer
 
 ### Branch Strategy
+
 - **main**: Codice di produzione
 - **develop**: Sviluppo attivo
 - **feature/**: Nuove funzionalità
@@ -355,30 +386,35 @@ Relates to #456
 ## 🎯 Tipi di Contributi
 
 ### 💻 Sviluppo
+
 - Implementare nuove funzionalità
 - Fixare bug e problemi
 - Ottimizzazioni performance
 - Miglioramenti sicurezza
 
 ### 📚 Documentazione
+
 - Guide utente e sviluppatore
 - API documentation
 - Code comments
 - Tutorial e esempi
 
 ### 🎨 Design & UX
+
 - Miglioramenti interfaccia
 - User experience
 - Responsive design
 - Accessibilità
 
 ### 🧪 Testing & QA
+
 - Scrivere test automatici
 - Testing manuale
 - QA e bug hunting
 - Performance testing
 
 ### 🌐 Traduzioni
+
 - Supporto multi-lingua
 - Traduzioni interfaccia
 - Documentazione localizzata
@@ -386,19 +422,23 @@ Relates to #456
 ## 🌍 Comunità e Supporto
 
 ### Canali di Comunicazione
+
 - **GitHub Issues**: Bug reports e feature requests
 - **GitHub Discussions**: Domande generali e discussioni
 - **Discord**: Chat real-time per sviluppatori
 - **Email**: dev@bemyrider.it per questioni tecniche
 
 ### Come Ottenere Aiuto
+
 1. **Controlla la documentazione** esistente
 2. **Cerca in GitHub Issues** problemi simili
 3. **Chiedi su Discord** per domande rapide
 4. **Apri una Issue** per problemi complessi
 
 ### Riconoscimenti
+
 Tutti i contributori sono riconosciuti:
+
 - **GitHub Contributors**: Lista automatica
 - **Changelog**: Crediti per ogni release
 - **Hall of Fame**: Contributori attivi mensilmente
@@ -406,18 +446,21 @@ Tutti i contributori sono riconosciuti:
 ## 📋 Best Practices
 
 ### Sicurezza
+
 - Mai committare chiavi API o segreti
 - Usa environment variables per configurazioni sensibili
 - Implementa input validation
 - Considera OWASP guidelines
 
 ### Performance
+
 - Lazy loading per componenti pesanti
 - Ottimizzazione immagini
 - Bundle splitting
 - Caching strategico
 
 ### Accessibilità
+
 - Supporto screen readers
 - Navigazione keyboard
 - Contrasto colori adeguato

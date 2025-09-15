@@ -11,4 +11,4 @@ Questa sezione documenta gli endpoint principali delle API di bemyrider.
 
 ## Esempi di richiesta/risposta
 
-(Da completare con esempi pratici) 
+(Da completare con esempi pratici)

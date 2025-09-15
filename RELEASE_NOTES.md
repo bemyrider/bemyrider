@@ -11,6 +11,7 @@
 Questa release si concentra su **sicurezza enterprise-grade** e **qualità del codice massima**, risolvendo tutti i warning di sicurezza Supabase e implementando best practices di sviluppo React.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Sicurezza 100%** - Zero warning Supabase Auth
 - ✅ **Codice Enterprise** - Tutti i warning ESLint risolti
 - ✅ **Build Perfetta** - Compilazione pulita senza errori
@@ -21,12 +22,14 @@ Questa release si concentra su **sicurezza enterprise-grade** e **qualità del c
 ### 🛡️ **Sicurezza Enterprise-Grade**
 
 #### 🔐 **Supabase Auth Security Overhaul**
+
 - **Eliminati tutti i warning** di sicurezza Supabase
 - **Implementato `getUser()`** per autenticazione sicura in tutti i punti critici
 - **Middleware robusto** con gestione errori specifica `AuthSessionMissingError`
 - **Auth listeners sicuri** senza riferimenti a `session.user` nei callback
 
 #### 🧹 **Code Quality Revolution**
+
 - **ESLint 100% compliant** - Tutti i warning React Hooks risolti
 - **useCallback pattern** implementato per tutte le funzioni async
 - **Dependency management perfetto** - Nessun re-render inutile
@@ -37,6 +40,7 @@ Questa release si concentra su **sicurezza enterprise-grade** e **qualità del c
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 📦 **React Hooks Optimization**
+
 ```typescript
 // Prima: Warning ESLint
 useEffect(() => {
@@ -51,13 +55,18 @@ useEffect(() => {
 ```
 
 #### 🔒 **Security Implementation**
+
 ```typescript
 // Prima: Non sicuro
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 const user = session.user; // ⚠️ Warning di sicurezza
 
 // Dopo: Sicuro
-const { data: { user } } = await supabase.auth.getUser(); // ✅
+const {
+  data: { user },
+} = await supabase.auth.getUser(); // ✅
 ```
 
 ---
@@ -75,12 +84,14 @@ const { data: { user } } = await supabase.auth.getUser(); // ✅
 ### 🚀 **Impatto sull'Esperienza Utente**
 
 #### ✨ **Prima della v0.4.12**
+
 - ⚠️ Warning di sicurezza Supabase attivi
 - ⚠️ Warning ESLint sui React Hooks
 - 🔄 Possibili re-render inutili
 - 📊 Build con warning
 
 #### 🎯 **Dopo la v0.4.12**
+
 - 🔒 **Sicurezza massima** - Nessun warning di sicurezza
 - 🧹 **Codice pulito** - Zero warning ESLint
 - ⚡ **Performance ottimizzate** - Applicazione più fluida
@@ -99,6 +110,7 @@ const { data: { user } } = await supabase.auth.getUser(); // ✅
 Questa release introduce il **Sistema Richieste di Servizio completo**, trasformando bemyrider in una piattaforma end-to-end per la connessione tra esercenti e rider professionisti.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Flusso completo merchant → rider** per richieste di servizio
 - ✅ **Sistema toast funzionante** con notifiche immediate
 - ✅ **Test E2E completi** per validazione funzionale
@@ -110,7 +122,9 @@ Questa release introduce il **Sistema Richieste di Servizio completo**, trasform
 ### 🚀 **Cosa C'è di Nuovo**
 
 #### 1. 📨 **Sistema Richieste di Servizio End-to-End**
+
 Nuova funzionalità completa per la gestione delle richieste:
+
 - **Merchant invia richiesta** con dettagli completi (data, ora, durata, descrizione)
 - **Rider riceve notifica** nella propria dashboard
 - **Rider risponde** con modal interattivo (accetta/rifiuta + messaggio)
@@ -118,21 +132,27 @@ Nuova funzionalità completa per la gestione delle richieste:
 - **Stati gestiti** completamente (pending, accepted, rejected)
 
 #### 2. 🍞 **Toast Notification System**
+
 Sistema di notifiche completamente funzionante:
+
 - **Toast integrati** in tutto l'applicazione
 - **Feedback immediato** per tutte le azioni utente
 - **Design coerente** con il brand (#333366, #ff9900)
 - **Animazioni smooth** per esperienza professionale
 
 #### 3. 🧪 **Testing End-to-End Completo**
+
 Suite di test completa per validazione:
+
 - **Test Playwright** per flusso completo
 - **Copertura merchant e rider** con scenari reali
 - **Debug avanzato** con logging e screenshot
 - **Configurazione sicura** per credenziali test
 
 #### 4. 🔧 **Miglioramenti UX/UI**
+
 Esperienza utente ottimizzata:
+
 - **Modal responsive** per risposte richieste
 - **Validazione form** robusta client/server
 - **Feedback visivo** immediato per azioni
@@ -143,6 +163,7 @@ Esperienza utente ottimizzata:
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 🗄️ **API Endpoints Completati**
+
 ```http
 POST /api/service-requests          # Creazione richiesta
 GET  /api/service-requests          # Lista richieste
@@ -150,12 +171,14 @@ PUT  /api/service-requests/[id]/respond  # Risposta rider
 ```
 
 #### 🎨 **Sistema Design Coerente**
+
 - **Toast system integrato** in tutto l'app
 - **Colori brand applicati** correttamente
 - **Transizioni fluide** e animazioni
 - **Responsività mobile** ottimizzata
 
 #### 📚 **Documentazione Completa**
+
 - **Flussi utente aggiornati** con nuovo sistema
 - **API documentation estesa** con esempi
 - **CHANGELOG dettagliato** per traceability
@@ -165,12 +188,14 @@ PUT  /api/service-requests/[id]/respond  # Risposta rider
 ### 🎯 **Impatto Utente**
 
 #### 🚀 **Esperienza Completata**
+
 - **Flusso end-to-end funzionante** merchant ↔ rider
 - **Feedback immediato** con toast notifiche
 - **Interfaccia intuitiva** per gestione richieste
 - **Validazione robusta** per prevenire errori
 
 #### 🔒 **Sicurezza e Affidabilità**
+
 - **Validazione input completa** client/server
 - **Gestione errori user-friendly**
 - **Stato richieste consistente**
@@ -200,6 +225,7 @@ PUT  /api/service-requests/[id]/respond  # Risposta rider
 Questa release si concentra sull'**ottimizzazione del build** e la **pulizia del repository**, eliminando warning e migliorando le performance dell'applicazione.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Build ottimizzato** con Next.js Image per performance migliorate
 - ✅ **Warning immagini risolti** sostituendo tutti i tag `<img>` con `<Image />`
 - ✅ **Repository pulito** con eliminazione file SQL manuali
@@ -211,7 +237,9 @@ Questa release si concentra sull'**ottimizzazione del build** e la **pulizia del
 ### 🚀 **Cosa C'è di Nuovo**
 
 #### 1. 🖼️ **Ottimizzazione Immagini con Next.js Image**
+
 Sostituzione completa del sistema di gestione immagini:
+
 - **Tutti i tag `<img>` sostituiti** con `<Image />` da `next/image`
 - **Lazy loading automatico** per migliori performance
 - **Dimensioni ottimizzate** con width/height specificati
@@ -219,14 +247,18 @@ Sostituzione completa del sistema di gestione immagini:
 - **Performance migliorate** con compressione automatica
 
 #### 2. 🧹 **Pulizia Repository e Database**
+
 Eliminazione file non conformi alle best practices:
+
 - **File SQL manuali rimossi** per aderenza alla regola "sempre usare Drizzle"
 - **Script di migrazione manuali** eliminati
 - **Repository ottimizzato** senza file ridondanti
 - **Architettura pulita** e mantenibile
 
 #### 3. ⚡ **Build Performance**
+
 Miglioramenti significativi al processo di build:
+
 - **0 warning critici** nel build di produzione
 - **Bundle size ottimizzato** con Next.js Image
 - **Loading performance** migliorate per immagini
@@ -237,18 +269,21 @@ Miglioramenti significativi al processo di build:
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 🖼️ **Sistema Immagini**
+
 - **Next.js Image**: implementazione completa in tutti i componenti
 - **Lazy loading**: caricamento ottimizzato delle immagini
 - **Responsive images**: adattamento automatico ai dispositivi
 - **WebP support**: formati moderni per performance migliori
 
 #### 🗄️ **Database Architecture**
+
 - **Drizzle-only**: eliminazione script SQL manuali
 - **Migration consistency**: solo migrazioni Drizzle autorizzate
 - **Schema integrity**: mantenimento coerenza architetturale
 - **Best practices**: aderenza alle regole del progetto
 
 #### 📦 **Build Optimization**
+
 - **Warning elimination**: risoluzione warning build
 - **Bundle optimization**: riduzione dimensioni bundle
 - **Performance metrics**: miglioramento Core Web Vitals
@@ -259,6 +294,7 @@ Miglioramenti significativi al processo di build:
 ### 🐛 **Fix e Correzioni**
 
 #### ✅ **Risolti**
+
 - **Warning immagini**: tutti i tag `<img>` sostituiti con `<Image />`
 - **File SQL manuali**: eliminati per coerenza architetturale
 - **Build warnings**: risolti warning non critici
@@ -270,12 +306,14 @@ Miglioramenti significativi al processo di build:
 ### 📱 **Impact sull'Esperienza Utente**
 
 #### 🚀 **Prima della v0.4.0**
+
 - Warning build per immagini non ottimizzate
 - File SQL manuali nel repository
 - Performance immagini non ottimizzate
 - Bundle size non ottimizzato
 
 #### ✨ **Dopo la v0.4.0**
+
 - **Build completamente pulito** senza warning critici
 - **Performance immagini ottimizzate** con Next.js Image
 - **Repository pulito** e ben organizzato
@@ -288,6 +326,7 @@ Miglioramenti significativi al processo di build:
 ### 🛠️ **Deployment e Setup**
 
 #### **Per Sviluppatori**
+
 ```bash
 # Aggiorna il repository
 git pull origin main
@@ -303,9 +342,11 @@ npm run dev
 ```
 
 #### **Nuove Dipendenze**
+
 Nessuna nuova dipendenza richiesta - ottimizzazioni con librerie esistenti.
 
 #### **Database Migrations**
+
 Nessuna migrazione richiesta - compatibile con schema esistente.
 
 ---
@@ -313,12 +354,14 @@ Nessuna migrazione richiesta - compatibile con schema esistente.
 ### 🔮 **Prossimi Sviluppi**
 
 #### **v0.5.0 - Pianificata**
+
 - Sistema di prenotazioni avanzato
 - Dashboard merchant per gestione richieste
 - Sistema di notifiche real-time
 - Calendario disponibilità rider interattivo
 
 #### **Feedback e Contributi**
+
 Questa release migliora significativamente le performance e la pulizia del codice. Continua a condividere i tuoi suggerimenti!
 
 ---
@@ -344,6 +387,7 @@ Grazie a tutti gli utenti che hanno testato le versioni precedenti e fornito fee
 Questa release introduce funzionalità di **localizzazione geografica** per i rider e un sistema avanzato di **gestione account** con eliminazione sicura e pulizia automatica del database.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Sistema di localizzazione geografica** per ricerca rider
 - ✅ **Filtro ricerca per località** nella pagina marketplace
 - ✅ **Gestione account sicura** con eliminazione in cascata
@@ -356,7 +400,9 @@ Questa release introduce funzionalità di **localizzazione geografica** per i ri
 ### 🚀 **Cosa C'è di Nuovo**
 
 #### 1. 📍 **Sistema di Localizzazione Geografica**
+
 I rider possono ora specificare la loro località attiva per migliorare la ricerca:
+
 - **Campo "Località Attiva"** nel profilo rider con validazione
 - **Filtro ricerca geografica** nella pagina `/riders` con icona MapPin
 - **Visualizzazione località** nelle card rider e dashboard merchant
@@ -364,7 +410,9 @@ I rider possono ora specificare la loro località attiva per migliorare la ricer
 - **Supporto multilingua** per nomi città italiane
 
 #### 2. 🔍 **Filtro Ricerca Avanzato**
+
 Miglioramenti significativi al sistema di ricerca rider:
+
 - **Filtro per località** con ricerca case-insensitive
 - **Icona MapPin** per identificazione visiva immediata
 - **Reset filtri** che include la località
@@ -372,7 +420,9 @@ Miglioramenti significativi al sistema di ricerca rider:
 - **Performance migliorate** con query ottimizzate
 
 #### 3. 🗑️ **Sistema di Eliminazione Account Avanzato**
+
 Gestione completa e sicura degli account utente:
+
 - **API endpoint sicura** `/api/account/delete` con eliminazione in cascata
 - **Eliminazione automatica** di tutti i dati correlati (bookings, reviews, tax details)
 - **Integrazione Supabase Auth** per rimozione completa
@@ -380,7 +430,9 @@ Gestione completa e sicura degli account utente:
 - **Logging dettagliato** per audit trail
 
 #### 4. 🧹 **Pulizia Database Automatica**
+
 Sistema di manutenzione per integrità dati:
+
 - **Endpoint admin** `/api/admin/cleanup-orphans` per pulizia record orfani
 - **Script automatizzato** per eliminazione utenti di test
 - **Funzione SQL** `find_orphaned_profiles()` per identificazione automatica
@@ -388,7 +440,9 @@ Sistema di manutenzione per integrità dati:
 - **Endpoint di test** per verifica funzionalità eliminazione
 
 #### 5. 🏪 **Dashboard Merchant Potenziata**
+
 Miglioramenti alla visualizzazione rider per merchant:
+
 - **Località rider** visibile nella sezione "Rider Disponibili"
 - **Icona MapPin** per identificazione geografica immediata
 - **Query ottimizzate** per performance migliorate
@@ -396,7 +450,9 @@ Miglioramenti alla visualizzazione rider per merchant:
 - **Layout migliorato** con informazioni geografiche
 
 #### 6. 🎨 **UI/UX Miglioramenti**
+
 Aggiornamenti all'interfaccia utente:
+
 - **Icona MapPin** consistente in tutta l'applicazione
 - **Placeholder informativi** per campo località
 - **Validazione real-time** per input località
@@ -408,6 +464,7 @@ Aggiornamenti all'interfaccia utente:
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 🗄️ **Database Schema Updates**
+
 - **Nuova colonna** `active_location` in `riders_details` table
 - **Indice ottimizzato** per ricerche geografiche
 - **Migration SQL** `0003_add_active_location.sql` per deployment
@@ -415,6 +472,7 @@ Aggiornamenti all'interfaccia utente:
 - **Funzione SQL** per identificazione profili orfani
 
 #### 🛡️ **Sicurezza e Integrità**
+
 - **Cascade deletion** per mantenimento integrità referenziale
 - **Admin endpoints** con autenticazione e autorizzazione
 - **Input validation** per tutti i nuovi campi
@@ -422,11 +480,13 @@ Aggiornamenti all'interfaccia utente:
 - **Audit logging** per operazioni di eliminazione
 
 #### 📦 **Nuove Dipendenze**
+
 - **dotenv**: per gestione variabili ambiente negli script
 - **Scripts Node.js** per automazione operazioni database
 - **Admin API routes** per manutenzione sistema
 
 #### 🏗️ **Architettura**
+
 - **TypeScript interfaces** aggiornate per localizzazione
 - **Componenti modulari** per gestione località
 - **API routes** organizzate per funzionalità admin
@@ -438,6 +498,7 @@ Aggiornamenti all'interfaccia utente:
 ### 🐛 **Fix e Correzioni**
 
 #### ✅ **Risolti**
+
 - **RLS policies** corrette per accesso pubblico ai rider details
 - **Query Supabase** ottimizzate per performance migliorate
 - **Record orfani** eliminati dal database
@@ -450,6 +511,7 @@ Aggiornamenti all'interfaccia utente:
 ### 📱 **Impact sull'Esperienza Utente**
 
 #### 🚀 **Prima della v1.2.0**
+
 - Ricerca rider limitata a nome e descrizione
 - Nessuna informazione geografica disponibile
 - Eliminazione account manuale e rischiosa
@@ -457,6 +519,7 @@ Aggiornamenti all'interfaccia utente:
 - Dashboard merchant con rider limitati
 
 #### ✨ **Dopo la v1.2.0**
+
 - **Ricerca geografica avanzata** per trovare rider locali
 - **Informazioni località** visibili in tutte le interfacce
 - **Eliminazione account sicura** con conferma doppia
@@ -470,6 +533,7 @@ Aggiornamenti all'interfaccia utente:
 ### 🛠️ **Deployment e Setup**
 
 #### **Per Sviluppatori**
+
 ```bash
 # Aggiorna il repository
 git pull origin main
@@ -487,9 +551,11 @@ npm run dev
 ```
 
 #### **Nuove Variabili d'Ambiente**
+
 Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 
 #### **Database Migrations**
+
 - **Migration richiesta**: `0003_add_active_location.sql`
 - **Indici**: `idx_riders_details_active_location` per performance
 - **Funzioni SQL**: `find_orphaned_profiles()` per manutenzione
@@ -499,12 +565,14 @@ Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 ### 🔮 **Prossimi Sviluppi**
 
 #### **v0.3.0 - Pianificata**
+
 - Sistema di prenotazioni con localizzazione
 - Mappa interattiva per selezione zona
 - Notifiche geografiche per rider vicini
 - Sistema di rating basato su località
 
 #### **Feedback e Contributi**
+
 Questa release migliora significativamente la capacità di ricerca e gestione della piattaforma. Continua a condividere i tuoi suggerimenti!
 
 ---
@@ -530,6 +598,7 @@ Grazie a tutti gli utenti che hanno testato le funzionalità di localizzazione e
 Questa release rappresenta un **aggiornamento maggiore** che trasforma bemyrider in una piattaforma completa e professionale, con dashboard funzionali per entrambi i ruoli e un sistema di sicurezza robusto.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Dashboard merchant completamente funzionale**
 - ✅ **Sistema di protezione ruoli enterprise-grade**
 - ✅ **UX moderna con navbar fissa e animazioni fluide**
@@ -541,53 +610,66 @@ Questa release rappresenta un **aggiornamento maggiore** che trasforma bemyrider
 ### 🚀 **Cosa C'è di Nuovo**
 
 #### 1. 🗑️ **Gestione Account Completa**
+
 Gli utenti possono ora eliminare il proprio account in totale sicurezza:
+
 - **Modal di conferma** con processo a doppio step per evitare eliminazioni accidentali
 - **API sicura** con cascade deletion per mantenere integrità del database
 - **Integrazione Supabase Auth** per rimozione completa dell'account
 - **Posizionamento discreto** nella sezione "Avanzate" del menu profilo
 
 #### 2. 🎨 **Menu Profilo Unificato**
+
 Nuovo design moderno e coerente per l'esperienza utente:
+
 - **TopNavBar elegante** con dropdown menu professionale
 - **Icona profilo** con navigazione intuitiva e accessibile
 - **Sezioni organizzate**: Impostazioni, Privacy, e Avanzate
 - **Design responsive** che funziona su tutti i dispositivi
 
 #### 3. 🔧 **Migrazione ORM a Drizzle**
+
 Abbandonato Prisma per una soluzione più robusta:
+
 - **Performance migliorate** con Drizzle ORM
 - **Compatibilità totale** con Supabase e connection pooling
 - **Schema ottimizzato** per tutte le tabelle e relazioni
 - **Configurazione semplificata** e più affidabile
 
 #### 4. 🏪 **Dashboard Merchant Completa**
+
 La dashboard merchant è ora completamente operativa con:
+
 - **Statistiche in tempo reale**: rider disponibili, prenotazioni attive, consegne completate, spesa totale
 - **Ricerca rider avanzata** con filtri e preview profili
 - **Gestione prenotazioni** con storico e stati
 - **Azioni rapide** per operazioni quotidiane
 
 #### 5. 🔐 **Sistema di Sicurezza Robusto**
+
 - **Isolamento completo** tra ruoli merchant e rider
 - **Prevenzione accessi incrociati** con redirect automatici
 - **Creazione profili automatica** basata su metadata utente
 - **Gestione sessioni** migliorata
 
 #### 6. 🎨 **Design e UX Modernizzati**
+
 - **Navbar fissa** professionale con design moderno
 - **Animazioni di loading** uniformi e fluide
 - **Pulsanti call-to-action** evidenziati
 - **Esperienza coerente** tra tutte le pagine
 
 #### 7. 🎯 **Onboarding Migliorato**
+
 - **Selezione ruolo visuale** con icone intuitive
 - **Redirect intelligenti** post-registrazione e login
 - **URL puliti** senza parametri confusi
 - **Feedback immediato** per ogni azione
 
 #### 8. 🎨 **Design Stile Rover.com per Pagina Riders**
+
 Trasformazione completa del marketplace rider con design professionale:
+
 - **Header gradiente blu** professionale per ogni card rider
 - **Foto profilo prominenti** (96x96px) sovrapposte al gradiente
 - **Badge di stato online** con indicatori verdi in tempo reale
@@ -600,7 +682,9 @@ Trasformazione completa del marketplace rider con design professionale:
 - **Avatar fallback** elegante con iniziali e gradiente
 
 #### 9. 📱 **Dashboard Rider Potenziata**
+
 Miglioramenti significativi al profilo rider:
+
 - **Foto profilo ingrandita** (128x128px) con maggiore prominenza
 - **Header gradiente** per layout professionale e moderno
 - **Badge status online** integrato nel design
@@ -610,7 +694,9 @@ Miglioramenti significativi al profilo rider:
 - **Componenti modulari** riutilizzabili
 
 #### 10. 🔧 **Refactoring Database Schema**
+
 Ottimizzazione architettura per maggiore efficienza:
+
 - **Eliminazione tabella riders** ridondante
 - **Migrazione sicura** dei dati con foreign key updates
 - **Consolidamento dati** in `riders_details` table
@@ -622,24 +708,28 @@ Ottimizzazione architettura per maggiore efficienza:
 ### 🔧 **Miglioramenti Tecnici**
 
 #### 🗄️ **Ristrutturazione Database**
+
 - **Migrazione completa**: da Prisma a Drizzle ORM per maggiore stabilità
 - **Schema ottimizzato**: tutte le tabelle e relazioni aggiornate
 - **Connection pooling**: configurazione ottimizzata per Supabase
 - **Performance**: query più veloci e affidabili
 
 #### 🛡️ **Sicurezza Avanzata**
+
 - **API sicure**: endpoint per gestione account con validazione completa
 - **Cascade deletion**: mantenimento integrità dati in tutte le operazioni
 - **Error handling**: logging dettagliato e gestione robusta degli errori
 - **Input validation**: controlli rigorosi su tutte le operazioni sensibili
 
 #### 📦 **Aggiornamenti Dipendenze**
+
 - **Supabase**: v2.38.5 → v2.50.0
 - **Drizzle ORM**: v0.44.5 aggiunto per gestione database
 - **Drizzle Kit**: v0.31.4 per migrations e schema management
 - **Risoluzione warning** realtime-js e compatibilità migliorata
 
 #### 🏗️ **Architettura**
+
 - **Type safety**: definizioni TypeScript complete
 - **Utility organizzate**: `lib/types.ts`, `lib/formatters.ts`
 - **Componenti modulari**: TopNavBar, DeleteAccountModal, EditProfileModal riutilizzabili
@@ -654,6 +744,7 @@ Ottimizzazione architettura per maggiore efficienza:
 ### 🐛 **Fix e Correzioni**
 
 #### ✅ **Risolti**
+
 - **Errori TypeScript**: dashboard merchant e test pages completamente risolti
 - **Problemi Prisma**: risolti problemi di connettività con migrazione a Drizzle
 - **Build errors**: fix per componenti UI mancanti (Badge, Input, enums)
@@ -669,6 +760,7 @@ Ottimizzazione architettura per maggiore efficienza:
 ### 📱 **Impact sull'Esperienza Utente**
 
 #### 🚀 **Prima della v1.1.0**
+
 - Dashboard merchant non funzionale
 - Possibili accessi incrociati tra ruoli
 - UX confusa con parametri URL
@@ -676,6 +768,7 @@ Ottimizzazione architettura per maggiore efficienza:
 - Warning e errori tecnici
 
 #### ✨ **Dopo la v1.1.0**
+
 - **Dashboard merchant completamente operativa**
 - **Sicurezza enterprise-grade** con isolamento ruoli
 - **UX fluida e intuitiva** con design moderno
@@ -691,6 +784,7 @@ Ottimizzazione architettura per maggiore efficienza:
 ### 🛠️ **Deployment e Setup**
 
 #### **Per Sviluppatori**
+
 ```bash
 # Clona la repository
 git clone https://github.com/bemyrider/bemyrider.git
@@ -704,9 +798,11 @@ npm run dev
 ```
 
 #### **Nuove Variabili d'Ambiente**
+
 Nessuna nuova variabile richiesta - compatibile con setup esistenti.
 
 #### **Database Migrations**
+
 Nessuna migrazione richiesta - compatibile con schema esistente.
 
 ---
@@ -714,12 +810,14 @@ Nessuna migrazione richiesta - compatibile con schema esistente.
 ### 🔮 **Prossimi Sviluppi**
 
 #### **v0.2.0 - Pianificata**
+
 - Sistema di prenotazioni avanzato
 - Calendario disponibilità rider
 - Notifiche real-time
 - Sistema di rating e recensioni
 
 #### **Feedback e Contributi**
+
 Questa release è il risultato di feedback continuo e test approfonditi. Continua a condividere i tuoi suggerimenti per rendere bemyrider ancora migliore!
 
 ---
@@ -745,6 +843,7 @@ Grazie a tutti gli utenti che hanno testato le versioni beta e fornito feedback 
 Questa release completa la **documentazione tecnica e utente** di bemyrider, trasformandola in una piattaforma con documentazione enterprise-grade che supporta sviluppo, deployment e manutenzione professionale.
 
 #### 🏆 **Risultati Principali**
+
 - ✅ **Documentazione completa** architettura e design system
 - ✅ **Guida onboarding utente** per rider e merchant
 - ✅ **Suite documentazione sviluppatori** completa
@@ -757,7 +856,9 @@ Questa release completa la **documentazione tecnica e utente** di bemyrider, tra
 ### 🚀 **Cosa C'è di Nuovo**
 
 #### 1. 🏗️ **Architettura Completa**
+
 Documentazione tecnica approfondita:
+
 - **Diagramma architetturale Mermaid** con flusso dati completo
 - **Schema database dettagliato** con tutte le tabelle e relazioni
 - **Sicurezza enterprise-grade** documentata (RLS, JWT, PCI)
@@ -765,7 +866,9 @@ Documentazione tecnica approfondita:
 - **Decisioni architetturali** motivate e documentate
 
 #### 2. 👥 **Guida Onboarding Utente**
+
 Esperienza utente guidata completa:
+
 - **Onboarding rider** passo-passo con checklist
 - **Onboarding merchant** con flussi dedicati
 - **Sistema notifiche** e supporto integrato
@@ -773,7 +876,9 @@ Esperienza utente guidata completa:
 - **FAQ integrata** con risposte pratiche
 
 #### 3. 🔧 **Suite Sviluppatori Completa**
+
 Documentazione tecnica professionale:
+
 - **Contributing Guide** con standard di codice e workflow
 - **Testing Strategy** completa (Unit, Integration, E2E)
 - **Setup Guide** migliorata con troubleshooting
@@ -781,7 +886,9 @@ Documentazione tecnica professionale:
 - **Deployment Guide** aggiornata
 
 #### 4. ⚙️ **Runbook Operativo**
+
 Manuale operativo enterprise:
+
 - **Monitoraggio sistema** con metriche e alert
 - **Troubleshooting** problemi comuni con soluzioni
 - **Disaster Recovery** procedure documentate
@@ -789,7 +896,9 @@ Manuale operativo enterprise:
 - **Contatti emergenza** e escalation path
 
 #### 5. 🎨 **Design System Completo**
+
 Sistema di design professionale:
+
 - **Palette colori** completa con varianti
 - **Tipografia** scalabile e accessibile
 - **Componenti UI** documentati con esempi
@@ -797,7 +906,9 @@ Sistema di design professionale:
 - **Responsive design** guidelines
 
 #### 6. 📋 **FAQ Estesa e Migliorata**
+
 Domande frequenti completamente rivista:
+
 - **50+ domande** organizzate per categoria
 - **Risposte pratiche** con esempi concreti
 - **Suggerimenti di successo** per rider e merchant
@@ -809,6 +920,7 @@ Domande frequenti completamente rivista:
 ### 🔧 **Miglioramenti Tecnici Documentali**
 
 #### 🏗️ **Architettura Documentale**
+
 - **Struttura gerarchica** con navigazione intuitiva
 - **Cross-references** tra documenti collegati
 - **Versionamento** delle guide tecniche
@@ -816,6 +928,7 @@ Domande frequenti completamente rivista:
 - **Mobile-responsive** per consultazione ovunque
 
 #### 📊 **Metriche Documentazione**
+
 - **9 documenti principali** completamente aggiornati
 - **5 nuove guide** create da zero
 - **Cross-linking completo** tra tutti i documenti
@@ -823,6 +936,7 @@ Domande frequenti completamente rivista:
 - **Contatti supporto** centralizzati
 
 #### 🔄 **Sincronizzazione Automatica**
+
 - **Versioni allineate** tra documenti
 - **Riferimenti aggiornati** automaticamente
 - **Stato progetto** consistente in tutto il progetto
@@ -833,6 +947,7 @@ Domande frequenti completamente rivista:
 ### 📱 **Impact sull'Esperienza**
 
 #### 🚀 **Per Sviluppatori**
+
 - **Onboarding facilitato** con guide complete
 - **Standard chiari** per contributi
 - **Testing guidato** con strategia documentata
@@ -840,12 +955,14 @@ Domande frequenti completamente rivista:
 - **Deployment sicuro** con guide aggiornate
 
 #### 👥 **Per Utenti**
+
 - **Onboarding intuitivo** con guide passo-passo
 - **Supporto completo** con FAQ estesa
 - **Sicurezza trasparente** con documentazione chiara
 - **Best practices** per successo sulla piattaforma
 
 #### 🏢 **Per il Progetto**
+
 - **Professionalità aumentata** con documentazione completa
 - **Scalabilità facilitata** con processi documentati
 - **Manutenibilità migliorata** con standard chiari
@@ -867,6 +984,7 @@ Domande frequenti completamente rivista:
 ### 🎯 **Prossimi Sviluppi Documentali**
 
 #### **v0.5.0 - Pianificata**
+
 - Documentazione API REST completa
 - Guide video per onboarding
 - Documentazione mobile app (futuro)
@@ -874,6 +992,7 @@ Domande frequenti completamente rivista:
 - Integrazione con sistemi esterni
 
 #### **Manutenzione Continua**
+
 - Aggiornamenti regolari delle guide
 - Feedback utenti integrato
 - Nuove funzionalità documentate

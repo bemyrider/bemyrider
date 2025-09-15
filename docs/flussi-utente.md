@@ -3,6 +3,7 @@
 Questa sezione descrive i principali flussi utente della piattaforma bemyrider.
 
 ## Flusso Rider
+
 1. Registrazione
 2. Completamento profilo e tariffa oraria
 3. Onboarding Stripe per pagamenti
@@ -12,6 +13,7 @@ Questa sezione descrive i principali flussi utente della piattaforma bemyrider.
 7. **Esecuzione servizio e ricezione pagamenti**
 
 ## Flusso Esercente
+
 1. Registrazione
 2. Ricerca rider disponibili
 3. **Invio richiesta di servizio con dettagli (data, ora, durata)**
@@ -20,6 +22,7 @@ Questa sezione descrive i principali flussi utente della piattaforma bemyrider.
 6. **Conferma servizio prenotato**
 
 ## Flusso Pagamento
+
 1. Creazione PaymentIntent
 2. Pagamento tramite Stripe
 3. Aggiornamento stato prenotazione

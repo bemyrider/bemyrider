@@ -5,11 +5,13 @@ Questa guida ti accompagnerà passo-passo nella configurazione completa di bemyr
 ## 📋 Prerequisiti
 
 ### Software Richiesto
+
 - **Node.js 18+** ([Download](https://nodejs.org/))
 - **npm** o **yarn** (incluso con Node.js)
 - **Git** ([Download](https://git-scm.com/))
 
 ### Account di Servizio
+
 - **GitHub** account (per il codice)
 - **Supabase** account ([Registrati](https://supabase.com/))
 - **Stripe** account ([Registrati](https://stripe.com/))
@@ -31,6 +33,7 @@ npm install
 ### 2. Configurazione Supabase
 
 #### 2.1 Crea un Nuovo Progetto
+
 1. Vai su [Supabase Dashboard](https://supabase.com/dashboard)
 2. Clicca "New Project"
 3. Scegli un nome (es. "bemyrider-prod")
@@ -38,6 +41,7 @@ npm install
 5. Crea una password sicura per il database
 
 #### 2.2 Ottieni le Chiavi API
+
 1. Vai su **Settings** → **API**
 2. Copia:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
@@ -49,6 +53,7 @@ npm install
 #### 2.3 Setup Database e Sicurezza Automatica
 
 ##### 🚀 **Metodo Raccomandato: Sicurezza Automatica**
+
 bemyrider ora include un **sistema di sicurezza completamente automatico** che gestisce tutto il processo:
 
 ```bash
@@ -64,6 +69,7 @@ npm run db:push
 ```
 
 ##### 🔧 **Cosa Viene Configurato Automaticamente:**
+
 - **11 tabelle** con RLS abilitato
 - **32+ policy di sicurezza** per proteggere i dati
 - **Sistema di logging** per audit trail
@@ -71,6 +77,7 @@ npm run db:push
 - **Gestione errori** robusta
 
 ##### 📊 **Performance del Sistema:**
+
 - ⚡ **Deployment**: ~13 secondi
 - 🔒 **Sicurezza**: 100% affidabile
 - 📈 **Policy applicate**: 32+ automaticamente
@@ -80,6 +87,7 @@ npm run db:push
 ### 3. Configurazione Stripe
 
 #### 3.1 Setup Account Base
+
 1. Vai su [Stripe Dashboard](https://dashboard.stripe.com/)
 2. Attiva **Test Mode** (toggle in alto a destra)
 3. Vai su **Developers** → **API keys**
@@ -88,6 +96,7 @@ npm run db:push
    - **Secret key** (`STRIPE_SECRET_KEY`)
 
 #### 3.2 Abilita Stripe Connect
+
 1. Vai su **Connect** → **Settings**
 2. Attiva **Express accounts**
 3. Configura:
@@ -96,6 +105,7 @@ npm run db:push
    - **Support email**: il tuo email
 
 #### 3.3 Configura Webhooks
+
 1. Vai su **Developers** → **Webhooks**
 2. Clicca **Add endpoint**
 3. URL endpoint: `https://tuodominio.com/api/stripe/webhook`
@@ -134,11 +144,13 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 5. Setup Supabase Edge Functions
 
 #### 5.1 Installa Supabase CLI
+
 ```bash
 npm install -g @supabase/cli
 ```
 
 #### 5.2 Login e Link Progetto
+
 ```bash
 # Login
 supabase login
@@ -148,6 +160,7 @@ supabase link --project-ref your-project-ref
 ```
 
 #### 5.3 Deploy Edge Functions
+
 ```bash
 # Deploy webhook function
 supabase functions deploy stripe-webhook
@@ -166,6 +179,7 @@ npm run dev
 ```
 
 Apri http://localhost:3000 e verifica:
+
 - ✅ La homepage si carica correttamente
 - ✅ La registrazione funziona
 - ✅ Il login funziona
@@ -174,6 +188,7 @@ Apri http://localhost:3000 e verifica:
 ### 7. Test Stripe Integration
 
 #### 7.1 Test Onboarding
+
 1. Registrati come rider
 2. Vai alla dashboard rider
 3. Clicca "Attiva Pagamenti"
@@ -183,6 +198,7 @@ Apri http://localhost:3000 e verifica:
    - **Email**: test@example.com
 
 #### 7.2 Test Webhook
+
 ```bash
 # Installa Stripe CLI
 # macOS
@@ -203,17 +219,21 @@ stripe trigger account.updated
 ### 1. Deploy su Vercel
 
 #### 1.1 Connetti Repository
+
 1. Vai su [Vercel Dashboard](https://vercel.com/dashboard)
 2. Clicca **New Project**
 3. Importa il repository GitHub
 4. Configura le environment variables
 
 #### 1.2 Environment Variables Produzione
+
 Copia tutte le variabili da `.env.local` ma sostituisci:
+
 - URL con il dominio di produzione
 - Chiavi Stripe con quelle di produzione (quando pronto)
 
 #### 1.3 Deploy
+
 ```bash
 # Automatic deploy su push a main
 git push origin main
@@ -222,11 +242,13 @@ git push origin main
 ### 2. Configurazione Produzione Stripe
 
 #### 2.1 Passa a Live Mode
+
 1. Toggle **Live Mode** su Stripe
 2. Aggiorna le chiavi API
 3. Riconfigura il webhook con URL produzione
 
 #### 2.2 Verifica Compliance
+
 - Completa il **Business Profile**
 - Accetta i **Terms of Service**
 - Verifica l'**Identity**
@@ -236,43 +258,54 @@ git push origin main
 ### Problemi Comuni
 
 #### Database Connection Error
+
 ```
 Error: Could not connect to database
 ```
+
 **Soluzione**: Verifica `***REMOVED***` in `.env.local`
 
 #### Stripe Webhook 401 Error
+
 ```
 HTTP 401: Missing authorization header
 ```
+
 **Soluzione**: Disabilita "Verify JWT" nelle impostazioni Edge Function
 
 #### Build Error - Supabase Functions
+
 ```
 Cannot find module 'https://deno.land/std@0.168.0/http/server.ts'
 ```
+
 **Soluzione**: Le Supabase functions sono escluse dal build Next.js
 
 #### CORS Error
+
 ```
 Access to fetch blocked by CORS policy
 ```
+
 **Soluzione**: Verifica che `NEXT_PUBLIC_APP_URL` sia corretto
 
 ### Log Debugging
 
 #### Supabase Logs
+
 ```bash
 # Visualizza logs Edge Functions
 supabase functions logs stripe-webhook
 ```
 
 #### Stripe Webhook Logs
+
 1. Vai su **Developers** → **Webhooks**
 2. Clicca sul tuo endpoint
 3. Visualizza **Logs** per debugging
 
 #### Next.js Logs
+
 ```bash
 # Logs server di sviluppo
 npm run dev
@@ -311,23 +344,27 @@ Prima di andare in produzione:
 Dopo aver completato il setup, consulta questi documenti per:
 
 ### 🚀 Per Utenti
+
 - **[Guida Onboarding](./onboarding-utente.md)** - Come registrarsi e utilizzare la piattaforma
 - **[Flussi Utente](./flussi-utente.md)** - Come funziona il processo di prenotazione
 - **[FAQ](./faq.md)** - Risposte alle domande più comuni
 
 ### 🔧 Per Sviluppatori
+
 - **[Architettura](./architettura.md)** - Diagramma architetturale e schema database completo
 - **[Contributing Guide](./CONTRIBUTING.md)** - Come contribuire al progetto
 - **[Testing](./testing.md)** - Strategia di testing e QA
 - **[Runbook Operativo](./runbook.md)** - Monitoraggio e manutenzione produzione
 
 ### 📊 Operazioni
+
 - **[Deployment](./../DEPLOYMENT.md)** - Guida deployment produzione
 - **[Roadmap](./ROADMAP.md)** - Pianificazione sviluppo futuro
 
 **Congratulazioni! 🎉 bemyrider è ora configurato e pronto per l'uso!**
 
 ### 🎯 Prossimi Passi
+
 1. **Testa l'applicazione** seguendo la [strategia di testing](./testing.md)
 2. **Deploy in produzione** usando la [guida deployment](./../DEPLOYMENT.md)
 3. **Monitora le performance** con il [runbook operativo](./runbook.md)

@@ -5,24 +5,27 @@ Benvenuto su bemyrider! Questa guida ti accompagnerà passo-passo nella configur
 ## 📋 Prima di Iniziare
 
 ### Requisiti Minimi
+
 - **Dispositivo**: Smartphone o computer con connessione internet
 - **Documenti**: Carta d'identità valida, codice fiscale
 - **Account bancario**: IBAN italiano per i pagamenti
 - **Veicolo**: Per i rider - bici, e-bike, scooter o auto
 
 ### Scelta del Ruolo
+
 bemyrider offre due tipologie di account:
 
-| 🏍️ **Rider** | 🏪 **Esercente** |
-|-------------|------------------|
-| Trasporti e consegne | Richiede servizi di trasporto |
-| Guadagna offrendo i tuoi servizi | Paga per servizi affidabili |
-| Orari flessibili | Prenotazioni rapide |
-| Gestisci la tua attività | Trova rider qualificati |
+| 🏍️ **Rider**                     | 🏪 **Esercente**              |
+| -------------------------------- | ----------------------------- |
+| Trasporti e consegne             | Richiede servizi di trasporto |
+| Guadagna offrendo i tuoi servizi | Paga per servizi affidabili   |
+| Orari flessibili                 | Prenotazioni rapide           |
+| Gestisci la tua attività         | Trova rider qualificati       |
 
 ## 🏍️ Onboarding Rider
 
 ### Fase 1: Registrazione Account
+
 1. **Accedi al sito**: Vai su [bemyrider.it](https://bemyrider.it)
 2. **Clicca "Registrati come Rider"**
 3. **Inserisci i tuoi dati**:
@@ -36,6 +39,7 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 2: Verifica Identità
+
 1. **Carica documento**: Carta d'identità o passaporto
 2. **Foto del volto**: Selfie con documento
 3. **Codice fiscale**: Per adempimenti fiscali
@@ -46,6 +50,7 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 3: Profilo Professionale
+
 1. **Foto profilo**: Carica una foto professionale
 2. **Biografia**: Descrivi la tua esperienza (max 500 caratteri)
 3. **Veicolo**: Seleziona il tuo mezzo di trasporto
@@ -57,8 +62,9 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 4: Disponibilità Oraria
+
 1. **Seleziona giorni**: Lunedì → Domenica
-2. **Orari di lavoro**: Dalle __:__ alle __:__
+2. **Orari di lavoro**: Dalle **:** alle **:**
 3. **Pausa pranzo**: Seleziona se disponibile
 4. **Zone di copertura**: Città e quartieri serviti
 
@@ -67,6 +73,7 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 5: Onboarding Pagamenti Stripe
+
 1. **Clicca "Attiva Pagamenti"**
 2. **Verifica email**: Conferma indirizzo email
 3. **Dati bancari**: Inserisci IBAN italiano
@@ -78,6 +85,7 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 6: Pronti per Lavorare! 🎉
+
 - **Ricevi notifiche**: Nuove richieste di servizio
 - **Accetta/rifiuta**: Gestisci le tue prenotazioni
 - **Guadagna**: Ricevi pagamenti automatici
@@ -86,6 +94,7 @@ bemyrider offre due tipologie di account:
 ## 🏪 Onboarding Esercente
 
 ### Fase 1: Registrazione Account
+
 1. **Accedi al sito**: Vai su [bemyrider.it](https://bemyrider.it)
 2. **Clicca "Registrati come Esercente"**
 3. **Inserisci i tuoi dati**:
@@ -95,6 +104,7 @@ bemyrider offre due tipologie di account:
    - Numero di telefono
 
 ### Fase 2: Profilo Aziendale
+
 1. **Dati aziendali**: Ragione sociale, P.IVA
 2. **Indirizzo**: Sede legale e operativa
 3. **Descrizione**: Tipo di attività e servizi
@@ -106,12 +116,14 @@ bemyrider offre due tipologie di account:
 ```
 
 ### Fase 3: Verifica Documenti
+
 1. **Partita IVA**: Documento di registrazione
 2. **Documento identità**: Del titolare/legale rappresentante
 3. **Certificazione**: Camera di Commercio (opzionale)
 4. **Attendi verifica**: Di solito entro 24 ore
 
 ### Fase 4: Ricerca e Prenotazione
+
 1. **Esplora rider**: Filtra per zona, veicolo, tariffa
 2. **Visualizza profili**: Leggi recensioni e portfolio
 3. **Contatta rider**: Invia richiesta di preventivo
@@ -120,13 +132,16 @@ bemyrider offre due tipologie di account:
 ## 📱 Come Usare l'App
 
 ### Dashboard Principale
+
 - **Notifiche**: Nuove richieste e messaggi
 - **Calendario**: Prenotazioni confermate
 - **Statistiche**: Guadagni e performance (per rider)
 - **Rider disponibili**: Lista rider online (per esercenti)
 
 ### Gestione Prenotazioni
+
 #### Per Rider:
+
 1. **Ricevi richiesta**: Notifica push/email
 2. **Valuta richiesta**: Controlla dettagli e tariffa
 3. **Accetta/Rifiuta**: Rispondi entro 30 minuti
@@ -135,6 +150,7 @@ bemyrider offre due tipologie di account:
 6. **Ricevi pagamento**: Automatico T+2 giorni
 
 #### Per Esercenti:
+
 1. **Cerca rider**: Filtra per disponibilità
 2. **Invia richiesta**: Specifica data, ora, durata
 3. **Attendi risposta**: Rider risponde entro 30 min
@@ -145,6 +161,7 @@ bemyrider offre due tipologie di account:
 ## 💰 Sistema Pagamenti
 
 ### Per Rider
+
 - **Tariffa**: Imposti tu il prezzo (€/ora)
 - **Pagamento**: Tramite Stripe Connect
 - **Tempi**: Ricevimento entro 2 giorni lavorativi
@@ -152,6 +169,7 @@ bemyrider offre due tipologie di account:
 - **Fiscale**: Gestione ritenuta d'acconto automatica
 
 ### Per Esercenti
+
 - **Pagamento**: Alla conferma della prenotazione
 - **Sicurezza**: Pagamento trattenuto fino al servizio
 - **Metodi**: Carta di credito, debito, PayPal
@@ -160,12 +178,14 @@ bemyrider offre due tipologie di account:
 ## 🛡️ Sicurezza e Garanzie
 
 ### Protezione Rider
+
 - **Pagamento garantito**: Ricevi sempre se completi il servizio
 - **Assicurazione**: Copertura responsabilità civile
 - **Recensioni**: Sistema di feedback trasparente
 - **Supporto**: Assistenza 24/7 per problemi
 
 ### Protezione Esercenti
+
 - **Rider verificati**: Tutti i rider controllati
 - **Pagamento sicuro**: Trattenuto fino al completamento
 - **Assicurazione**: Copertura merci trasportate
@@ -174,17 +194,20 @@ bemyrider offre due tipologie di account:
 ## 📞 Supporto e Assistenza
 
 ### Contatti
+
 - **Email**: supporto@bemyrider.it
 - **Telefono**: +39 123 456 7890
 - **Chat**: Disponibile in app 9:00-18:00
 - **WhatsApp**: +39 123 456 7890
 
 ### Tempi di Risposta
+
 - **Chat in app**: Risposta entro 5 minuti
 - **Email**: Risposta entro 24 ore
 - **Telefonate**: Assistenza immediata 9:00-18:00
 
 ### Problemi Comuni
+
 - **Rider non risponde**: Possiamo aiutarti a trovare alternative
 - **Pagamento bloccato**: Verifica stato servizio
 - **Modifiche prenotazione**: Possibili entro 2 ore dall'inizio
@@ -192,12 +215,14 @@ bemyrider offre due tipologie di account:
 ## 📊 Suggerimenti per il Successo
 
 ### Per Rider
+
 - **Completa profilo**: Più dettagli = più prenotazioni
 - **Rispondi velocemente**: Entro 30 minuti per buona reputazione
 - **Ottieni recensioni**: Chiedi feedback dopo ogni servizio
 - **Aggiorna disponibilità**: Mantieni calendario aggiornato
 
 ### Per Esercenti
+
 - **Pianifica ahead**: Prenota con anticipo per disponibilità
 - **Descrivi chiaramente**: Più dettagli = rider più adatti
 - **Lascia recensioni**: Aiuta altri esercenti nella scelta
@@ -206,12 +231,14 @@ bemyrider offre due tipologie di account:
 ## 🎯 Prossimi Passi
 
 ### Dopo l'Onboarding
+
 1. **Esplora la piattaforma**: Scopri tutte le funzionalità
 2. **Partecipa a webinar**: Sessioni formative gratuite
 3. **Unisciti alla community**: Gruppo Facebook/LinkedIn
 4. **Invita colleghi**: Guadagna bonus per referrals
 
 ### Aggiornamenti Account
+
 - **Modifica profilo**: Sempre possibile aggiornare informazioni
 - **Aggiorna tariffe**: Adatta prezzi al mercato
 - **Aggiungi certificati**: Aumenta fiducia clienti
@@ -220,6 +247,7 @@ bemyrider offre due tipologie di account:
 ## 📋 Checklist Completamento Onboarding
 
 ### ✅ Rider
+
 - [ ] Account creato e verificato
 - [ ] Documenti caricati
 - [ ] Profilo completato
@@ -228,6 +256,7 @@ bemyrider offre due tipologie di account:
 - [ ] Prima prenotazione ricevuta
 
 ### ✅ Esercente
+
 - [ ] Account aziendale creato
 - [ ] Documenti verificati
 - [ ] Profilo attività completato

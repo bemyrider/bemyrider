@@ -21,6 +21,7 @@ Authorization: Bearer <supabase-jwt-token>
 Crea una nuova richiesta di servizio da un esercente a un rider.
 
 **Richiesta:**
+
 ```http
 POST /api/service-requests
 Content-Type: application/json
@@ -28,6 +29,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Body:**
+
 ```json
 {
   "riderId": "uuid-del-rider",
@@ -40,6 +42,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta di successo (201):**
+
 ```json
 {
   "success": true,
@@ -57,6 +60,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Errori:**
+
 - `400 Bad Request`: Parametri mancanti o durata non valida (1-2 ore)
 - `401 Unauthorized`: Token mancante o non valido
 - `500 Internal Server Error`: Errore nella creazione richiesta
@@ -66,12 +70,14 @@ Authorization: Bearer <jwt-token>
 Recupera le richieste di servizio per l'utente corrente (diverso per merchant e rider).
 
 **Per Merchant:**
+
 ```http
 GET /api/service-requests
 Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "success": true,
@@ -88,7 +94,7 @@ Authorization: Bearer <jwt-token>
       "rider": {
         "id": "uuid-rider",
         "fullName": "Mario Rossi",
-        "hourlyRate": 8.50
+        "hourlyRate": 8.5
       }
     }
   ]
@@ -96,12 +102,14 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Per Rider:**
+
 ```http
 GET /api/service-requests
 Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "success": true,
@@ -130,6 +138,7 @@ Authorization: Bearer <jwt-token>
 Permette a un rider di rispondere a una richiesta di servizio.
 
 **Richiesta:**
+
 ```http
 PUT /api/service-requests/uuid-richiesta/respond
 Content-Type: application/json
@@ -137,6 +146,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Body:**
+
 ```json
 {
   "status": "accepted|rejected",
@@ -145,6 +155,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta di successo (200):**
+
 ```json
 {
   "success": true,
@@ -158,6 +169,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Errori:**
+
 - `400 Bad Request`: Status non valido o richiesta già risposta
 - `401 Unauthorized`: Token mancante o non valido
 - `404 Not Found`: Richiesta non trovata
@@ -178,6 +190,7 @@ Authorization: Bearer <supabase-jwt-token>
 Inizia il processo di onboarding Stripe Connect per un rider.
 
 **Richiesta:**
+
 ```http
 POST /api/stripe/onboarding
 Content-Type: application/json
@@ -185,6 +198,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta di successo (200):**
+
 ```json
 {
   "url": "https://connect.stripe.com/setup/...",
@@ -194,6 +208,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta se già completato (200):**
+
 ```json
 {
   "url": "https://yourdomain.com/dashboard/rider?onboarding_complete=true",
@@ -202,6 +217,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Errori:**
+
 - `401 Unauthorized`: Token mancante o non valido
 - `500 Internal Server Error`: Errore nella creazione account Stripe
 
@@ -210,12 +226,14 @@ Authorization: Bearer <jwt-token>
 Verifica lo stato dell'onboarding Stripe per un rider.
 
 **Richiesta:**
+
 ```http
 GET /api/stripe/onboarding
 Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "status": "has_stripe_account",
@@ -225,6 +243,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Possibili stati:**
+
 - `no_stripe_account`: Nessun account Stripe associato
 - `has_stripe_account`: Account esistente con stato onboarding
 
@@ -233,12 +252,14 @@ Authorization: Bearer <jwt-token>
 Crea un nuovo account Stripe Express per un rider.
 
 **Richiesta:**
+
 ```http
 POST /api/stripe/create-account
 Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "url": "https://connect.stripe.com/setup/..."
@@ -250,6 +271,7 @@ Authorization: Bearer <jwt-token>
 Crea un link di login per la dashboard Stripe del rider.
 
 **Richiesta:**
+
 ```http
 POST /api/stripe/create-login-link
 Content-Type: application/json
@@ -261,6 +283,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "url": "https://connect.stripe.com/express/..."
@@ -272,6 +295,7 @@ Authorization: Bearer <jwt-token>
 Crea un Payment Intent per una prenotazione.
 
 **Richiesta:**
+
 ```http
 POST /api/stripe/create-payment-intent
 Content-Type: application/json
@@ -287,6 +311,7 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "clientSecret": "pi_..._secret_...",
@@ -299,12 +324,14 @@ Authorization: Bearer <jwt-token>
 Verifica lo stato di un account Stripe.
 
 **Richiesta:**
+
 ```http
 GET /api/stripe/check-account-status?accountId=acct_...
 Authorization: Bearer <jwt-token>
 ```
 
 **Risposta (200):**
+
 ```json
 {
   "accountId": "acct_...",
@@ -322,16 +349,19 @@ Authorization: Bearer <jwt-token>
 Gestisce i webhook di Stripe per aggiornamenti automatici.
 
 **Headers richiesti:**
+
 ```
 Stripe-Signature: t=...,v1=...
 ```
 
 **Eventi gestiti:**
+
 - `account.updated`: Aggiorna stato onboarding rider
 - `payment_intent.succeeded`: Conferma pagamento prenotazione
 - `payment_intent.payment_failed`: Gestisce pagamenti falliti
 
 **Risposta (200):**
+
 ```json
 {
   "received": true,
@@ -343,24 +373,25 @@ Stripe-Signature: t=...,v1=...
 
 ### Errori Comuni
 
-| Codice | Descrizione |
-|--------|-------------|
-| `400` | Bad Request - Parametri mancanti o non validi |
-| `401` | Unauthorized - Token di autenticazione mancante o non valido |
-| `404` | Not Found - Risorsa non trovata |
-| `500` | Internal Server Error - Errore interno del server |
+| Codice | Descrizione                                                  |
+| ------ | ------------------------------------------------------------ |
+| `400`  | Bad Request - Parametri mancanti o non validi                |
+| `401`  | Unauthorized - Token di autenticazione mancante o non valido |
+| `404`  | Not Found - Risorsa non trovata                              |
+| `500`  | Internal Server Error - Errore interno del server            |
 
 ### Errori Specifici Stripe
 
-| Codice | Messaggio | Descrizione |
-|--------|-----------|-------------|
-| `stripe_account_not_found` | Account Stripe non trovato | L'account Stripe specificato non esiste |
-| `onboarding_incomplete` | Onboarding non completato | L'account Stripe non ha completato l'onboarding |
-| `webhook_verification_failed` | Verifica webhook fallita | La firma del webhook Stripe non è valida |
+| Codice                        | Messaggio                  | Descrizione                                     |
+| ----------------------------- | -------------------------- | ----------------------------------------------- |
+| `stripe_account_not_found`    | Account Stripe non trovato | L'account Stripe specificato non esiste         |
+| `onboarding_incomplete`       | Onboarding non completato  | L'account Stripe non ha completato l'onboarding |
+| `webhook_verification_failed` | Verifica webhook fallita   | La firma del webhook Stripe non è valida        |
 
 ## Rate Limiting
 
 Attualmente non ci sono limiti di rate implementati, ma si raccomanda di:
+
 - Non superare 100 richieste al minuto per endpoint
 - Implementare retry con backoff esponenziale per errori 5xx
 
@@ -374,9 +405,9 @@ const startOnboarding = async () => {
   const response = await fetch('/api/stripe/onboarding', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${supabaseToken}`,
-      'Content-Type': 'application/json'
-    }
+      Authorization: `Bearer ${supabaseToken}`,
+      'Content-Type': 'application/json',
+    },
   });
 
   const data = await response.json();
@@ -389,8 +420,8 @@ const startOnboarding = async () => {
 const checkStatus = async () => {
   const response = await fetch('/api/stripe/onboarding', {
     headers: {
-      'Authorization': `Bearer ${supabaseToken}`
-    }
+      Authorization: `Bearer ${supabaseToken}`,
+    },
   });
 
   return await response.json();
@@ -413,5 +444,6 @@ curl -X GET https://yourdomain.com/api/stripe/onboarding \
 ## Supporto
 
 Per domande sull'API o problemi di integrazione:
+
 - Email: dev@bemyrider.it
 - GitHub Issues: [bemyrider/bemyrider](https://github.com/bemyrider/bemyrider/issues)

@@ -18,7 +18,9 @@
 ## 🔒 Sistema di Sicurezza Enterprise-Grade
 
 ### 🔑 **JWT Signing Keys Avanzati (v0.4.11)**
+
 bemyrider utilizza **JWT Signing Keys con algoritmo ECC (P-256)** per massima sicurezza:
+
 - ✅ **Chiavi asimmetriche** non estraibili da Supabase
 - ✅ **Revoca istantanea** delle chiavi compromesse
 - ✅ **Validazione JWT locale** per performance ottimizzate
@@ -26,6 +28,7 @@ bemyrider utilizza **JWT Signing Keys con algoritmo ECC (P-256)** per massima si
 - ✅ **Performance**: Autenticazione 60% più veloce
 
 ### 🚀 **Sicurezza Automatica del Database**
+
 bemyrider implementa un **sistema di sicurezza avanzato e automatico** che garantisce:
 
 - ✅ **Row Level Security (RLS)** applicata automaticamente dopo ogni migrazione
@@ -35,6 +38,7 @@ bemyrider implementa un **sistema di sicurezza avanzato e automatico** che garan
 - ✅ **Gestione errori robusta** con recovery automatico
 
 #### **Comandi di Sicurezza Disponibili:**
+
 ```bash
 # Applicare sicurezza automatica (raccomandato)
 npm run db:security
@@ -48,6 +52,7 @@ npm run db:security # Mostra stato attuale delle policy
 ```
 
 #### **Performance del Sistema:**
+
 - ⚡ **Deployment**: ~13 secondi (71% più veloce del sistema precedente)
 - 🔒 **Policy applicate**: 32+ policy di sicurezza
 - ✅ **Affidabilità**: 100% (da 30% del sistema precedente)
@@ -83,6 +88,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 ```
 
 **Come ottenere le chiavi Supabase:**
+
 1. Vai su [Supabase Dashboard](https://supabase.com/dashboard)
 2. Seleziona il tuo progetto
 3. Vai su **Settings** → **API**
@@ -94,6 +100,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 ## 🚀 Caratteristiche Principali
 
 ### Per i Rider
+
 - ✅ **Registrazione con selezione ruolo** e creazione profilo automatica
 - ✅ **Definizione tariffa oraria** personalizzata
 - ✅ **Dashboard completa** con protezione accessi basata su ruolo
@@ -102,6 +109,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 - ✅ **Logout sicuro** con reindirizzamento automatico
 
 ### Per gli Esercenti
+
 - ✅ **Dashboard merchant completa** con statistiche in tempo reale
 - ✅ **Ricerca e visualizzazione** rider disponibili con filtri
 - ✅ **Prenotazioni** con gestione calendario e stati
@@ -110,6 +118,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 - ✅ **Controllo accessi rigoroso** con protezione ruoli
 
 ### Funzionalità Condivise
+
 - 🔐 **Sistema di autenticazione** robusto con Supabase
 - 🎯 **Redirect intelligenti** basati su ruolo utente
 - 🎨 **Design moderno** con navbar fissa e animazioni fluide
@@ -138,17 +147,20 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 ## 🔧 Setup del Progetto
 
 ### 1. Clona il repository
+
 ```bash
 git clone https://github.com/bemyrider/bemyrider.git
 cd bemyrider
 ```
 
 ### 2. Installa le dipendenze
+
 ```bash
 npm install
 ```
 
 ### 3. Configura le variabili d'ambiente
+
 Copia il file `env.example` in `.env.local` e compila le variabili:
 
 ```bash
@@ -171,6 +183,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 #### Come ottenere le chiavi Supabase:
+
 1. **Vai al tuo progetto Supabase** su https://supabase.com
 2. **Settings → API**
 3. **Copia:**
@@ -183,6 +196,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 4. Setup Database con Drizzle ORM
 
 #### Opzione A: Drizzle Migrations (Raccomandato)
+
 ```bash
 # Assicurati di avere ***REMOVED*** nel .env.local
 # Applica le migrations Drizzle al database Supabase
@@ -196,17 +210,20 @@ npm run db:push
 ```
 
 #### Opzione B: SQL Manuale
+
 Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase.
 
 #### 🗄️ Schema Database Completo
 
 **Enums:**
+
 - `DayOfWeek`: Lun, Mar, Mer, Gio, Ven, Sab, Dom
 - `PaymentStatus`: in_attesa, pagato, rimborsato
 - `Status`: in_attesa, confermata, in_corso, completata, annullata
 - `VehicleType`: bici, e_bike, scooter, auto
 
 **Tabelle Principali:**
+
 - `profiles` - Profili utenti base (rider/merchant)
 - `esercenti` - Dettagli specifici merchant
 - `prenotazioni` - Sistema prenotazioni completo
@@ -214,16 +231,19 @@ Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase
 - `disponibilita_riders` - Calendario disponibilità
 
 **Tabelle di Supporto:**
+
 - `rider_tax_details` - Dati fiscali rider
 - `esercente_tax_details` - Dati fiscali merchant
 - `occasional_performance_receipts` - Ricevute prestazioni
 
 #### 🔐 Row Level Security (RLS)
+
 Tutte le tabelle hanno policies RLS configurate automaticamente per:
+
 - ✅ Sicurezza dati per ruolo
 - ✅ Isolamento merchant/rider
 - ✅ Accesso basato su proprietà
-CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
+  CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
 
 -- Availability: viewable by everyone, editable by rider
 CREATE POLICY "Availability is viewable by everyone" ON availability FOR SELECT USING (true);
@@ -238,15 +258,17 @@ CREATE POLICY "Participants can update bookings" ON bookings FOR UPDATE USING (a
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, full_name, role)
-  VALUES (
-    NEW.id,
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'role'
-  );
-  RETURN NEW;
+INSERT INTO profiles (id, full_name, role)
+VALUES (
+NEW.id,
+NEW.raw_user_meta_data->>'full_name',
+NEW.raw_user_meta_data->>'role'
+);
+RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+$$
+LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create trigger for new user creation
 CREATE TRIGGER on_auth_user_created
@@ -487,3 +509,4 @@ Per contatti: info@bemyrider.it
 **bemyrider** - Connettiamo rider professionisti con esercenti locali attraverso una piattaforma digitale innovativa, sicura e completamente documentata 🚴‍♂️🏪
 
 **✨ Documentazione Production-Ready** | **🔒 Sicurezza Enterprise-Grade** | **📈 Architettura Scalabile**
+$$

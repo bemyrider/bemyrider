@@ -20,6 +20,7 @@ Questa guida descrive la strategia completa di testing per bemyrider, includendo
 ## 🎯 Panoramica Strategia
 
 ### Obiettivi Testing
+
 - **Qualità**: Garantire che il codice funzioni come previsto
 - **Affidabilità**: Prevenire regressioni e bug in produzione
 - **Manutenibilità**: Codice testato è più facile da modificare
@@ -27,6 +28,7 @@ Questa guida descrive la strategia completa di testing per bemyrider, includendo
 - **Sicurezza**: Testare vulnerabilità e sicurezza dei dati
 
 ### Metriche di Successo
+
 - **Coverage**: ≥ 80% statements, ≥ 75% branches, ≥ 85% functions
 - **Reliability**: < 0.1% bug rate in produzione
 - **Performance**: < 2 secondi tempo di risposta medio
@@ -35,6 +37,7 @@ Questa guida descrive la strategia completa di testing per bemyrider, includendo
 ## 🛠️ Setup Ambiente Testing
 
 ### Dipendenze Principali
+
 ```json
 {
   "devDependencies": {
@@ -52,6 +55,7 @@ Questa guida descrive la strategia completa di testing per bemyrider, includendo
 ```
 
 ### Configurazione Jest
+
 ```javascript
 // jest.config.js
 module.exports = {
@@ -60,12 +64,12 @@ module.exports = {
   moduleNameMapping: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/components/(.*)$': '<rootDir>/components/$1',
-    '^@/lib/(.*)$': '<rootDir>/lib/$1'
+    '^@/lib/(.*)$': '<rootDir>/lib/$1',
   },
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
-    '!src/pages/_*.{js,jsx,ts,tsx}'
+    '!src/pages/_*.{js,jsx,ts,tsx}',
   ],
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
@@ -73,13 +77,14 @@ module.exports = {
       statements: 80,
       branches: 75,
       functions: 85,
-      lines: 80
-    }
-  }
+      lines: 80,
+    },
+  },
 };
 ```
 
 ### Setup File
+
 ```javascript
 // jest.setup.js
 import '@testing-library/jest-dom';
@@ -90,7 +95,7 @@ jest.mock('@/lib/supabase', () => ({
     auth: {
       getUser: jest.fn(),
       signInWithPassword: jest.fn(),
-      signOut: jest.fn()
+      signOut: jest.fn(),
     },
     from: jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
@@ -98,9 +103,9 @@ jest.mock('@/lib/supabase', () => ({
       update: jest.fn().mockReturnThis(),
       delete: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
-      single: jest.fn()
-    }))
-  }
+      single: jest.fn(),
+    })),
+  },
 }));
 
 // Mock Next.js router
@@ -110,8 +115,8 @@ jest.mock('next/router', () => ({
     replace: jest.fn(),
     prefetch: jest.fn(),
     pathname: '/',
-    query: {}
-  })
+    query: {},
+  }),
 }));
 ```
 
@@ -126,6 +131,7 @@ Unit Tests (Fast, Low Value)
 ```
 
 ### Distribuzione Test
+
 - **Unit Tests**: 70% - Test isolati di funzioni/componenti
 - **Integration Tests**: 20% - Test interazioni tra componenti
 - **E2E Tests**: 10% - Test flussi utente completi
@@ -133,6 +139,7 @@ Unit Tests (Fast, Low Value)
 ## 🧩 Unit Testing
 
 ### Componenti React
+
 ```typescript
 // __tests__/components/RiderCard.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -184,6 +191,7 @@ describe('RiderCard', () => {
 ```
 
 ### Custom Hooks
+
 ```typescript
 // __tests__/hooks/useRiderAvailability.test.ts
 import { renderHook, act, waitFor } from '@testing-library/react';
@@ -196,10 +204,10 @@ const mockSupabaseResponse = {
       rider_id: 'rider-1',
       day_of_week: 'Lun',
       start_time: '09:00',
-      end_time: '17:00'
-    }
+      end_time: '17:00',
+    },
   ],
-  error: null
+  error: null,
 };
 
 describe('useRiderAvailability', () => {
@@ -210,12 +218,12 @@ describe('useRiderAvailability', () => {
   it('fetches and returns rider availability', async () => {
     const mockFrom = jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockResolvedValue(mockSupabaseResponse)
+      eq: jest.fn().mockResolvedValue(mockSupabaseResponse),
     }));
 
     // Mock the supabase client
     jest.mock('@/lib/supabase', () => ({
-      supabase: { from: mockFrom }
+      supabase: { from: mockFrom },
     }));
 
     const { result } = renderHook(() => useRiderAvailability('rider-1'));
@@ -234,11 +242,11 @@ describe('useRiderAvailability', () => {
     const mockError = new Error('Database connection failed');
     const mockFrom = jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockRejectedValue(mockError)
+      eq: jest.fn().mockRejectedValue(mockError),
     }));
 
     jest.mock('@/lib/supabase', () => ({
-      supabase: { from: mockFrom }
+      supabase: { from: mockFrom },
     }));
 
     const { result } = renderHook(() => useRiderAvailability('rider-1'));
@@ -254,6 +262,7 @@ describe('useRiderAvailability', () => {
 ```
 
 ### Utility Functions
+
 ```typescript
 // __tests__/utils/formatters.test.ts
 import { formatCurrency, formatDate, formatDuration } from '@/utils/formatters';
@@ -284,7 +293,9 @@ describe('formatters', () => {
 
     it('formats time correctly', () => {
       const date = new Date('2024-01-15T14:30:00');
-      expect(formatDate(date, { includeTime: true })).toBe('15 gennaio 2024, 14:30');
+      expect(formatDate(date, { includeTime: true })).toBe(
+        '15 gennaio 2024, 14:30'
+      );
     });
   });
 
@@ -305,6 +316,7 @@ describe('formatters', () => {
 ## 🔗 Integration Testing
 
 ### API Routes
+
 ```typescript
 // __tests__/api/service-requests.test.ts
 import { createMocks } from 'node-mocks-http';
@@ -319,16 +331,16 @@ describe('/api/service-requests', () => {
   beforeEach(() => {
     mockSupabase = {
       auth: {
-        getUser: jest.fn()
+        getUser: jest.fn(),
       },
       from: jest.fn(() => ({
         insert: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockResolvedValue({
           data: [{ id: '1', status: 'pending' }],
-          error: null
-        })
-      }))
+          error: null,
+        }),
+      })),
     };
 
     (createClient as jest.Mock).mockReturnValue(mockSupabase);
@@ -338,20 +350,20 @@ describe('/api/service-requests', () => {
     const { req, res } = createMocks({
       method: 'POST',
       headers: {
-        authorization: 'Bearer valid-token'
+        authorization: 'Bearer valid-token',
       },
       body: {
         riderId: 'rider-1',
         startDate: '2024-01-15',
         startTime: '10:00',
         duration: 2,
-        description: 'Consegna urgente'
-      }
+        description: 'Consegna urgente',
+      },
     });
 
     mockSupabase.auth.getUser.mockResolvedValue({
       data: { user: { id: 'merchant-1' } },
-      error: null
+      error: null,
     });
 
     await handler(req, res);
@@ -366,12 +378,12 @@ describe('/api/service-requests', () => {
     const { req, res } = createMocks({
       method: 'POST',
       headers: {
-        authorization: 'Bearer valid-token'
+        authorization: 'Bearer valid-token',
       },
       body: {
         // Missing required fields
-        riderId: 'rider-1'
-      }
+        riderId: 'rider-1',
+      },
     });
 
     await handler(req, res);
@@ -384,7 +396,7 @@ describe('/api/service-requests', () => {
   it('handles authentication errors', async () => {
     const { req, res } = createMocks({
       method: 'POST',
-      body: {}
+      body: {},
     });
 
     await handler(req, res);
@@ -395,6 +407,7 @@ describe('/api/service-requests', () => {
 ```
 
 ### Database Integration
+
 ```typescript
 // __tests__/integration/database/service-requests.test.ts
 import { createClient } from '@supabase/supabase-js';
@@ -466,6 +479,7 @@ describe('ServiceRequestService Integration', () => {
 ## 🌐 End-to-End Testing
 
 ### Playwright Setup
+
 ```typescript
 // playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
@@ -516,6 +530,7 @@ export default defineConfig({
 ```
 
 ### E2E Test Example
+
 ```typescript
 // e2e/service-request-flow.spec.ts
 import { test, expect } from '@playwright/test';
@@ -551,18 +566,25 @@ test.describe('Service Request Flow', () => {
     await page.fill('[data-testid="date-input"]', '2024-01-20');
     await page.fill('[data-testid="time-input"]', '14:00');
     await page.selectOption('[data-testid="duration-select"]', '2');
-    await page.fill('[data-testid="description-input"]', 'Consegna urgente ristorante');
+    await page.fill(
+      '[data-testid="description-input"]',
+      'Consegna urgente ristorante'
+    );
 
     // Submit request
     await page.click('[data-testid="submit-request"]');
 
     // Verify success
     await expect(page.locator('[data-testid="success-message"]')).toBeVisible();
-    await expect(page.locator('[data-testid="success-message"]')).toContainText('Richiesta inviata');
+    await expect(page.locator('[data-testid="success-message"]')).toContainText(
+      'Richiesta inviata'
+    );
 
     // Check dashboard
     await page.goto('/dashboard/merchant');
-    await expect(page.locator('[data-testid="pending-requests"]')).toContainText('1');
+    await expect(
+      page.locator('[data-testid="pending-requests"]')
+    ).toContainText('1');
   });
 
   test('rider accepts service request', async ({ page, context }) => {
@@ -576,11 +598,15 @@ test.describe('Service Request Flow', () => {
     await riderPage.click('[data-testid="login-button"]');
 
     // Check for new request notification
-    await expect(riderPage.locator('[data-testid="notification-badge"]')).toBeVisible();
+    await expect(
+      riderPage.locator('[data-testid="notification-badge"]')
+    ).toBeVisible();
 
     // View request details
     await riderPage.click('[data-testid="view-request"]');
-    await expect(riderPage.locator('[data-testid="request-description"]')).toContainText('Consegna urgente');
+    await expect(
+      riderPage.locator('[data-testid="request-description"]')
+    ).toContainText('Consegna urgente');
 
     // Accept request
     await riderPage.click('[data-testid="accept-request"]');
@@ -589,10 +615,14 @@ test.describe('Service Request Flow', () => {
     await riderPage.click('[data-testid="confirm-acceptance"]');
 
     // Verify status update
-    await expect(riderPage.locator('[data-testid="request-status"]')).toContainText('Accettata');
+    await expect(
+      riderPage.locator('[data-testid="request-status"]')
+    ).toContainText('Accettata');
 
     // Verify merchant notification (on original page)
-    await expect(page.locator('[data-testid="request-status"]')).toContainText('Accettata');
+    await expect(page.locator('[data-testid="request-status"]')).toContainText(
+      'Accettata'
+    );
   });
 });
 ```
@@ -600,6 +630,7 @@ test.describe('Service Request Flow', () => {
 ## 🔌 API Testing
 
 ### Supertest per API Routes
+
 ```typescript
 // __tests__/api/stripe/webhook.test.ts
 import request from 'supertest';
@@ -624,9 +655,9 @@ describe('/api/stripe/webhook', () => {
         object: {
           id: 'acct_test_account',
           details_submitted: true,
-          charges_enabled: true
-        }
-      }
+          charges_enabled: true,
+        },
+      },
     };
 
     const signature = 't=1234567890,v1=test_signature';
@@ -659,9 +690,9 @@ describe('/api/stripe/webhook', () => {
           id: 'pi_test_payment',
           amount: 2500,
           currency: 'eur',
-          status: 'succeeded'
-        }
-      }
+          status: 'succeeded',
+        },
+      },
     };
 
     // Mock database update
@@ -681,6 +712,7 @@ describe('/api/stripe/webhook', () => {
 ## ⚡ Performance Testing
 
 ### K6 Load Testing
+
 ```javascript
 // performance/load-test.js
 import http from 'k6/http';
@@ -692,11 +724,11 @@ export const options = {
     { duration: '5m', target: 100 }, // Stay at 100 users
     { duration: '2m', target: 200 }, // Ramp up to 200 users
     { duration: '5m', target: 200 }, // Stay at 200 users
-    { duration: '2m', target: 0 },   // Ramp down to 0 users
+    { duration: '2m', target: 0 }, // Ramp down to 0 users
   ],
   thresholds: {
     http_req_duration: ['p(99)<1500'], // 99% of requests must complete below 1.5s
-    http_req_failed: ['rate<0.1'],     // Error rate must be below 10%
+    http_req_failed: ['rate<0.1'], // Error rate must be below 10%
   },
 };
 
@@ -706,22 +738,22 @@ export default function () {
   // Test homepage load
   const homepageResponse = http.get(`${BASE_URL}/`);
   check(homepageResponse, {
-    'homepage status is 200': (r) => r.status === 200,
-    'homepage response time < 1000ms': (r) => r.timings.duration < 1000,
+    'homepage status is 200': r => r.status === 200,
+    'homepage response time < 1000ms': r => r.timings.duration < 1000,
   });
 
   // Test search functionality
   const searchResponse = http.get(`${BASE_URL}/search?q=milano`);
   check(searchResponse, {
-    'search status is 200': (r) => r.status === 200,
-    'search response time < 2000ms': (r) => r.timings.duration < 2000,
+    'search status is 200': r => r.status === 200,
+    'search response time < 2000ms': r => r.timings.duration < 2000,
   });
 
   // Test API endpoint
   const apiResponse = http.get(`${BASE_URL}/api/riders`);
   check(apiResponse, {
-    'API status is 200': (r) => r.status === 200,
-    'API response time < 500ms': (r) => r.timings.duration < 500,
+    'API status is 200': r => r.status === 200,
+    'API response time < 500ms': r => r.timings.duration < 500,
   });
 
   sleep(Math.random() * 3 + 1); // Random sleep between 1-4 seconds
@@ -729,12 +761,13 @@ export default function () {
 ```
 
 ### Lighthouse CI
+
 ```yaml
 # .github/workflows/lighthouse.yml
 name: Lighthouse CI
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   lighthouse:
@@ -756,6 +789,7 @@ jobs:
 ## 🔒 Security Testing
 
 ### Dependency Vulnerability Scanning
+
 ```yaml
 # .github/workflows/security.yml
 name: Security Scan
@@ -763,7 +797,7 @@ on:
   schedule:
     - cron: '0 0 * * 1' # Weekly on Mondays
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   security:
@@ -779,6 +813,7 @@ jobs:
 ```
 
 ### Authentication Testing
+
 ```typescript
 // __tests__/security/auth.test.ts
 import request from 'supertest';
@@ -791,21 +826,17 @@ describe('Authentication Security', () => {
 
     // Attempt multiple failed logins
     for (let i = 0; i < 10; i++) {
-      await request(server)
-        .post('/api/auth/login')
-        .send({
-          email: 'test@example.com',
-          password: 'wrongpassword'
-        });
+      await request(server).post('/api/auth/login').send({
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      });
     }
 
     // Next attempt should be rate limited
-    const response = await request(server)
-      .post('/api/auth/login')
-      .send({
-        email: 'test@example.com',
-        password: 'wrongpassword'
-      });
+    const response = await request(server).post('/api/auth/login').send({
+      email: 'test@example.com',
+      password: 'wrongpassword',
+    });
 
     expect(response.status).toBe(429); // Too Many Requests
   });
@@ -837,6 +868,7 @@ describe('Authentication Security', () => {
 ## 🤖 Test Automation
 
 ### GitHub Actions CI/CD
+
 ```yaml
 # .github/workflows/test.yml
 name: Test Suite
@@ -927,30 +959,35 @@ jobs:
 ## 📋 Best Practices
 
 ### Test Organization
+
 - **File Naming**: `*.test.ts`, `*.spec.ts`
 - **Directory Structure**: Mirror source code structure
 - **Test Groups**: Describe blocks per funzionalità
 - **Test Cases**: it() blocks per scenario specifico
 
 ### Test Data Management
+
 - **Factories**: Crea dati di test consistenti
 - **Fixtures**: Usa dati statici per test prevedibili
 - **Cleanup**: Rimuovi dati di test dopo esecuzione
 - **Isolation**: Ogni test indipendente dagli altri
 
 ### Mocking Strategy
+
 - **External APIs**: Mock Stripe, email services
 - **Database**: Usa database di test isolato
 - **File System**: Mock operazioni su file
 - **Date/Time**: Freeze time per test deterministici
 
 ### Performance Testing
+
 - **Realistic Load**: Simula utenti reali
 - **Progressive Scaling**: Aumenta gradualmente il load
 - **Monitoring**: Traccia metriche chiave
 - **Thresholds**: Definisci limiti accettabili
 
 ### Accessibility Testing
+
 ```typescript
 // __tests__/accessibility/RiderCard.a11y.test.tsx
 import { render } from '@testing-library/react';
@@ -991,6 +1028,7 @@ describe('RiderCard Accessibility', () => {
 ```
 
 ### Continuous Testing
+
 - **Pre-commit Hooks**: Esegui test prima del commit
 - **Branch Protection**: Richiedi test per merge
 - **Nightly Runs**: Test completi ogni notte

@@ -6,7 +6,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-Connect-blue.svg)](https://stripe.com/)
 
-**bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria. 
+**bemyrider** è una piattaforma SaaS moderna che connette esercenti locali con rider autonomi per prenotazioni di consegne a tariffa oraria.
 
 🏪 **Per Esercenti**: Trova e prenota rider qualificati per le tue consegne  
 🚴‍♂️ **Per Rider**: Monetizza il tuo tempo con tariffe personalizzate
@@ -14,6 +14,7 @@
 ## 🚀 Caratteristiche Principali
 
 ### Per i Rider
+
 - ✅ **Registrazione con selezione ruolo** e creazione profilo automatica
 - ✅ **Definizione tariffa oraria** personalizzata
 - ✅ **Dashboard completa** con protezione accessi basata su ruolo
@@ -22,6 +23,7 @@
 - ✅ **Logout sicuro** con reindirizzamento automatico
 
 ### Per gli Esercenti
+
 - ✅ **Dashboard merchant completa** con statistiche in tempo reale
 - ✅ **Ricerca e visualizzazione** rider disponibili con filtri
 - ✅ **Prenotazioni** con gestione calendario e stati
@@ -30,6 +32,7 @@
 - ✅ **Controllo accessi rigoroso** con protezione ruoli
 
 ### Funzionalità Condivise
+
 - 🔐 **Sistema di autenticazione** robusto con Supabase
 - 🎯 **Redirect intelligenti** basati su ruolo utente
 - 🎨 **Design moderno** con navbar fissa e animazioni fluide
@@ -50,7 +53,7 @@
 
 ## 📋 Prerequisiti
 
-- Node.js 18+ 
+- Node.js 18+
 - npm o yarn
 - Account Supabase
 - Account Stripe (con Connect abilitato)
@@ -58,17 +61,20 @@
 ## 🔧 Setup del Progetto
 
 ### 1. Clona il repository
+
 ```bash
 git clone https://github.com/bemyrider/bemyrider.git
 cd bemyrider
 ```
 
 ### 2. Installa le dipendenze
+
 ```bash
 npm install
 ```
 
 ### 3. Configura le variabili d'ambiente
+
 Copia il file `env.example` in `.env.local` e compila le variabili:
 
 ```bash
@@ -93,29 +99,33 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 4. Setup Database con Drizzle ORM
 
 #### Opzione A: Drizzle Migrations (Raccomandato)
+
 ```bash
 # Applica le migrations Drizzle
 npm run db:push
 
 # Le migrations includono automaticamente:
 # - Tutte le tabelle e relazioni
-# - Enums (DayOfWeek, PaymentStatus, Status, VehicleType)  
+# - Enums (DayOfWeek, PaymentStatus, Status, VehicleType)
 # - Indexes ottimizzati
 # - Constraints e chiavi esterne
 ```
 
 #### Opzione B: SQL Manuale
+
 Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase.
 
 #### 🗄️ Schema Database Completo
 
 **Enums:**
+
 - `DayOfWeek`: Lun, Mar, Mer, Gio, Ven, Sab, Dom
 - `PaymentStatus`: in_attesa, pagato, rimborsato
 - `Status`: in_attesa, confermata, in_corso, completata, annullata
 - `VehicleType`: bici, e_bike, scooter, auto
 
 **Tabelle Principali:**
+
 - `profiles` - Profili utenti base (rider/merchant)
 - `esercenti` - Dettagli specifici merchant
 - `prenotazioni` - Sistema prenotazioni completo
@@ -123,16 +133,19 @@ Esegui il file `drizzle/0000_glossy_krista_starr.sql` nel SQL Editor di Supabase
 - `disponibilita_riders` - Calendario disponibilità
 
 **Tabelle di Supporto:**
+
 - `rider_tax_details` - Dati fiscali rider
 - `esercente_tax_details` - Dati fiscali merchant
 - `occasional_performance_receipts` - Ricevute prestazioni
 
 #### 🔐 Row Level Security (RLS)
+
 Tutte le tabelle hanno policies RLS configurate automaticamente per:
+
 - ✅ Sicurezza dati per ruolo
-- ✅ Isolamento merchant/rider  
+- ✅ Isolamento merchant/rider
 - ✅ Accesso basato su proprietà
-CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
+  CREATE POLICY "Riders can insert own details" ON riders_details FOR INSERT WITH CHECK (auth.uid() = profile_id);
 
 -- Availability: viewable by everyone, editable by rider
 CREATE POLICY "Availability is viewable by everyone" ON availability FOR SELECT USING (true);
@@ -147,15 +160,17 @@ CREATE POLICY "Participants can update bookings" ON bookings FOR UPDATE USING (a
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, full_name, role)
-  VALUES (
-    NEW.id,
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'role'
-  );
-  RETURN NEW;
+INSERT INTO profiles (id, full_name, role)
+VALUES (
+NEW.id,
+NEW.raw_user_meta_data->>'full_name',
+NEW.raw_user_meta_data->>'role'
+);
+RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+$$
+LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create trigger for new user creation
 CREATE TRIGGER on_auth_user_created
@@ -258,7 +273,7 @@ bemyrider/
 - **Integrazione Supabase Auth** per rimozione completa
 - **Posizionamento discreto** nel menu "Avanzate"
 
-### 🎨 Menu Profilo Unificato  
+### 🎨 Menu Profilo Unificato
 - **TopNavBar moderna** con design responsive
 - **Dropdown menu** con sezioni organizzate (Impostazioni, Privacy, Avanzate)
 - **Icona profilo** con navigazione intuitiva
@@ -267,7 +282,7 @@ bemyrider/
 ### 🔧 Migrazione ORM a Drizzle
 - **Performance ottimizzate** rispetto a Prisma
 - **Schema completo** con 8+ tabelle e relazioni
-- **Connection pooling** ottimizzato per Supabase  
+- **Connection pooling** ottimizzato per Supabase
 - **Type safety** migliorata con TypeScript
 
 ### 🔐 Sicurezza Enterprise-Grade
@@ -307,7 +322,7 @@ bemyrider/
 Per informazioni dettagliate, consulta la documentazione completa:
 
 - **[📖 Setup Completo](docs/SETUP.md)** - Guida passo-passo per configurazione
-- **[🔧 API Documentation](docs/API.md)** - Documentazione completa API endpoints  
+- **[🔧 API Documentation](docs/API.md)** - Documentazione completa API endpoints
 - **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Deploy in produzione
 - **[⚡ Edge Functions](docs/EDGE-FUNCTIONS.md)** - Supabase Edge Functions
 - **[📋 Changelog](CHANGELOG.md)** - Storia delle modifiche
@@ -334,11 +349,11 @@ Il progetto può essere deployato su qualsiasi provider che supporti Next.js.
 
 ## 📄 Licenza
 
-Questo progetto è sotto **licenza proprietaria personalizzata**. 
+Questo progetto è sotto **licenza proprietaria personalizzata**.
 
 ### Uso Permesso
 - ✅ Studio e valutazione personale
-- ✅ Sviluppo non commerciale  
+- ✅ Sviluppo non commerciale
 - ✅ Scopi educativi
 
 ### Uso Commerciale
@@ -368,4 +383,5 @@ Per contatti: info@bemyrider.it
 
 ---
 
-**bemyrider** - Connetti rider e esercenti per consegne efficienti e trasparenti 🚴‍♂️🏪 
+**bemyrider** - Connetti rider e esercenti per consegne efficienti e trasparenti 🚴‍♂️🏪
+$$

@@ -47,12 +47,8 @@
           "name": "disponibilita_riders_rider_id_profiles_id_fk",
           "tableFrom": "disponibilita_riders",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -104,12 +100,8 @@
           "name": "esercente_tax_details_esercente_id_esercenti_id_fk",
           "tableFrom": "esercente_tax_details",
           "tableTo": "esercenti",
-          "columnsFrom": [
-            "esercente_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["esercente_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -226,12 +218,8 @@
           "name": "merchant_favorites_merchant_id_profiles_id_fk",
           "tableFrom": "merchant_favorites",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "merchant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["merchant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -239,12 +227,8 @@
           "name": "merchant_favorites_rider_id_profiles_id_fk",
           "tableFrom": "merchant_favorites",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -291,12 +275,8 @@
           "name": "occasional_performance_receipts_prenotazione_id_prenotazioni_id_fk",
           "tableFrom": "occasional_performance_receipts",
           "tableTo": "prenotazioni",
-          "columnsFrom": [
-            "prenotazione_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["prenotazione_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -306,9 +286,7 @@
         "occasional_performance_receipts_prenotazione_id_unique": {
           "name": "occasional_performance_receipts_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "prenotazione_id"
-          ]
+          "columns": ["prenotazione_id"]
         }
       },
       "policies": {},
@@ -402,12 +380,8 @@
           "name": "prenotazioni_esercente_id_esercenti_id_fk",
           "tableFrom": "prenotazioni",
           "tableTo": "esercenti",
-          "columnsFrom": [
-            "esercente_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["esercente_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -415,12 +389,8 @@
           "name": "prenotazioni_rider_id_profiles_id_fk",
           "tableFrom": "prenotazioni",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -538,12 +508,8 @@
           "name": "recensioni_prenotazione_id_prenotazioni_id_fk",
           "tableFrom": "recensioni",
           "tableTo": "prenotazioni",
-          "columnsFrom": [
-            "prenotazione_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["prenotazione_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -551,12 +517,8 @@
           "name": "recensioni_esercente_id_esercenti_id_fk",
           "tableFrom": "recensioni",
           "tableTo": "esercenti",
-          "columnsFrom": [
-            "esercente_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["esercente_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -564,12 +526,8 @@
           "name": "recensioni_rider_id_profiles_id_fk",
           "tableFrom": "recensioni",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -579,9 +537,7 @@
         "recensioni_prenotazione_id_unique": {
           "name": "recensioni_prenotazione_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "prenotazione_id"
-          ]
+          "columns": ["prenotazione_id"]
         }
       },
       "policies": {},
@@ -647,12 +603,8 @@
           "name": "rider_tax_details_rider_id_profiles_id_fk",
           "tableFrom": "rider_tax_details",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -817,12 +769,8 @@
           "name": "riders_details_profile_id_profiles_id_fk",
           "tableFrom": "riders_details",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "profile_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["profile_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -921,12 +869,8 @@
           "name": "service_requests_merchant_id_profiles_id_fk",
           "tableFrom": "service_requests",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "merchant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["merchant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -934,12 +878,8 @@
           "name": "service_requests_rider_id_profiles_id_fk",
           "tableFrom": "service_requests",
           "tableTo": "profiles",
-          "columnsFrom": [
-            "rider_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rider_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -955,24 +895,12 @@
     "public.DayOfWeek": {
       "name": "DayOfWeek",
       "schema": "public",
-      "values": [
-        "Lun",
-        "Mar",
-        "Mer",
-        "Gio",
-        "Ven",
-        "Sab",
-        "Dom"
-      ]
+      "values": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
     },
     "public.PaymentStatus": {
       "name": "PaymentStatus",
       "schema": "public",
-      "values": [
-        "in_attesa",
-        "pagato",
-        "rimborsato"
-      ]
+      "values": ["in_attesa", "pagato", "rimborsato"]
     },
     "public.ServiceRequestStatus": {
       "name": "ServiceRequestStatus",
@@ -1002,12 +930,7 @@
     "public.VehicleType": {
       "name": "VehicleType",
       "schema": "public",
-      "values": [
-        "bici",
-        "e_bike",
-        "scooter",
-        "auto"
-      ]
+      "values": ["bici", "e_bike", "scooter", "auto"]
     }
   },
   "schemas": {},

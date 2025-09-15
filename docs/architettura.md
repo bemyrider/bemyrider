@@ -7,6 +7,7 @@ Questa sezione descrive l'architettura completa di bemyrider, includendo fronten
 bemyrider è una piattaforma marketplace B2B che connette rider professionisti con esercenti locali, utilizzando un'architettura moderna basata su microservizi e cloud-native technologies.
 
 ### Stack Tecnologico Principale
+
 - **Frontend:** Next.js 14, React 18, TypeScript
 - **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
 - **Pagamenti:** Stripe Connect Express
@@ -91,6 +92,7 @@ graph TB
 ### Tabelle Principali
 
 #### **profiles** - Profili Utenti Base
+
 ```sql
 CREATE TABLE "profiles" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -103,6 +105,7 @@ CREATE TABLE "profiles" (
 ```
 
 #### **riders_details** - Dettagli Rider
+
 ```sql
 CREATE TABLE "riders_details" (
     "profile_id" uuid PRIMARY KEY,
@@ -126,6 +129,7 @@ CREATE TABLE "riders_details" (
 ```
 
 #### **esercenti** - Profili Esercenti
+
 ```sql
 CREATE TABLE "esercenti" (
     "id" uuid PRIMARY KEY,
@@ -139,6 +143,7 @@ CREATE TABLE "esercenti" (
 ```
 
 #### **prenotazioni** - Prenotazioni Servizio
+
 ```sql
 CREATE TABLE "prenotazioni" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -157,6 +162,7 @@ CREATE TABLE "prenotazioni" (
 ```
 
 #### **disponibilita_riders** - Disponibilità Rider
+
 ```sql
 CREATE TABLE "disponibilita_riders" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -168,6 +174,7 @@ CREATE TABLE "disponibilita_riders" (
 ```
 
 #### **recensioni** - Sistema Recensioni
+
 ```sql
 CREATE TABLE "recensioni" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -181,6 +188,7 @@ CREATE TABLE "recensioni" (
 ```
 
 ### Tabelle Fiscali/Tax
+
 ```sql
 -- Rider fiscal details
 CREATE TABLE "rider_tax_details" (
@@ -211,6 +219,7 @@ CREATE TABLE "occasional_performance_receipts" (
 ```
 
 ### Relazioni Database
+
 ```mermaid
 erDiagram
     profiles ||--o{ riders_details : "has"
@@ -231,16 +240,19 @@ erDiagram
 ## 🔐 Sicurezza e Autenticazione
 
 ### Row Level Security (RLS)
+
 - **Policy per profilo**: Utenti possono vedere/modificare solo i propri dati
 - **Policy per prenotazioni**: Rider vedono solo prenotazioni proprie, merchant vedono solo le proprie richieste
 - **Policy per recensioni**: Solo gli utenti coinvolti possono vedere/modificare
 
 ### Autenticazione
+
 - **JWT Tokens**: Gestiti automaticamente da Supabase
 - **Session Management**: Automatico con refresh tokens
 - **Multi-factor**: Supportato tramite Supabase Auth
 
 ### Sicurezza Pagamenti
+
 - **PCI Compliance**: Gestito da Stripe
 - **Webhook Verification**: Firma digitale per tutti i webhook
 - **Idempotency**: Prevenzione duplicati nelle transazioni
@@ -248,18 +260,21 @@ erDiagram
 ## 🚀 Performance e Scalabilità
 
 ### Ottimizzazioni Frontend
+
 - **ISR/SSG**: Pagine statiche dove possibile
 - **Code Splitting**: Lazy loading dei componenti
 - **Image Optimization**: Next.js Image component
 - **Bundle Analysis**: Monitoraggio dimensione bundle
 
 ### Ottimizzazioni Database
+
 - **Indici**: Su colonne frequentemente queryate
 - **Connection Pooling**: Gestito da Supabase
 - **Query Optimization**: Utilizzo Drizzle per query tipizzate
 - **Caching**: Redis per dati ad alto volume (futuro)
 
 ### CDN e Edge Computing
+
 - **Vercel Edge Network**: Distribuzione globale
 - **Edge Functions**: Elaborazione vicina all'utente
 - **Caching Strategico**: Cache headers appropriati
@@ -267,6 +282,7 @@ erDiagram
 ## 🔄 Flussi Applicativi Dettagliati
 
 ### Flusso Registrazione Rider
+
 1. **Signup**: Creazione account Supabase Auth
 2. **Profile Creation**: Inserimento dati base in `profiles`
 3. **Rider Details**: Completamento `riders_details`
@@ -275,6 +291,7 @@ erDiagram
 6. **Tax Details**: Inserimento dati fiscali
 
 ### Flusso Prenotazione
+
 1. **Service Request**: Merchant crea richiesta
 2. **Notification**: Rider riceve notifica
 3. **Response**: Rider accetta/rifiuta
@@ -284,6 +301,7 @@ erDiagram
 7. **Payment**: Rilascio pagamento al rider
 
 ### Flusso Pagamento
+
 1. **Payment Intent Creation**: Server crea intent
 2. **Client Confirmation**: Frontend conferma pagamento
 3. **Stripe Processing**: Elaborazione sicura
@@ -293,16 +311,19 @@ erDiagram
 ## 📊 Monitoraggio e Observabilità
 
 ### Application Monitoring
+
 - **Vercel Analytics**: Performance e usage metrics
 - **Error Tracking**: Sentry per error monitoring
 - **Uptime Monitoring**: External monitoring services
 
 ### Database Monitoring
+
 - **Supabase Dashboard**: Query performance e usage
 - **Slow Query Log**: Identificazione bottleneck
 - **Connection Monitoring**: Pool usage e limits
 
 ### Business Metrics
+
 - **Conversion Funnel**: Signup → Onboarding → First booking
 - **Revenue Tracking**: Booking volume e ARPU
 - **User Engagement**: Session duration, feature usage
@@ -310,16 +331,19 @@ erDiagram
 ## 🔧 DevOps e Deployment
 
 ### CI/CD Pipeline
+
 - **GitHub Integration**: Automatic deployment su main
 - **Environment Management**: Preview deployments per PR
 - **Rollback Strategy**: Version pinning e instant rollback
 
 ### Environment Strategy
+
 - **Development**: Locale con hot reload
 - **Staging**: Mirror produzione per testing
 - **Production**: Full monitoring e backup
 
 ### Backup e Recovery
+
 - **Database Backup**: Automatico con point-in-time recovery
 - **Code Backup**: Git versioning
 - **Asset Backup**: Supabase storage replication
@@ -327,24 +351,28 @@ erDiagram
 ## 🎯 Decisioni Architetturali Chiave
 
 ### Perché Next.js 14?
+
 - **Full-Stack**: API routes integrate frontend/backend
 - **Performance**: ISR, SSG, ottimizzazioni automatiche
 - **Developer Experience**: TypeScript nativo, hot reload
 - **Edge Computing**: Deployment globale ottimizzato
 
 ### Perché Supabase?
+
 - **Integrated Stack**: Auth, Database, Storage, Edge Functions
 - **PostgreSQL**: Database robusto e scalabile
 - **Real-time**: Sottoscrizioni per aggiornamenti live
 - **Security**: RLS e policy integrate
 
 ### Perché Stripe Connect?
+
 - **Regulatory Compliance**: Gestione completa compliance PCI
 - **Multi-party Payments**: Marketplace payment flow
 - **Global Coverage**: Supporto internazionale
 - **Developer Friendly**: API robusta e documentazione
 
 ### Perché Drizzle ORM?
+
 - **Type Safety**: Query tipizzate con TypeScript
 - **Performance**: Query ottimizzate e leggere
 - **Migration System**: Versionamento schema sicuro

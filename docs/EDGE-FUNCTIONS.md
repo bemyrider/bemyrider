@@ -5,6 +5,7 @@ Documentazione completa per le Edge Functions di bemyrider.
 ## 📋 Panoramica
 
 Le Edge Functions sono funzioni serverless che girano su Deno runtime e gestiscono:
+
 - Webhook di Stripe per aggiornamenti automatici
 - Elaborazione asincrona di eventi
 - Integrazione con servizi esterni
@@ -12,23 +13,29 @@ Le Edge Functions sono funzioni serverless che girano su Deno runtime e gestisco
 ## 🔧 Stripe Webhook Handler
 
 ### Scopo
+
 Gestisce i webhook di Stripe per aggiornare automaticamente lo stato di onboarding dei rider nel database.
 
 ### Implementazione Attuale
+
 **✅ API Route su Vercel (Raccomandata)**
+
 ```
 https://bemyrider.vercel.app/api/stripe/webhook
 app/api/stripe/webhook/route.ts
 ```
 
 ### Implementazione Alternativa
+
 **⚠️ Edge Function Supabase (Deprecata)**
+
 ```
 https://uolpvxgcobjefivqnscj.supabase.co/functions/v1/stripe-webhook
 supabase/functions/stripe-webhook/index.ts
 ```
 
 ### Eventi Gestiti
+
 - `account.updated` - Aggiorna `stripe_onboarding_complete` quando cambia lo stato dell'account
 
 ### Flusso di Elaborazione
@@ -90,12 +97,12 @@ supabase secrets list --project-ref your-project-ref
 
 ### Environment Variables Richieste
 
-| Variabile | Descrizione | Esempio |
-|-----------|-------------|---------|
-| `STRIPE_SECRET_KEY` | Chiave segreta Stripe | `***REMOVED***...` |
-| `STRIPE_WEBHOOK_SECRET` | Secret per verifica firma | `***REMOVED***...` |
-| `SUPABASE_URL` | URL progetto Supabase | `https://xyz.supabase.co` |
-| `***REMOVED***` | Service role key | `eyJ...` |
+| Variabile               | Descrizione               | Esempio                   |
+| ----------------------- | ------------------------- | ------------------------- |
+| `STRIPE_SECRET_KEY`     | Chiave segreta Stripe     | `***REMOVED***...`        |
+| `STRIPE_WEBHOOK_SECRET` | Secret per verifica firma | `***REMOVED***...`        |
+| `SUPABASE_URL`          | URL progetto Supabase     | `https://xyz.supabase.co` |
+| `***REMOVED***`         | Service role key          | `eyJ...`                  |
 
 ### Configurazione Stripe Webhook
 
@@ -168,6 +175,7 @@ supabase functions logs stripe-webhook --project-ref your-project-ref --level er
 ### Metriche
 
 Nel Supabase Dashboard:
+
 1. **Edge Functions** → **stripe-webhook**
 2. Visualizza:
    - **Invocations**: Numero di chiamate
@@ -180,6 +188,7 @@ Nel Supabase Dashboard:
 ### Errori Comuni
 
 #### 1. Webhook Signature Verification Failed
+
 ```
 ❌ Webhook signature verification failed
 ```
@@ -187,6 +196,7 @@ Nel Supabase Dashboard:
 **Causa**: `STRIPE_WEBHOOK_SECRET` non configurato o errato
 
 **Soluzione**:
+
 ```bash
 # Verifica secret
 supabase secrets list --project-ref your-project-ref
@@ -196,6 +206,7 @@ supabase secrets set STRIPE_WEBHOOK_SECRET=***REMOVED***correct_secret
 ```
 
 #### 2. Missing Authorization Header
+
 ```
 {"code":401,"message":"Missing authorization header"}
 ```
@@ -205,6 +216,7 @@ supabase secrets set STRIPE_WEBHOOK_SECRET=***REMOVED***correct_secret
 **Soluzione**: Disabilita "Verify JWT" nelle impostazioni function
 
 #### 3. Rider Not Found
+
 ```
 ❌ Error finding rider with Stripe account: acct_xxx
 ```
@@ -214,6 +226,7 @@ supabase secrets set STRIPE_WEBHOOK_SECRET=***REMOVED***correct_secret
 **Soluzione**: Verifica che `stripe_account_id` sia corretto nella tabella `riders_details`
 
 #### 4. Supabase Configuration Error
+
 ```
 ❌ Supabase environment variables not configured
 ```
@@ -221,6 +234,7 @@ supabase secrets set STRIPE_WEBHOOK_SECRET=***REMOVED***correct_secret
 **Causa**: `SUPABASE_URL` o `***REMOVED***` mancanti
 
 **Soluzione**:
+
 ```bash
 supabase secrets set SUPABASE_URL=https://your-project.supabase.co
 supabase secrets set ***REMOVED***=your_service_role_key
@@ -238,7 +252,7 @@ console.log('🔍 Debug - Environment:', {
   hasStripeSecret: !!Deno.env.get('STRIPE_SECRET_KEY'),
   hasWebhookSecret: !!Deno.env.get('STRIPE_WEBHOOK_SECRET'),
   hasSupabaseUrl: !!Deno.env.get('SUPABASE_URL'),
-  hasServiceKey: !!Deno.env.get('***REMOVED***')
+  hasServiceKey: !!Deno.env.get('***REMOVED***'),
 });
 ```
 

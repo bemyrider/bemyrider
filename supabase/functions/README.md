@@ -43,7 +43,7 @@ supabase functions deploy stripe-webhook
 supabase secrets set STRIPE_SECRET_KEY=***REMOVED***...
 supabase secrets set STRIPE_WEBHOOK_SECRET=***REMOVED***...
 
-***REMOVED***  
+***REMOVED***
 supabase secrets set SUPABASE_URL=https://your-project.supabase.co
 supabase secrets set ***REMOVED***=eyJ...
 ```
@@ -51,29 +51,35 @@ supabase secrets set ***REMOVED***=eyJ...
 ## 🔧 stripe-webhook Function
 
 ### Scopo
+
 Gestisce webhook Stripe per aggiornamenti automatici dello stato onboarding rider.
 
 ### URL
+
 ```
 https://your-project-ref.supabase.co/functions/v1/stripe-webhook
 ```
 
 ### Eventi Gestiti
+
 - `account.updated`: Aggiorna `stripe_onboarding_complete` nel database
 
 ### Environment Variables
+
 - `STRIPE_SECRET_KEY`: Chiave segreta Stripe
 - `STRIPE_WEBHOOK_SECRET`: Secret per verifica firma webhook
-- `SUPABASE_URL`: URL progetto Supabase  
+- `SUPABASE_URL`: URL progetto Supabase
 - `***REMOVED***`: Service role key per database
 
 ### Configurazione Stripe
+
 1. Vai su [Stripe Webhooks](https://dashboard.stripe.com/webhooks)
 2. Aggiungi endpoint: `https://your-project.supabase.co/functions/v1/stripe-webhook`
 3. Eventi: `account.updated`
 4. Copia signing secret
 
 ### Configurazione Supabase
+
 1. Dashboard → Edge Functions → stripe-webhook
 2. **Disabilita "Verify JWT"** (importante!)
 3. Verifica che sia attiva
@@ -81,6 +87,7 @@ https://your-project-ref.supabase.co/functions/v1/stripe-webhook
 ## 🧪 Testing
 
 ### Test Locale
+
 ```bash
 # Avvia function localmente
 supabase functions serve stripe-webhook --no-verify-jwt
@@ -93,6 +100,7 @@ curl -X POST http://localhost:54321/functions/v1/stripe-webhook \
 ```
 
 ### Test con Stripe CLI
+
 ```bash
 # Forward webhook events
 stripe listen --forward-to https://your-project.supabase.co/functions/v1/stripe-webhook
@@ -104,6 +112,7 @@ stripe trigger account.updated
 ## 📊 Monitoring
 
 ### Logs
+
 ```bash
 # Visualizza logs
 supabase functions logs stripe-webhook
@@ -113,6 +122,7 @@ supabase functions logs stripe-webhook --follow
 ```
 
 ### Metriche
+
 - Dashboard Supabase → Edge Functions → stripe-webhook
 - Visualizza invocations, errors, duration
 
@@ -121,18 +131,23 @@ supabase functions logs stripe-webhook --follow
 ### Errori Comuni
 
 **401 Missing authorization header**
+
 - Soluzione: Disabilita "Verify JWT" nelle impostazioni
 
-**400 Webhook signature verification failed**  
+**400 Webhook signature verification failed**
+
 - Soluzione: Verifica `STRIPE_WEBHOOK_SECRET`
 
 **404 Rider not found**
+
 - Soluzione: Verifica che `stripe_account_id` esista in `riders_details`
 
 **500 Supabase configuration error**
+
 - Soluzione: Configura `SUPABASE_URL` e `***REMOVED***`
 
 ### Debug
+
 ```bash
 # Verifica secrets
 supabase secrets list
@@ -147,6 +162,7 @@ curl -X GET https://your-project.supabase.co/functions/v1/stripe-webhook
 ## 📚 Documentazione
 
 Per documentazione completa:
+
 - [docs/EDGE-FUNCTIONS.md](../../docs/EDGE-FUNCTIONS.md)
 - [docs/API.md](../../docs/API.md)
 - [docs/SETUP.md](../../docs/SETUP.md)

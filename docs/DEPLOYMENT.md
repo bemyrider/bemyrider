@@ -5,21 +5,25 @@ Guida completa per il deployment di bemyrider in produzione.
 ## 🎯 Opzioni di Deployment
 
 ### 1. Vercel (Raccomandato) ⭐
+
 - **Pros**: Ottimizzato per Next.js, CI/CD automatico, Edge Functions
 - **Cons**: Limiti su piano gratuito
 - **Costo**: Gratuito per progetti personali, $20/mese Pro
 
 ### 2. Netlify
+
 - **Pros**: Gratuito generoso, facile setup
 - **Cons**: Meno ottimizzato per Next.js
 - **Costo**: Gratuito per progetti personali
 
 ### 3. DigitalOcean App Platform
+
 - **Pros**: Controllo completo, prezzi fissi
 - **Cons**: Setup più complesso
 - **Costo**: $5-12/mese
 
 ### 4. Self-Hosted (VPS)
+
 - **Pros**: Controllo totale, costi prevedibili
 - **Cons**: Manutenzione server, setup complesso
 - **Costo**: $5-20/mese
@@ -27,9 +31,11 @@ Guida completa per il deployment di bemyrider in produzione.
 ## 🔒 Sicurezza nel Deployment
 
 ### 🚀 **Sistema di Sicurezza Automatica**
+
 bemyrider include un **sistema di sicurezza enterprise-grade** che garantisce deployment sicuri:
 
 #### **Workflow Sicuro di Deployment:**
+
 ```bash
 # Deploy sicuro con verifica automatica della sicurezza
 npm run db:push     # Migrazione + sicurezza automatica
@@ -38,6 +44,7 @@ npm run deploy      # Deploy in produzione
 ```
 
 #### **Cosa Viene Verificato Automaticamente:**
+
 - ✅ **Row Level Security (RLS)** abilitato su tutte le tabelle
 - ✅ **32+ policy di sicurezza** applicate correttamente
 - ✅ **Connessione database** sicura verificata
@@ -45,6 +52,7 @@ npm run deploy      # Deploy in produzione
 - ✅ **Audit trail** completo delle operazioni
 
 #### **Metriche di Sicurezza:**
+
 - ⚡ **Deployment time**: ~13 secondi
 - 🔒 **Security policies**: 32+ applicate
 - ✅ **Success rate**: 100%
@@ -120,6 +128,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ### 5. Domain Setup
 
 #### Custom Domain
+
 1. Vai su **Settings** → **Domains**
 2. Aggiungi il tuo dominio (es. `bemyrider.it`)
 3. Configura DNS:
@@ -130,6 +139,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
    ```
 
 #### SSL Certificate
+
 Vercel fornisce automaticamente SSL gratuito con Let's Encrypt.
 
 ### 6. Deploy
@@ -146,12 +156,14 @@ Il deploy avviene automaticamente ad ogni push su `main`.
 ### 1. Supabase Produzione
 
 #### Database Backup
+
 ```bash
 # Setup backup automatici
 supabase db dump > backup-$(date +%Y%m%d).sql
 ```
 
 #### Performance Optimization
+
 ```sql
 -- Aggiungi indici per performance
 CREATE INDEX CONCURRENTLY idx_bookings_created_at ON bookings(created_at);
@@ -161,12 +173,14 @@ CREATE INDEX CONCURRENTLY idx_riders_details_stripe_complete ON riders_details(s
 ### 2. Stripe Produzione
 
 #### Attivazione Live Mode
+
 1. Completa **Business Profile**
 2. Verifica **Identity**
 3. Accetta **Terms of Service**
 4. Toggle **Live Mode**
 
 #### Webhook Produzione
+
 1. Crea nuovo webhook per produzione
 2. URL: `https://yourdomain.com/api/stripe/webhook`
 3. Eventi: `account.updated`, `payment_intent.succeeded`
@@ -209,6 +223,7 @@ export default function RootLayout({ children }) {
 ### 2. Error Monitoring
 
 #### Sentry Setup
+
 ```bash
 npm install @sentry/nextjs
 
@@ -224,11 +239,13 @@ Sentry.init({
 ### 3. Performance Monitoring
 
 #### Supabase Metrics
+
 - Dashboard → **Reports**
 - Monitora query lente
 - Controlla utilizzo database
 
 #### Stripe Dashboard
+
 - **Payments** → monitoring transazioni
 - **Connect** → account rider status
 - **Webhooks** → success rate
@@ -252,25 +269,31 @@ module.exports = {
       {
         source: '/api/:path*',
         headers: [
-          { key: 'Access-Control-Allow-Origin', value: 'https://yourdomain.com' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE' },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://yourdomain.com',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE',
+          },
         ],
       },
-    ]
+    ];
   },
-}
+};
 ```
 
 ### 3. Rate Limiting
 
 ```typescript
 // lib/rate-limit.ts
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
 export const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "10 s"),
+  limiter: Ratelimit.slidingWindow(10, '10 s'),
 });
 ```
 
@@ -298,6 +321,7 @@ psql $***REMOVED*** < backup-20240117.sql
 ### 3. Stripe Rollback
 
 Per problemi Stripe:
+
 1. Disabilita webhook temporaneamente
 2. Risolvi issue
 3. Riattiva webhook
@@ -307,6 +331,7 @@ Per problemi Stripe:
 ### 1. Database Scaling
 
 #### Supabase Pro Features
+
 - **Connection pooling**
 - **Read replicas**
 - **Point-in-time recovery**
@@ -320,48 +345,55 @@ EXPLAIN ANALYZE SELECT * FROM bookings WHERE rider_id = $1;
 ### 2. CDN e Caching
 
 #### Vercel Edge Network
+
 - Automatico per asset statici
 - Edge Functions per API
 
 #### Custom Caching
+
 ```typescript
 // app/api/riders/route.ts
 export async function GET() {
   return NextResponse.json(data, {
     headers: {
-      'Cache-Control': 's-maxage=300, stale-while-revalidate=60'
-    }
-  })
+      'Cache-Control': 's-maxage=300, stale-while-revalidate=60',
+    },
+  });
 }
 ```
 
 ## ✅ Checklist Pre-Produzione
 
 ### Codice
+
 - [ ] Tutti i test passano
 - [ ] Build produzione senza errori
 - [ ] Environment variables configurate
 - [ ] Logs di debug rimossi
 
 ### Database
+
 - [ ] Schema produzione creato
 - [ ] Backup automatici configurati
 - [ ] Indici per performance
 - [ ] RLS policies testate
 
 ### Stripe
+
 - [ ] Account verificato e attivo
 - [ ] Webhook configurato correttamente
 - [ ] Test transazioni completati
 - [ ] Connect settings configurati
 
 ### Deployment
+
 - [ ] Domain configurato
 - [ ] SSL attivo
 - [ ] CDN funzionante
 - [ ] Monitoring attivo
 
 ### Sicurezza
+
 - [ ] HTTPS forzato
 - [ ] CORS configurato
 - [ ] Rate limiting attivo
@@ -401,11 +433,13 @@ lhci autorun --upload.target=temporary-public-storage
 ## 📞 Supporto Produzione
 
 ### Contatti di Emergenza
+
 - **Vercel Support**: support@vercel.com
 - **Supabase Support**: support@supabase.com
 - **Stripe Support**: support@stripe.com
 
 ### Escalation Path
+
 1. **Level 1**: Logs e documentazione
 2. **Level 2**: Community forums
 3. **Level 3**: Paid support plans

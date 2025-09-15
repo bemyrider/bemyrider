@@ -19,18 +19,21 @@ Guida operativa completa per monitoraggio, manutenzione e risoluzione problemi d
 ### Dashboard Principali
 
 #### Vercel Dashboard
+
 - **Performance**: Response times, throughput, error rates
 - **Uptime**: Service availability (target: 99.9%)
 - **Functions**: Edge function execution times
 - **Analytics**: User traffic patterns
 
 #### Supabase Dashboard
+
 - **Database**: Query performance, connection count
 - **Storage**: File upload/download metrics
 - **Auth**: Failed login attempts, user registrations
 - **Edge Functions**: Execution logs and errors
 
 #### Stripe Dashboard
+
 - **Payments**: Success rates, failed payments
 - **Connect**: Account status, onboarding completion
 - **Webhooks**: Delivery success, retry attempts
@@ -38,6 +41,7 @@ Guida operativa completa per monitoraggio, manutenzione e risoluzione problemi d
 ### Metriche Chiave
 
 #### Performance Metrics
+
 ```yaml
 # Target thresholds
 response_time_p95: < 1000ms
@@ -53,6 +57,7 @@ database_query_time: < 200ms
 bemyrider utilizza un **sistema di sicurezza enterprise-grade** completamente automatico:
 
 #### **Metriche di Sicurezza da Monitorare:**
+
 ```yaml
 # Security Health Metrics
 security_deployment_time: < 15s
@@ -63,6 +68,7 @@ audit_trail_active: enabled
 ```
 
 #### **Comandi Operativi di Sicurezza:**
+
 ```bash
 # Verifica stato sicurezza (daily check)
 npm run db:security
@@ -80,6 +86,7 @@ tail -f logs/security-deploy.log
 ### 🛡️ **Procedure di Sicurezza Routine**
 
 #### **Daily Security Check:**
+
 ```bash
 # 1. Verifica stato database
 npm run db:security
@@ -94,6 +101,7 @@ cat logs/security-deploy.log | tail -20
 ```
 
 #### **Post-Deployment Security Verification:**
+
 ```bash
 # Dopo ogni deploy verificare:
 npm run db:security
@@ -108,12 +116,14 @@ npm run db:security
 ### 🚨 **Alert di Sicurezza**
 
 #### **Trigger di Alert:**
+
 - **Security deployment failure**: `npm run db:security` fallisce
 - **RLS policies missing**: Meno di 30 policy attive
 - **Database access violation**: Tentativi di accesso non autorizzato
 - **API key exposure**: Chiavi API rilevate in log pubblici
 
 #### **Risposta a Incidenti di Sicurezza:**
+
 ```bash
 # 1. Isola il problema
 git log --oneline -10  # Verifica recenti modifiche
@@ -134,6 +144,7 @@ npm run db:security
 ### 🔐 **Gestione Chiavi API**
 
 #### **Rotazione Chiavi di Emergenza:**
+
 ```bash
 # 1. Genera nuove chiavi Supabase
 # Vai su Supabase Dashboard → Settings → API
@@ -151,6 +162,7 @@ npm run deploy
 ```
 
 #### **Audit Chiavi API:**
+
 ```bash
 # Verifica chiavi in uso
 grep -r "SUPABASE_" .env* --exclude-dir=node_modules
@@ -162,6 +174,7 @@ grep -r "SUPABASE_" .env* --exclude-dir=node_modules
 ### 📊 **Monitoraggio Sicurezza Avanzato**
 
 #### **Query di Monitoraggio Database:**
+
 ```sql
 -- Verifica RLS abilitato
 SELECT schemaname, tablename, rowsecurity
@@ -183,6 +196,7 @@ LIMIT 10;
 ```
 
 #### **Log Analysis:**
+
 ```bash
 # Analizza pattern di sicurezza
 grep "SECURITY" logs/security-deploy.log | tail -20
@@ -197,6 +211,7 @@ grep "Deployment sicurezza completato" logs/security-deploy.log | tail -7
 ### 🛠️ **Troubleshooting Sicurezza**
 
 #### **Problema: Security deployment fallisce**
+
 ```bash
 # Diagnosi
 npm run db:security 2>&1 | tee security-debug.log
@@ -209,6 +224,7 @@ echo $***REMOVED*** | head -c 20
 ```
 
 #### **Problema: Policy RLS mancanti**
+
 ```bash
 # Force reapply
 rm -rf logs/security-deploy.log
@@ -219,6 +235,7 @@ npm run db:security:legacy
 ```
 
 #### **Problema: Accesso non autorizzato**
+
 ```bash
 # Emergency lockdown
 npm run db:security
@@ -233,11 +250,13 @@ git log --oneline --since="1 hour ago"
 ### 📞 **Contatti Sicurezza**
 
 #### **Incident Response Team:**
+
 - **Lead Security**: [Nome Contatto]
 - **Database Admin**: [Nome Contatto]
 - **DevOps Lead**: [Nome Contatto]
 
 #### **Procedure di Escalation:**
+
 1. **Livello 1**: Try documented solutions
 2. **Livello 2**: Contact DevOps Lead
 3. **Livello 3**: Full incident response team
@@ -245,6 +264,7 @@ git log --oneline --since="1 hour ago"
 [Maggiori dettagli sulla sicurezza →](../scripts/README-SECURITY-UPDATES.md)
 
 #### Business Metrics
+
 ```yaml
 # Daily active users
 dau_target: > 1000
@@ -261,6 +281,7 @@ average_order_value: > €45
 ### Health Checks
 
 #### Application Health
+
 ```bash
 # Vercel deployment health
 curl -f https://bemyrider.it/api/health
@@ -274,22 +295,28 @@ curl -f https://bemyrider.it/api/health/supabase
 ```
 
 #### Automated Health Checks
+
 ```typescript
 // pages/api/health.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const checks = {
     timestamp: new Date().toISOString(),
     services: {
       database: await checkDatabase(),
       stripe: await checkStripe(),
       supabase: await checkSupabase(),
-      storage: await checkStorage()
-    }
+      storage: await checkStorage(),
+    },
   };
 
-  const isHealthy = Object.values(checks.services).every(service => service.status === 'healthy');
+  const isHealthy = Object.values(checks.services).every(
+    service => service.status === 'healthy'
+  );
 
   res.status(isHealthy ? 200 : 503).json(checks);
 }
@@ -310,33 +337,37 @@ async function checkDatabase() {
 ### Configurazione Alert
 
 #### Vercel Alerts
+
 ```yaml
 # .vercel/project.json
 {
-  "alerts": [
-    {
-      "type": "error_rate",
-      "threshold": 5,
-      "period": "5m",
-      "channels": ["slack", "email"]
-    },
-    {
-      "type": "response_time",
-      "threshold": 2000,
-      "period": "5m",
-      "channels": ["slack"]
-    }
-  ]
+  'alerts':
+    [
+      {
+        'type': 'error_rate',
+        'threshold': 5,
+        'period': '5m',
+        'channels': ['slack', 'email'],
+      },
+      {
+        'type': 'response_time',
+        'threshold': 2000,
+        'period': '5m',
+        'channels': ['slack'],
+      },
+    ],
 }
 ```
 
 #### Supabase Alerts
+
 - **Database CPU**: > 80% per 5 minuti
 - **Connection Count**: > 90% del limite
 - **Failed Auth**: > 10 tentativi/minuto da stesso IP
 - **Storage Usage**: > 85% capacity
 
 #### Stripe Alerts
+
 - **Payment Failures**: > 5% failure rate
 - **Webhook Failures**: > 3 retry attempts
 - **Account Issues**: Onboarding failures
@@ -344,14 +375,16 @@ async function checkDatabase() {
 ### Canali di Notifica
 
 #### Slack Integration
+
 ```yaml
 # Alert channels
-critical_alerts: "#ops-critical"
-performance_alerts: "#ops-performance"
-business_alerts: "#business-metrics"
+critical_alerts: '#ops-critical'
+performance_alerts: '#ops-performance'
+business_alerts: '#business-metrics'
 ```
 
 #### Email Notifications
+
 - **Critical Issues**: Tech lead + Dev team
 - **Performance Degradation**: Dev team only
 - **Business Metrics**: Product + Business teams
@@ -359,21 +392,25 @@ business_alerts: "#business-metrics"
 ### Escalation Procedure
 
 #### Livello 1: Automatic Alerts (0-5 min)
+
 - Error rate > 5%
 - Response time > 2s
 - Service unavailable
 
 #### Livello 2: Manual Investigation (5-15 min)
+
 - Database connection issues
 - Payment processing failures
 - User authentication problems
 
 #### Livello 3: Team Response (15-60 min)
+
 - Multiple service failures
 - Data corruption detected
 - Security incidents
 
 #### Livello 4: Emergency (1+ hour)
+
 - Complete system outage
 - Data loss incidents
 - Security breaches
@@ -383,6 +420,7 @@ business_alerts: "#business-metrics"
 ### Manutenzione Programmata
 
 #### Database Maintenance
+
 ```sql
 -- Weekly maintenance script
 VACUUM ANALYZE;
@@ -396,6 +434,7 @@ ANALYZE esercenti;
 ```
 
 #### Cache Management
+
 ```bash
 # Redis cache cleanup (if implemented)
 redis-cli FLUSHDB
@@ -405,6 +444,7 @@ vercel revalidate
 ```
 
 #### Log Rotation
+
 ```bash
 # Vercel logs auto-rotate
 # Supabase logs: 30-day retention
@@ -414,6 +454,7 @@ vercel revalidate
 ### Aggiornamenti di Sicurezza
 
 #### Dependency Updates
+
 ```bash
 # Check for vulnerabilities
 npm audit
@@ -429,6 +470,7 @@ vercel --prod
 ```
 
 #### Security Patches
+
 1. **Monitor CVEs**: Subscribe to security newsletters
 2. **Test Patches**: Deploy to staging first
 3. **Rollback Plan**: Prepare rollback procedure
@@ -437,6 +479,7 @@ vercel --prod
 ### Database Optimization
 
 #### Query Optimization
+
 ```sql
 -- Identify slow queries
 SELECT query, calls, total_time, mean_time
@@ -453,6 +496,7 @@ ON riders_details USING GIST(ST_Point(longitude, latitude));
 ```
 
 #### Connection Pooling
+
 ```typescript
 // lib/database.ts
 import { Pool } from 'pg';
@@ -472,6 +516,7 @@ export default pool;
 ### Problemi Comuni e Soluzioni
 
 #### 1. Alta Latenza Database
+
 ```sql
 -- Check active connections
 SELECT count(*) FROM pg_stat_activity;
@@ -487,16 +532,18 @@ ORDER BY n_dead_tup DESC;
 ```
 
 **Soluzioni:**
+
 - Aggiungi indici mancanti
 - Ottimizza query lente
 - Aumenta pool di connessioni
 - Considera read replicas
 
 #### 2. Errori Stripe Webhook
+
 ```typescript
 // Check webhook delivery
 const webhooks = await stripe.webhooks.list({
-  limit: 10
+  limit: 10,
 });
 
 // Verify signature
@@ -509,12 +556,14 @@ const event = stripe.webhooks.constructEvent(
 ```
 
 **Soluzioni:**
+
 - Verifica endpoint URL
 - Controlla webhook secret
 - Implementa idempotency
 - Aggiungi retry logic
 
 #### 3. Timeout Applicazione
+
 ```typescript
 // pages/api/timeout-example.ts
 export default async function handler(req, res) {
@@ -524,7 +573,7 @@ export default async function handler(req, res) {
 
   try {
     const result = await fetch('https://api.external-service.com', {
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
@@ -540,9 +589,13 @@ export default async function handler(req, res) {
 ```
 
 #### 4. Problemi Autenticazione
+
 ```typescript
 // Debug auth issues
-const { data: { session }, error } = await supabase.auth.getSession();
+const {
+  data: { session },
+  error,
+} = await supabase.auth.getSession();
 
 if (error) {
   console.error('Auth error:', error);
@@ -560,6 +613,7 @@ if (rlsError) {
 ```
 
 #### 5. Memory Leaks
+
 ```typescript
 // Monitor memory usage
 if (typeof window !== 'undefined') {
@@ -577,6 +631,7 @@ if (typeof window !== 'undefined') {
 ### Debug Tools
 
 #### Vercel CLI
+
 ```bash
 # View logs
 vercel logs --app bemyrider
@@ -589,6 +644,7 @@ vercel --prod
 ```
 
 #### Supabase CLI
+
 ```bash
 # View function logs
 supabase functions logs stripe-webhook
@@ -601,6 +657,7 @@ supabase db reset
 ```
 
 #### Database Debugging
+
 ```sql
 -- Enable query logging
 SET log_statement = 'all';
@@ -622,6 +679,7 @@ JOIN pg_stat_activity a ON l.pid = a.pid;
 ### Scenari di Disaster
 
 #### 1. Database Corruption
+
 ```bash
 # Stop application
 vercel scale --app bemyrider 0
@@ -637,6 +695,7 @@ vercel scale --app bemyrider 1
 ```
 
 #### 2. Service Outage
+
 ```bash
 # Check service status
 curl -f https://bemyrider.it/api/health
@@ -652,6 +711,7 @@ curl -f https://api.stripe.com/healthcheck
 ```
 
 #### 3. Security Breach
+
 1. **Isolate**: Disconnetti sistemi compromessi
 2. **Assess**: Identifica scope della breach
 3. **Contain**: Cambia credenziali compromesse
@@ -659,11 +719,13 @@ curl -f https://api.stripe.com/healthcheck
 5. **Notify**: Informa utenti e autorità se necessario
 
 ### Recovery Time Objectives (RTO)
+
 - **Critical Services**: < 1 hour
 - **Database**: < 4 hours
 - **Full System**: < 8 hours
 
 ### Recovery Point Objectives (RPO)
+
 - **User Data**: < 1 hour data loss
 - **Transaction Data**: < 5 minutes data loss
 - **Analytics Data**: < 24 hours data loss
@@ -673,6 +735,7 @@ curl -f https://api.stripe.com/healthcheck
 ### Strategia Backup
 
 #### Database Backups
+
 ```bash
 # Daily backup script
 #!/bin/bash
@@ -692,6 +755,7 @@ find /backups -name "*.gz" -mtime +30 -delete
 ```
 
 #### File Storage Backups
+
 ```bash
 # Supabase storage backup
 supabase storage cp bucket_name s3://backup-bucket --recursive
@@ -703,6 +767,7 @@ aws s3 sync s3://bemyrider-uploads s3://bemyrider-backups/uploads
 ### Procedure Restore
 
 #### Database Restore
+
 ```bash
 # Create new database
 createdb bemyrider_restore
@@ -718,6 +783,7 @@ psql -d bemyrider_restore -c "SELECT count(*) FROM profiles;"
 ```
 
 #### Application Rollback
+
 ```bash
 # View deployment history
 vercel deployments ls
@@ -734,17 +800,21 @@ curl -f https://bemyrider.it/api/health
 ### Monitoraggio Performance
 
 #### Application Metrics
+
 ```typescript
 // pages/api/metrics.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const metrics = {
     timestamp: Date.now(),
     memory: process.memoryUsage(),
     uptime: process.uptime(),
     version: process.version,
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
   };
 
   res.status(200).json(metrics);
@@ -752,6 +822,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 ```
 
 #### Database Metrics
+
 ```sql
 -- Connection usage
 SELECT count(*) as active_connections FROM pg_stat_activity;
@@ -771,6 +842,7 @@ ORDER BY idx_scan DESC;
 ### Scaling Strategies
 
 #### Horizontal Scaling
+
 ```typescript
 // Load balancer configuration
 const cluster = require('cluster');
@@ -788,6 +860,7 @@ if (cluster.isMaster) {
 ```
 
 #### Database Scaling
+
 ```sql
 -- Add read replica
 CREATE PUBLICATION bemyrider_pub FOR ALL TABLES;
@@ -803,6 +876,7 @@ const writePool = new Pool(writeConfig);
 ```
 
 #### CDN Optimization
+
 ```typescript
 // next.config.js
 module.exports = {
@@ -814,9 +888,7 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=300' }
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=300' }],
       },
     ];
   },
@@ -826,11 +898,13 @@ module.exports = {
 ## 📞 Contatti Emergenza
 
 ### Team di Risposta
+
 - **Tech Lead**: Giorgio Di Martino - +39 123 456 7890
 - **DevOps**: [Nome] - +39 123 456 7891
 - **Security**: [Nome] - +39 123 456 7892
 
 ### Fornitori Critici
+
 - **Vercel Support**: support@vercel.com
 - **Supabase Support**: support@supabase.com
 - **Stripe Support**: support@stripe.com
@@ -839,11 +913,13 @@ module.exports = {
 ### Procedure di Escalation
 
 #### Durante Orari Lavorativi (9:00-18:00)
+
 1. **Slack**: Notifica immediata al canale #ops-critical
 2. **Call**: Chiamata al tech lead entro 5 minuti
 3. **Team**: Attivazione team di risposta entro 15 minuti
 
 #### Fuori Orari Lavorativi
+
 1. **Phone**: Chiamata diretta al tech lead
 2. **SMS**: Notifica via SMS per alert critici
 3. **On-call**: Rotazione settimanale del developer di turno
@@ -851,18 +927,21 @@ module.exports = {
 ### Checklist Disaster Recovery
 
 #### Immediate Actions (0-5 min)
+
 - [ ] Valutare impatto e scope
 - [ ] Notificare team di risposta
 - [ ] Attivare monitoraggio aggiuntivo
 - [ ] Comunicare con utenti se necessario
 
 #### Short-term Recovery (5-60 min)
+
 - [ ] Identificare causa root
 - [ ] Implementare workaround
 - [ ] Iniziare recovery procedure
 - [ ] Aggiornare status page
 
 #### Long-term Prevention (1-24 hours)
+
 - [ ] Analisi post-mortem
 - [ ] Implementare fix permanenti
 - [ ] Aggiornare procedure
@@ -872,4 +951,4 @@ module.exports = {
 
 **Ricorda**: In caso di emergenza, mantieni la calma e segui le procedure documentate. La comunicazione chiara è essenziale per una risoluzione efficace.
 
-*Ultimo aggiornamento: $(date)*
+_Ultimo aggiornamento: $(date)_

@@ -1,5 +1,43 @@
 # 📋 Changelog - bemyrider
 
+## [0.4.16] - 2025-09-15
+
+### 📝 Documentation & Code Formatting - Prettier Implementation
+
+#### 🎨 Code Quality Improvements
+
+- **Prettier Integration**: Formattazione automatica di tutto il codebase con Prettier
+- **Documentation Updates**: Aggiornamento completo di tutti i file README e documentazione
+- **Drizzle Configuration**: Aggiornamento file di configurazione Drizzle e meta files
+- **Brand Assets**: Aggiornamento logo aziendale in formato SVG ottimizzato
+
+#### 🔧 Technical Updates
+
+- **Code Formatting**: Applicazione consistente della formattazione su 45+ file
+- **Documentation Standards**: Allineamento documentazione con standard di progetto
+- **Build Optimization**: File di configurazione ottimizzati per performance
+- **Asset Management**: Logo vettoriale aggiornato per migliore qualità display
+
+#### 📊 Impact
+
+- **Code Consistency**: ✅ Standard uniforme applicato a tutto il progetto
+- **Documentation Quality**: ✅ Documentazione aggiornata e completa
+- **Build Performance**: ✅ Configurazioni ottimizzate
+- **Asset Quality**: ✅ Logo vettoriale ad alta risoluzione
+
+#### Files Modified
+
+- **Documentation**: CHANGELOG.md, README.md, CONTRIBUTING.md, RELEASE_NOTES.md
+- **Docs Folder**: Tutti i file nella cartella docs/ (API.md, AUTH_SECURITY.md, etc.)
+- **Configuration**: drizzle.config.ts, drizzle/relations.ts, drizzle/meta/*.json
+- **Assets**: public/bemyrider_logo_text.svg
+- **VS Code**: .vscode/extensions.json
+- **Reports**: playwright-report/index.html, test-results/.last-run.json
+- **Release**: File nella cartella release/
+- **Scripts**: scripts/README-SECURITY-UPDATES.md
+
+---
+
 ## [0.4.15] - 2025-01-17
 
 ### 📞 Pagina Contatto - Risoluzione Errore 404

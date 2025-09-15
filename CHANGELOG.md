@@ -36,6 +36,12 @@
 - **Release**: File nella cartella release/
 - **Scripts**: scripts/README-SECURITY-UPDATES.md
 
+#### 🚨 Build Fixes (Hotfix)
+
+- **Drizzle Config**: Aggiunta proprietà `dialect: 'postgresql'` obbligatoria in drizzle.config.ts
+- **React Hooks**: Risolto warning useEffect dependency in app/riders/[id]/page.tsx
+- **Vercel Deploy**: Build ora passa con successo su Vercel
+
 ---
 
 ## [0.4.15] - 2025-01-17

@@ -5,6 +5,7 @@ import type { Config } from 'drizzle-kit';
 loadEnv({ path: '.env.local' });
 
 const drizzleConfig: Config = {
+  dialect: 'postgresql',
   schema: './lib/db/schema.ts',
   out: './drizzle',
 };
